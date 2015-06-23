@@ -38,7 +38,7 @@ class GanttRenderer(object):
         """Creates a renderer instance with the given parameters"""
         self.ctx = ctx
         self.zoom = parameters["zoom"]
-        self.selected_items = results.model.task_list + results.model.processors # TODO
+        self.selected_items = parameters["gantt_item_list"]
         self.results = results
         self.start_date = 0
         self.end_date = min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
@@ -49,10 +49,13 @@ class GanttRenderer(object):
     def render(self):
         self.resize_canvas()
         i = 0
-        for task in [x for x in self.results.model.task_list if x in self.selected_items]:
+        selectedTasks = [elem["id"] for elem in self.selected_items if elem["type"] == 'task']
+        for task in [x for x in self.results.model.task_list if x.identifier in selectedTasks]:
             self.plot_task(i, task)
             i += 1
-        for processor in [x for x in self.results.model.processors if x in self.selected_items]:
+            
+        selectedProcessors = [elem["id"] for elem in self.selected_items if elem["type"] == 'processor']
+        for processor in [x for x in self.results.model.processors if x.identifier in selectedProcessors]:
             self.plot_processor(i, processor)
             i += 1
         

@@ -30,20 +30,10 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 	$scope.ganttWidth = 1500;
 	$scope.ganttHeight = 500;
 	$scope.ganttZoom = 1;
-	// Aggregates parameters into a 'python' dict
-	$scope.aggregateParameters = function()
-	{
-		return "{'zoom' : " + $scope.ganttZoom + "," +
-				"'width' : " + $scope.ganttWidth + "," +
-				"'height' : " + $scope.ganttHeight +
-				 "}";
-		
-	};
 	
 	// Options of the grid used to select processors and list to display.
-	$scope.selectedItems = { };
-	$scope.allItems = { };
-	console.log($scope.conf.savedConf.all_gantt_items.toString());
+	$scope.selectedItems = [];
+	
 	$scope.gridGanttOptions = {
 		enableRowSelection: true,
 		enableColumnResize: true,
@@ -55,9 +45,13 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		minRowsToShow: 5,
 		data: $scope.conf.savedConf.all_gantt_items
 	};
-	/*
-	$scope.gridGanttOptions.onRegisterApi = ['gridAPI', function(gridApi) {
-		gridApi.selection.on.rowSelectionChanged($scope, ['row', function(row) {
+	
+	// Performs item selection / deselection
+	$scope.gridGanttOptions.onRegisterApi = function(gridApi) {
+		gridApi.selection.setMultiSelect(true);
+		gridApi.selection.selectAll = true;
+		gridApi.selection.selectAllVisibleRows();
+		var selectRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedItems.push(row.entity);
 			} else {
@@ -66,8 +60,45 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 					$scope.selectedItems.splice(index, 1);
 				}
 			}
-		}]);
-	}];*/
+		};
+		
+		// Happens when the "select all" box is toggled.
+		gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+			selectRow(row);
+			$scope.vm.exec("draw_canvas(" + $scope.aggregateParameters() + ")");
+		});
+		
+		
+		// Happens when the "select all" box is toggled.
+		gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+			for(var rowId = 0; rowId < rows.length; rowId++)
+			{
+				var row = rows[rowId];
+				selectRow(row);
+			}
+			$scope.vm.exec("draw_canvas(" + $scope.aggregateParameters() + ")");
+		});
+	};
+	
+
+		
+	// Aggregates parameters into a 'python' dict
+	$scope.aggregateParameters = function()
+	{
+		// List of items to be displayed in the gantt chart
+		var ganttlist = ("[" + $scope.selectedItems.map(function(item) {
+			return "{'id' : " + item.id + ", " +
+					 "'type' : '" + item.type + "'" +
+					"}";
+		}).join(', ') + "]");
+		// console.log(ganttlist);
+		return "{'zoom' : " + $scope.ganttZoom + "," +
+				"'width' : " + $scope.ganttWidth + "," +
+				"'height' : " + $scope.ganttHeight + "," + 
+				"'gantt_item_list' : " + ganttlist +
+				 "}";
+		
+	};
 }]);
 
 simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', function(confService, $scope) {
@@ -224,11 +255,9 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';"
 		script += "run()";
-		console.log(script);
 		pypyService.vm.exec(script).then(function() {
 			$scope.enableResults();
 			$scope.conf.savedConf = $scope.conf.clone();
-			console.log("$scope.conf.savedConf = " + typeof $scope.conf.clone());
 		});
 	}
 }]);
