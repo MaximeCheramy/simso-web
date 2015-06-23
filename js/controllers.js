@@ -27,7 +27,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 	$scope.ganttWidth = 1500;
 	$scope.ganttHeight = 500;
 	$scope.ganttZoom = 1;
-	
 	// Aggregates parameters into a 'python' dict
 	$scope.aggregateParameters = function()
 	{
@@ -38,6 +37,34 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		
 	};
 	
+	
+	// Options of the grid used to select processors and list to display.
+	$scope.selectedItems = { }
+	$scope.allItems = { }
+	$scope.gridGanttOptions = {
+		enableRowSelection: true,
+		enableColumnResize: true,
+		enableCellEdit: false,
+		enableColumnMenus: false,
+		enableHorizontalScrollbar: 0,
+		enableVerticalScrollbar: 2,
+		columnDefs: [{name: 'id', type: 'number'}, {name: 'name', type: 'string'}, {name:'type', type:'string'}],
+		minRowsToShow: 5,
+		data: $scope.allItems
+	};
+	
+	$scope.gridGanttOptions.onRegisterApi = ['gridAPI', function(gridApi) {
+		gridApi.selection.on.rowSelectionChanged($scope, ['row', function(row) {
+			if (row.isSelected) {
+				$scope.selectedItems.push(row.entity);
+			} else {
+				var index = $scope.selectedItems.indexOf(row.entity);
+				if (index > -1) {
+					$scope.selectedItems.splice(index, 1);
+				}
+			}
+		}]);
+	}];
 }]);
 
 simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', function(confService, $scope) {
@@ -109,7 +136,7 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 		enableHorizontalScrollbar: 0,
 		enableVerticalScrollbar: 2,
 		minRowsToShow: 4,
-		columnDefs: [{name: 'name', type: 'string'}],
+		columnDefs: [{name: 'id', type: 'number'}, {name: 'name', type: 'string'}],
 		data: $scope.conf.processors,
 	};
 
@@ -127,7 +154,14 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 	};
 
 	$scope.addNewProcessor = function() {
-		$scope.conf.processors.push({'name': 'ProcName'});
+		var id = 1;
+		for (var i = 0; i < $scope.conf.processors.length; i++) {
+			if ($scope.conf.processors[i].id == id) {
+				id++;
+				i = 0;
+			}
+		}
+		$scope.conf.processors.push({'id': id, 'name': 'ProcName'});
 	};
 
 

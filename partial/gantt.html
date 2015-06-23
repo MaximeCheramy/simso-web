@@ -1,6 +1,6 @@
 <div class="panel-body" ng-controller="GanttControler">
-	
+	<div ui-grid="gridGanttOptions" ui-grid-edit ui-grid-selection></div>
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
-		<canvas id="resultsGantt" gantt width="{{ganttWidth}}" height="{{ganttHeight}}" style="border:1px solid #000000;"></canvas>
+		<canvas id="resultsGantt" gantt width="{{ganttWidth}}" height="{{ganttHeight}}"></canvas>
 	</div>
 <div>

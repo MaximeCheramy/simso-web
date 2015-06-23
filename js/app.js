@@ -28,7 +28,7 @@ simsoApp.service("confService", function() {
 		{'id': 2, 'name': 'T2', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 3},
 		{'id': 3, 'name': 'T3', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 1},
 	];
-	this.processors = [{'name': "Proc"}];
+	this.processors = [{'id' : 0, 'name': "Proc"}];
 	this.scheduler_class = 'simso.schedulers.EDF';
 });
 
