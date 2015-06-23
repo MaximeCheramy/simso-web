@@ -98,7 +98,8 @@ simsoApp.directive("gantt", function(){
   return {
     restrict: "A",
     link: function(scope, element){
-		  scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+		console.log("Call to draw_canvas()");
+		scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
     }
   };
 });

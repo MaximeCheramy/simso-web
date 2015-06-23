@@ -24,11 +24,11 @@ function(logsService, pypyService, $scope, confService) {
 }]);
 
 // The gant controler is a child of the results controler.
-simsoControllers.controller('GanttControler', ['$scope', '$controller', function($scope, $controller)
+simsoControllers.controller('GanttListControler', ['$scope', '$controller', function($scope, $controller)
 {
 	$controller('resultsCtrl', {$scope:$scope});
 	$scope.ganttWidth = 1500;
-	$scope.ganttHeight = 500;
+	$scope.ganttHeight = 100;
 	$scope.ganttZoom = 1;
 	
 	// Options of the grid used to select processors and list to display.
@@ -65,7 +65,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		// Happens when the "select all" box is toggled.
 		gridApi.selection.on.rowSelectionChanged($scope, function(row) {
 			selectRow(row);
-			$scope.vm.exec("draw_canvas(" + $scope.aggregateParameters() + ")");
 		});
 		
 		
@@ -76,26 +75,28 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 				var row = rows[rowId];
 				selectRow(row);
 			}
-			$scope.vm.exec("draw_canvas(" + $scope.aggregateParameters() + ")");
 		});
 	};
 	
+}]);
 
-		
+simsoControllers.controller('GanttControler', ['$scope', '$controller', function($scope, $controller) 
+{
+	$controller('GanttListControler', {$scope:$scope});
 	// Aggregates parameters into a 'python' dict
 	$scope.aggregateParameters = function()
 	{
 		// List of items to be displayed in the gantt chart
-		var ganttlist = ("[" + $scope.selectedItems.map(function(item) {
-			return "{'id' : " + item.id + ", " +
-					 "'type' : '" + item.type + "'" +
-					"}";
-		}).join(', ') + "]");
-		// console.log(ganttlist);
+		var item = $scope.item;
+		var gantt_item =  "{'id' : " + item.id + ", " +
+					 		"'type' : '" + item.type + "'" +
+							"}";
+		
+		console.log(gantt_item);
 		return "{'zoom' : " + $scope.ganttZoom + "," +
 				"'width' : " + $scope.ganttWidth + "," +
 				"'height' : " + $scope.ganttHeight + "," + 
-				"'gantt_item_list' : " + ganttlist +
+				"'gantt_item' : " + gantt_item +
 				 "}";
 		
 	};
@@ -139,6 +140,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			}
 		});
 	};
+	
 	$scope.addNewTask = function() {
 		var id = 1;
 		for (var i = 0; i < $scope.conf.tasks.length; i++) {
@@ -149,6 +151,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 		$scope.conf.tasks.push({'id': id, 'name': 'Task ' + id, 'activationDate': 0, 'period': 100, 'deadline': 0, 'wcet': 0});
 	};
+	
 	$scope.delTasks = function() {
 		for (var i = 0; i < $scope.selectedTasks.length; i++) {
 			var index = $scope.conf.tasks.indexOf($scope.selectedTasks[i]);

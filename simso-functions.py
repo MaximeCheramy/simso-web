@@ -28,17 +28,18 @@ class GanttRenderer(object):
     ITEM_SPACING = 20
     UNIT_WIDTH = 10 # Length of a time unit in pixels at scale 1
     GRAPH_SIZE_OFFSETX = 40
-    GRAPH_SIZE_OFFSETY = 20
+    GRAPH_SIZE_OFFSETY = 10
     GRAPH_OX = 20
     GRAPH_OY = 15
     GRAD_HEIGHT = 4
     FILL_HEIGHT = ITEM_HEIGHT - 10
     
-    def __init__(self, ctx, parameters, results):
+    def __init__(self, canvas, parameters, results):
         """Creates a renderer instance with the given parameters"""
-        self.ctx = ctx
+        self.ctx = canvas.getContext('2d')
+        self.canvas = canvas
         self.zoom = parameters["zoom"]
-        self.selected_items = parameters["gantt_item_list"]
+        self.selected_item = parameters["gantt_item"]
         self.results = results
         self.start_date = 0
         self.end_date = min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
@@ -49,27 +50,24 @@ class GanttRenderer(object):
     def render(self):
         self.resize_canvas()
         i = 0
-        selectedTasks = [elem["id"] for elem in self.selected_items if elem["type"] == 'task']
-        for task in [x for x in self.results.model.task_list if x.identifier in selectedTasks]:
-            self.plot_task(i, task)
-            i += 1
-            
-        selectedProcessors = [elem["id"] for elem in self.selected_items if elem["type"] == 'processor']
-        for processor in [x for x in self.results.model.processors if x.identifier in selectedProcessors]:
-            self.plot_processor(i, processor)
-            i += 1
+        if(self.selected_item["type"] == "task"):
+            for task in [x for x in self.results.model.task_list if x.identifier == self.selected_item["id"]]:
+                self.plot_task(i, task)
+                i+= 1
+        else:
+            for proc in [x for x in self.results.model.processors if x.identifier == self.selected_item["id"]]:
+                self.plot_processor(i, proc)
+                i+= 1
         
     def resize_canvas(self):
-        jquery = js.globals["$"]
-        canvas = jquery("#resultsGantt")[0]
         size = self.get_size()
-        canvas.width = size[0] + self.GRAPH_SIZE_OFFSETX
-        canvas.height = size[1]  + self.GRAPH_SIZE_OFFSETY
+        self.canvas.width = size[0] + self.GRAPH_SIZE_OFFSETX
+        self.canvas.height = size[1]
     
     def get_size(self):
         """Gets the size of the context where we are going to draw the chart"""
         return [self.end_date * self.UNIT_WIDTH + self.GRAPH_SIZE_OFFSETX, # x
-                self.GRAPH_SIZE_OFFSETY + (self.ITEM_HEIGHT + self.ITEM_SPACING) * len(self.selected_items)] # y
+                self.GRAPH_SIZE_OFFSETY + (self.ITEM_HEIGHT + self.ITEM_SPACING)] # y
     
     def get_abs_x(self, x):
         """Gets the pixel X position of the graph's X position in time units"""
@@ -333,15 +331,16 @@ class GanttRenderer(object):
 def draw_canvas(parameters):
     # Gets the gantt canvas using jquery.
     jquery = js.globals["$"]
-    ctx = jquery("#resultsGantt")[0].getContext('2d')
-    ctx.fillStyle = "#FF0000"
-    
-    ctx.fillRect(5,5,10,10)
-    ctx.font = "30px Arial"
-    
-    renderer = GanttRenderer(ctx, parameters, globs["results"])
-    ctx.fillText("STEP 1", 20, 20)
+    item = parameters["gantt_item"]
+    canvas = jquery("#resultsGantt" + item["type"] + str(item["id"]))[0];
+    renderer = GanttRenderer(canvas, parameters, globs["results"])
     renderer.render()
+    
+    # for item in items:
+    #     canvas = jquery("#resultsGantt" + item["type"] + str(item["id"]))[0];
+    #     parameters["gantt_item_list"] = [item]
+    #     renderer = GanttRenderer(canvas, parameters, globs["results"])
+    #     renderer.render()
     
     #ctx.fillStyle = "#FF0000"
     #ctx.fillText("TROLOLOL", 80, 20)
