@@ -27,8 +27,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 	$scope.ganttWidth = 1500;
 	$scope.ganttHeight = 500;
 	$scope.ganttZoom = 1;
-	$scope.selectedItems = $scope.results.
-	$scope.selectedItemsNames = {}
 	
 	// Aggregates parameters into a 'python' dict
 	$scope.aggregateParameters = function()
@@ -39,31 +37,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 				 "}";
 		
 	};
-	
-	$scope.gridGanttOptions = {
-		enableRowSelection: true,
-		enableColumnResize: true,
-		enableCellEdit: false,
-		enableColumnMenus: false,
-		enableHorizontalScrollbar: 0,
-		enableVerticalScrollbar: 2,
-		columnDefs: [{name: 'name', type: 'string'}, {name: 'type', type: 'string'}],
-		minRowsToShow: 6,
-		data: $scope.conf.tasks,
-	};
-
-	$scope.gridGanttOptions.onRegisterApi = ['gridApi', function(gridApi) {
-		gridApi.selection.on.rowSelectionChanged($scope, ['row', function(row) {
-			if (row.isSelected) {
-				$scope.selectedTasks.push(row.entity);
-			} else {
-				var index = $scope.selectedTasks.indexOf(row.entity);
-				if (index > -1) {
-					$scope.selectedTasks.splice(index, 1);
-				}
-			}
-		}]);
-	}];
 	
 }]);
 
@@ -128,7 +101,7 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 	$scope.selectedProcessors = [];
 	$scope.conf = confService;
 
-
+	
 	$scope.gridProcessorsOptions = {
 		enableColumnResize: true,
 		enableCellEdit: true,
