@@ -1,0 +1,22 @@
+
+<div id="confContainer" class="container">
+	<p style="text-align:right">
+		<span ng-if="!pypyready">
+			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
+		</span>
+		<span>
+			<button ng-click="run()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-play"></span> Run!</button>
+		</span>
+		<span>
+			<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
+		</span>
+	</p>
+
+	<conf-panel title="'General'" html="'general.html'"></conf-panel>
+	<conf-panel title="'Scheduler'" html="'scheduler.html'"></conf-panel>
+	<conf-panel title="'Tasks'" html="'tasks.html'"></conf-panel>
+	<conf-panel title="'Processors'" html="'processors.html'"></conf-panel>
+
+</div>
+
+

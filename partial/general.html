@@ -1,0 +1,21 @@
+<div class="panel-body" ng-controller="ConfigGeneralCtrl">
+	<form class="form-horizontal" role="form" style="margin: 1em">
+		<div class="form-group">
+			<label for="duration" class="control-label col-sm-2">Duration (cycles):</label>
+			<div class="col-sm-2">
+			<input type="number" min="1" class="form-control input-sm" id="duration" ng-change="conf.duration_ms = conf.duration / conf.cycles_per_ms" ng-model="conf.duration"></input>
+			</div>
+
+			<label for="duration_ms" class="control-label col-sm-2">Duration (ms):</label>
+			<div class="col-sm-2">
+			<input type="number" min="1" class="form-control input-sm" id="duration_ms" ng-change="conf.duration = conf.cycles_per_ms * conf.duration_ms" ng-model="conf.duration_ms"></input>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="cycles_per_ms" class="control-label col-sm-2">Cycles / ms:</label>
+			<div class="col-sm-2">
+			<input type="number" min="1" class="form-control input-sm" id="cycles_per_ms" ng-change="conf.duration = conf.duration_ms * conf.cycles_per_ms" ng-model="conf.cycles_per_ms"></input>
+			</div>
+		</div>
+	</form>
+</div>
