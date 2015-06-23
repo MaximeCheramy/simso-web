@@ -15,9 +15,12 @@ simsoControllers.controller('HeaderController', ['logsService', '$scope', '$root
 	}
 }]);
 
-simsoControllers.controller('resultsCtrl', ['logsService', 'pypyService', '$scope', function(logsService, pypyService, $scope) {
+simsoControllers.controller('resultsCtrl', ['logsService', 'pypyService', '$scope', 'confService', 
+function(logsService, pypyService, $scope, confService) {
+	
 	$scope.logs = logsService.logs;
 	$scope.vm = pypyService.vm;
+	$scope.conf = confService;
 }]);
 
 // The gant controler is a child of the results controler.
@@ -37,10 +40,10 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		
 	};
 	
-	
 	// Options of the grid used to select processors and list to display.
-	$scope.selectedItems = { }
-	$scope.allItems = { }
+	$scope.selectedItems = { };
+	$scope.allItems = { };
+	console.log($scope.conf.savedConf.all_gantt_items.toString());
 	$scope.gridGanttOptions = {
 		enableRowSelection: true,
 		enableColumnResize: true,
@@ -50,9 +53,9 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		enableVerticalScrollbar: 2,
 		columnDefs: [{name: 'id', type: 'number'}, {name: 'name', type: 'string'}, {name:'type', type:'string'}],
 		minRowsToShow: 5,
-		data: $scope.allItems
+		data: $scope.conf.savedConf.all_gantt_items
 	};
-	
+	/*
 	$scope.gridGanttOptions.onRegisterApi = ['gridAPI', function(gridApi) {
 		gridApi.selection.on.rowSelectionChanged($scope, ['row', function(row) {
 			if (row.isSelected) {
@@ -64,7 +67,7 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 				}
 			}
 		}]);
-	}];
+	}];*/
 }]);
 
 simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', function(confService, $scope) {
@@ -90,6 +93,8 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		minRowsToShow: 6,
 		data: $scope.conf.tasks,
 	};
+
+
 
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
 		gridApi.selection.on.rowSelectionChanged($scope, function(row) {
@@ -222,6 +227,8 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		console.log(script);
 		pypyService.vm.exec(script).then(function() {
 			$scope.enableResults();
+			$scope.conf.savedConf = $scope.conf.clone();
+			console.log("$scope.conf.savedConf = " + typeof $scope.conf.clone());
 		});
 	}
 }]);

@@ -30,6 +30,29 @@ simsoApp.service("confService", function() {
 	];
 	this.processors = [{'id' : 0, 'name': "Proc"}];
 	this.scheduler_class = 'simso.schedulers.EDF';
+	
+	// Creates a clone of the variables contained in this service
+	// This is used to get the simulation parameters in the results.
+	var othis = this;
+	
+	this.savedConf = null;
+	this.clone = function() {
+		return {
+			cycles_per_ms: othis.cycles_per_ms,
+			duration_ms: othis.duration_ms,
+			duration: othis.duration,
+			tasks: othis.tasks.slice(),
+			processors: othis.processors.slice(),
+			scheduler_class: othis.scheduler_class.slice(),
+			
+			// Aggregates all gantt items
+			all_gantt_items: $.merge(this.tasks.map(function(task) { 
+					return {'id': task.id, 'name':task.name, 'type':'task' };
+				}), this.processors.map(function(task) { 
+					return {'id': task.id, 'name':task.name, 'type':'processor' };
+			})) 
+		};
+	};
 });
 
 simsoApp.service("logsService", function() {
