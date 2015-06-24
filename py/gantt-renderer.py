@@ -33,17 +33,13 @@ class GanttRenderer(object):
         # number of graduation steps for each annotation
         self.graduation_substeps = 5 
         # length of a graduation step in time units
-        self.graduation_steps = self.get_graduation_steps() / self.graduation_substeps
+        self.graduation_steps = self.get_graduation_steps()
         
     def get_graduation_steps(self):
         """Gets the number of graduation steps in function of the zoom value"""
-        if self.zoom < 0.30:
-            return 20
-        elif self.zoom < 0.50:
-            return 10
-        elif self.zoom < 2:
-            return 10
-        return 5
+        if self.zoom < 2:
+            return 2
+        return 1
     
     def render(self):
         self.resize_canvas()
@@ -204,19 +200,25 @@ class GanttRenderer(object):
         
     def plot_rect(self, itemId, startDate, endDate, style):
         """Plots a rect that starts and ends at the given dates (in time units)"""
-        self.apply_style(style)
         
-        origin = self.get_graph_rect(itemId)
+        # Checks the bounds.
+        if endDate <= self.start_date: return
+        startDate = max(self.start_date, startDate)
+        
         # Rect's dimentions
+        origin = self.get_graph_rect(itemId)
         posX = origin[0] + self.get_abs_x(startDate)
         posY = origin[1] + (self.ITEM_HEIGHT - self.FILL_HEIGHT)
         w = self.get_abs_x(endDate) - self.get_abs_x(startDate)
         h = self.FILL_HEIGHT 
         
+        self.apply_style(style)
         self.ctx.fillRect(posX, posY, w, h)
         
     def plot_dot(self, itemId, date, color, width=4):
         """Plots a dot at the given date"""
+        if date <= self.start_date: return
+        
         origin = self.get_graph_rect(itemId)
         
         # Rect's dimentions
@@ -232,15 +234,16 @@ class GanttRenderer(object):
         """Draws the plotting area in which the item with the given id will be drawn, 
         with graduations"""
         self.draw_graph_rect(itemId)
-        for i in range(0, self.end_date / self.graduation_steps + 1):
-            timeStep = i + self.start_date
-            height = timeStep % self.graduation_substeps == 0 and self.GRAD_HEIGHT or self.GRAD_HEIGHT/2
-            posX = timeStep*self.graduation_steps
-            self.draw_graph_graduation(itemId, posX, height)
+        for timeStep in range(self.start_date, self.end_date+1):
+            posX = timeStep
             
-            if(height == self.GRAD_HEIGHT):
-                self.draw_graph_graduation(itemId, posX, -self.ITEM_HEIGHT, True)
-                self.draw_annotation(itemId, posX, str(timeStep*self.graduation_steps))
+            if timeStep % self.graduation_steps <= 0.0001:
+                if ((timeStep / self.graduation_steps) % self.graduation_substeps) <= 0.0001:
+                    self.draw_graph_graduation(itemId, posX, -self.ITEM_HEIGHT, True)
+                    self.draw_annotation(itemId, posX, str(timeStep))
+                    self.draw_graph_graduation(itemId, posX, self.GRAD_HEIGHT/2)
+                else:
+                    self.draw_graph_graduation(itemId, posX, self.GRAD_HEIGHT)
                 
         # Draws text legend
         origin = self.get_graph_rect(itemId)
@@ -254,6 +257,9 @@ class GanttRenderer(object):
     
     def plot_line(self, itemId, date, style, arrowUp=False, arrowDown=False):
         """Plots a vertical line for the given itemId at the given date."""
+        # Checks for the bounds
+        if date < self.start_date: return
+        
         origin = self.get_graph_rect(itemId)
         posX = origin[0] + self.get_abs_x(date)
         top = origin[1] + (self.ITEM_HEIGHT - self.FILL_HEIGHT)
