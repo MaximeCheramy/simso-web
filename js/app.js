@@ -1,5 +1,8 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
-var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection']);
+var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 
+	'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection', 
+	'ui.bootstrap.tabs']);
+	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py"],
 	"files" : ["../py/gantt-renderer.py"],
