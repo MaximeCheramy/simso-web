@@ -82,7 +82,7 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', func
 
 simsoControllers.controller('GanttControler', ['$scope', '$controller', function($scope, $controller) 
 {
-	$controller('GanttListControler', {$scope:$scope});
+	// $controller('GanttListControler', {$scope:$scope});
 	// Aggregates parameters into a 'python' dict
 	$scope.aggregateParameters = function()
 	{
@@ -99,6 +99,11 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 				"'gantt_item' : " + gantt_item +
 				 "}";
 		
+	};
+	
+	$scope.isDisabled = function()
+	{
+		return $scope.selectedItems.indexOf($scope.item) < 0;
 	};
 }]);
 

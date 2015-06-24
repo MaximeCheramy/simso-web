@@ -2,8 +2,9 @@
 	<div ui-grid="gridGanttOptions" ui-grid-edit ui-grid-selection></div>
 	
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
-		<span ng-controller="GanttControler" ng-repeat="item in selectedItems">
-			<canvas  gantt  id="resultsGantt{{item.type}}{{item.id}}" width="{{ganttWidth}}" height="{{ganttHeight}}"></canvas>
+		<span ng-controller="GanttControler" ng-repeat="item in conf.savedConf.all_gantt_items">
+			
+			<canvas ng-hide="isDisabled()" gantt id="resultsGantt{{item.type}}{{item.id}}" width="{{ganttWidth}}" height="{{ganttHeight}}"></canvas>
 		</span>
 	</div>
 <div>
