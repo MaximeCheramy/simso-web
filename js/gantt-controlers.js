@@ -6,11 +6,16 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', func
 	$controller('resultsCtrl', {$scope:$scope});
 	$scope.ganttWidth = 1500;
 	$scope.ganttHeight = 100;
-	$scope.ganttZoom = 1;
+	$scope.ganttZoom = 100;
 	
 	// Options of the grid used to select processors and list to display.
 	$scope.selectedItems = [];
-	
+	$scope.zoomPlus = function() {
+		$scope.ganttZoom = Math.min($scope.ganttZoom + 20, 300);
+	}
+	$scope.zoomMinus = function() {
+		$scope.ganttZoom = Math.max($scope.ganttZoom - 10, 50);
+	}
 	$scope.gridGanttOptions = {
 		enableRowSelection: true,
 		enableColumnResize: true,
@@ -69,7 +74,7 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 					 		"'type' : '" + item.type + "'" +
 							"}";
 		
-		return "{'zoom' : " + $scope.ganttZoom + "," +
+		return "{'zoom' : " + $scope.ganttZoom/100.0 + "," +
 				"'width' : " + $scope.ganttWidth + "," +
 				"'height' : " + $scope.ganttHeight + "," + 
 				"'gantt_item' : " + gantt_item +

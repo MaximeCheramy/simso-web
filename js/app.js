@@ -106,14 +106,24 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	};
 }]);
 
-simsoApp.directive("gantt", function(){
+simsoApp.directive("gantt", ['$timeout', function($timeout){
   return {
     restrict: "A",
     link: function(scope, element){
 		scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+		
+		// Redraws the diagram if the zoom value changes.
+		scope.$watch("ganttZoom", function (newValue, oldValue) {
+			$timeout(function() {
+				// Delay changes (dont redraw while the user is typing)
+				if(scope.ganttZoom == newValue) {
+					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+				}
+			}, 300);
+		});
     }
   };
-});
+}]);
 
 simsoApp.directive('aDisabled', function() {
     return {

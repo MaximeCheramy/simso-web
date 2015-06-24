@@ -1,6 +1,26 @@
 <div class="panel-body" ng-controller="GanttListControler">
 	<div ui-grid="gridGanttOptions" ui-grid-edit ui-grid-selection></div>
+	<div class="input-group">
+		<label for="btn-zoom-minus" class="control-label col-sm-1">Zoom(%):</label>
+		<span  class="input-group-btn" id="btn-zoom-minus">
+			<button ng-click="zoomMinus()" type="button" class="btn btn-default btn-number">
+				<span class="glyphicon glyphicon-minus"></span>
+			</button>
+		</span>
+		
+		<input 
+			type="number" ng-model="ganttZoom" 
+			name="zoom-tb" class="form-control input-number" value="100" min="1" max="1000">
+			
+		<span class="input-group-btn">
+			<button  ng-click="zoomPlus()" type="button" class="btn btn-default btn-number">
+				<span class="glyphicon glyphicon-plus"></span>
+			</button>
+		</span>
 	
+	</div>
+
+		
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
 		<span ng-controller="GanttControler" ng-repeat="item in conf.savedConf.all_gantt_items">
 			

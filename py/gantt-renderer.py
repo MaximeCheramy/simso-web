@@ -30,10 +30,21 @@ class GanttRenderer(object):
         self.results = results
         self.start_date = 0
         self.end_date = min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
-        self.graduation_steps = 2 # length of a graduation step in time units
-        self.graduation_substeps = 5 # number of graduation steps for each annotation
+        # number of graduation steps for each annotation
+        self.graduation_substeps = 5 
+        # length of a graduation step in time units
+        self.graduation_steps = self.get_graduation_steps() / self.graduation_substeps
         
-        
+    def get_graduation_steps(self):
+        """Gets the number of graduation steps in function of the zoom value"""
+        if self.zoom < 0.30:
+            return 50
+        elif self.zoom < 0.50:
+            return 20
+        elif self.zoom < 2:
+            return 10
+        return 5
+    
     def render(self):
         self.resize_canvas()
         i = 0
@@ -53,7 +64,7 @@ class GanttRenderer(object):
     
     def get_size(self):
         """Gets the size of the context where we are going to draw the chart"""
-        return [self.end_date * self.UNIT_WIDTH + self.GRAPH_SIZE_OFFSETX, # x
+        return [(self.end_date - self.start_date) * self.UNIT_WIDTH * self.zoom + self.GRAPH_SIZE_OFFSETX, # x
                 self.GRAPH_SIZE_OFFSETY + (self.ITEM_HEIGHT + self.ITEM_SPACING)] # y
     
     def get_abs_x(self, x):
