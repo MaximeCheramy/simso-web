@@ -1,1 +1,3 @@
+import js
+
 globs = { }

@@ -21,6 +21,7 @@ function(logsService, pypyService, $scope, confService) {
 	$scope.logs = logsService.logs;
 	$scope.vm = pypyService.vm;
 	$scope.conf = confService;
+	$scope.python = python;
 }]);
 
 

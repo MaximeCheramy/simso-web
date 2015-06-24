@@ -9,6 +9,9 @@ var pythonFiles = {
 	"finalize" : "../py/simso-functions.py"
 };
 
+// Variable used to communicate from and to the python vm.
+var python = { };
+
 simsoApp.config(['$routeProvider',
 	function($routeProvider) {
 		$routeProvider.
@@ -75,7 +78,7 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	};
 	this.pythonFiles = pythonFiles;
 	var othis = this;
-	
+	this.vm["hello"] = 6;
 	this.vm.ready.then(function() {
 		for(var i = 0; i < othis.pythonFiles["init"].length; i++) {
 			othis.vm.execfile(othis.pythonFiles["init"][i]);
