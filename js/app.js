@@ -131,22 +131,18 @@ simsoApp.directive("gantt", ['$timeout', function($timeout){
 		
 		// Redraws the diagram if the start date changes
 		scope.$watch("conf.window.startDate", function (newValue, oldValue) {
-			$timeout(function() {
-				// Delay changes (dont redraw while the user is typing)
-				if(scope.conf.window.startDate == newValue) {
-					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
-				}
-			}, 300);
+			// Delay changes (dont redraw while the user is typing)
+			if(scope.conf.window.startDate == newValue) {
+				scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+			}
 		});
 		
 	 	// Redraws the diagram if the end date changes
 		scope.$watch("conf.window.endDate", function (newValue, oldValue) {
-			$timeout(function() {
-				// Delay changes (dont redraw while the user is typing)
-				if(scope.conf.window.endDate == newValue) {
-					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
-				}
-			}, 300);
+			// Delay changes (dont redraw while the user is typing)
+			if(scope.conf.window.endDate == newValue) {
+				scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+			}
 		});
     }
   };
