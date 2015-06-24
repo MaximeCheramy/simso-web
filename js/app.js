@@ -1,5 +1,10 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
 var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection']);
+var pythonFiles = { 
+	"init" : ["../py/simso-init.py"],
+	"files" : ["../py/gantt-renderer.py"],
+	"finalize" : "../py/simso-functions.py"
+};
 
 simsoApp.config(['$routeProvider',
 	function($routeProvider) {
@@ -59,16 +64,23 @@ simsoApp.service("logsService", function() {
 	this.logs = []
 });
 
-simsoApp.service("pypyService", function(logsService) {
+simsoApp.service("pypyService", ['logsService', function(logsService) {
 	this.pypyready = false;
 	this.vm = new PyPyJS();
 	this.vm.stdout = this.vm.stderr = function(data) {
 		logsService.logs.push(data);
 	};
+	this.pythonFiles = pythonFiles;
 	var othis = this;
+	
 	this.vm.ready.then(function() {
-		othis.vm.execfile('../simso-init.py');
-		othis.vm.execfile('../simso-functions.py').then(function() {
+		for(var i = 0; i < othis.pythonFiles["init"].length; i++) {
+			othis.vm.execfile(othis.pythonFiles["init"][i]);
+		}
+		for(var i = 0; i < othis.pythonFiles["files"].length; i++) {
+			othis.vm.execfile(othis.pythonFiles["files"][i]);
+		}
+		othis.vm.execfile(othis.pythonFiles["finalize"]).then(function() {
 			othis.pypyready = true;
 			notifyObservers();
 		});
@@ -92,7 +104,7 @@ simsoApp.service("pypyService", function(logsService) {
 			callback();
 		});
 	};
-});
+}]);
 
 simsoApp.directive("gantt", function(){
   return {

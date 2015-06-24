@@ -4,19 +4,6 @@ from simso.core import JobEvent, ProcEvent
 
 import js
 
-def run():
-    configuration.check_all()
-    
-    model = Model(configuration)
-    
-    model.run_model()
-    
-    print("logs :")
-    for log in model.logs:
-        print(log)
-        
-    globs["results"] = model.results;
-
 class Style(object):
     def __init__(self, color, linedash=[]):
         self.color = color
@@ -335,13 +322,4 @@ def draw_canvas(parameters):
     canvas = jquery("#resultsGantt" + item["type"] + str(item["id"]))[0];
     renderer = GanttRenderer(canvas, parameters, globs["results"])
     renderer.render()
-    
-    # for item in items:
-    #     canvas = jquery("#resultsGantt" + item["type"] + str(item["id"]))[0];
-    #     parameters["gantt_item_list"] = [item]
-    #     renderer = GanttRenderer(canvas, parameters, globs["results"])
-    #     renderer.render()
-    
-    #ctx.fillStyle = "#FF0000"
-    #ctx.fillText("TROLOLOL", 80, 20)
     
