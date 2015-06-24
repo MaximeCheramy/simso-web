@@ -22,6 +22,7 @@ function(logsService, pypyService, $scope, confService) {
 	$scope.vm = pypyService.vm;
 	$scope.conf = confService;
 	$scope.python = python;
+	$scope.window = {startDate: 0, endDate: 0};
 }]);
 
 

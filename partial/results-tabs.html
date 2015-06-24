@@ -1,4 +1,19 @@
-<div class="panel-body">
+<div class="panel-body" ng-controller="resultsCtrl">
+	<!-- Slider : observation window -->
+	<form class="form-horizontal" role="form" style="margin: 1em">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Start date (ms):</label>
+			<div class="col-sm-4">
+			<input ng-model="window.startDate" type="number" class="form-control input-number" ng-model="conf.scheduler_class"></input>
+			</div>
+			
+			<label class="control-label col-sm-2">End date (ms):</label>
+			<div class="col-sm-4">
+			<input ng-model="window.endDate" class="form-control input-sm" ng-model="conf.scheduler_class"></input>
+			</div>
+		</div>
+	</form>
+
 	<tabset>
 		<tab heading="Gantt"><ng:include src="'partial/gantt.html'"></ng:include></tab>
 		<tab heading="General"><ng:include src="'partial/results-general.html'"></ng:include></tab>
