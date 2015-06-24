@@ -1,9 +1,7 @@
 
 simsoControllers.controller('ResultsGeneralControler', ['$scope', '$controller', function($scope, $controller)
 {
-	$controller('resultsCtrl', {$scope:$scope});
-	$scope.generalResults = python["general-results"]
-	
+	$controller('resultsCtrl', {$scope:$scope});	
 	
 	$scope.gridOptions = {
 		enableRowSelection: false,

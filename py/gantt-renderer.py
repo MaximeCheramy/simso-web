@@ -28,8 +28,8 @@ class GanttRenderer(object):
         self.zoom = parameters["zoom"]
         self.selected_item = parameters["gantt_item"]
         self.results = results
-        self.start_date = 0
-        self.end_date = min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
+        self.start_date = parameters["startDate"] #0
+        self.end_date = parameters["endDate"] #min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
         # number of graduation steps for each annotation
         self.graduation_substeps = 5 
         # length of a graduation step in time units
@@ -38,9 +38,9 @@ class GanttRenderer(object):
     def get_graduation_steps(self):
         """Gets the number of graduation steps in function of the zoom value"""
         if self.zoom < 0.30:
-            return 50
-        elif self.zoom < 0.50:
             return 20
+        elif self.zoom < 0.50:
+            return 10
         elif self.zoom < 2:
             return 10
         return 5
@@ -55,7 +55,6 @@ class GanttRenderer(object):
         else:
             print("processors : " + str(map((lambda x : x.identifier), self.results.model.processors)) + " ; id = " + str(self.selected_item["id"]))
             for proc in [x for x in self.results.model.processors if x.identifier == self.selected_item["id"]]:
-            
                 print("id = " + str(x.identifier))
                 self.plot_processor(i, proc)
                 i+= 1
@@ -72,7 +71,7 @@ class GanttRenderer(object):
     
     def get_abs_x(self, x):
         """Gets the pixel X position of the graph's X position in time units"""
-        return x * self.get_size()[0] / float(self.end_date - self.start_date)
+        return (x - self.start_date) * self.get_size()[0] / float(self.end_date - self.start_date)
        
     def get_graph_origin(self, itemId):
         """Gets the graph's origin"""
@@ -81,9 +80,9 @@ class GanttRenderer(object):
     def get_graph_rect(self, itemId):
         """Gets the rect where the given item should be drawn"""
         origin = self.get_graph_origin(itemId);
-        return  [origin[0] + self.get_abs_x(self.start_date),
+        return  [origin[0],
              origin[1],
-             self.get_abs_x(self.end_date - self.start_date),
+             self.get_abs_x(self.end_date) - self.get_abs_x(self.start_date),
              self.ITEM_HEIGHT]
              
     def get_style(self, taskId):
@@ -211,7 +210,7 @@ class GanttRenderer(object):
         # Rect's dimentions
         posX = origin[0] + self.get_abs_x(startDate)
         posY = origin[1] + (self.ITEM_HEIGHT - self.FILL_HEIGHT)
-        w = self.get_abs_x(endDate - startDate)
+        w = self.get_abs_x(endDate) - self.get_abs_x(startDate)
         h = self.FILL_HEIGHT 
         
         self.ctx.fillRect(posX, posY, w, h)
@@ -233,7 +232,7 @@ class GanttRenderer(object):
         """Draws the plotting area in which the item with the given id will be drawn, 
         with graduations"""
         self.draw_graph_rect(itemId)
-        for i in range(0, (self.end_date-self.start_date) / self.graduation_steps + 1):
+        for i in range(0, self.end_date / self.graduation_steps + 1):
             timeStep = i + self.start_date
             height = timeStep % self.graduation_substeps == 0 and self.GRAD_HEIGHT or self.GRAD_HEIGHT/2
             posX = timeStep*self.graduation_steps

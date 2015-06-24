@@ -46,6 +46,8 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		pypyService.vm.exec(script).then(function() {
 			$scope.enableResults();
 			$scope.conf.savedConf = $scope.conf.clone();
+			$scope.conf.window.startDate = 0;
+			$scope.conf.window.endDate = $scope.conf.duration_ms;
 		});
 	}
 }]);

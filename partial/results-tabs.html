@@ -4,12 +4,12 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2">Start date (ms):</label>
 			<div class="col-sm-4">
-			<input ng-model="window.startDate" type="number" class="form-control input-number" ng-model="conf.scheduler_class"></input>
+			<input ng-model="tmpWindow.startDate" ng-blur="validateWindowStart()" type="number" class="form-control input-number"></input>
 			</div>
 			
 			<label class="control-label col-sm-2">End date (ms):</label>
 			<div class="col-sm-4">
-			<input ng-model="window.endDate" class="form-control input-sm" ng-model="conf.scheduler_class"></input>
+			<input ng-model="tmpWindow.endDate" ng-blur="validateWindowEnd()" type="number" class="form-control input-number"></input>
 			</div>
 		</div>
 	</form>

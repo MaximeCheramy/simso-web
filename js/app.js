@@ -41,6 +41,7 @@ simsoApp.service("confService", function() {
 	];
 	this.processors = [{'id' : 0, 'name': "Proc"}];
 	this.scheduler_class = 'simso.schedulers.EDF';
+	this.window = {startDate: 0, endDate: 0};
 	
 	// Creates a clone of the variables contained in this service
 	// This is used to get the simulation parameters in the results.
@@ -123,6 +124,26 @@ simsoApp.directive("gantt", ['$timeout', function($timeout){
 			$timeout(function() {
 				// Delay changes (dont redraw while the user is typing)
 				if(scope.ganttZoom == newValue) {
+					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+				}
+			}, 300);
+		});
+		
+		// Redraws the diagram if the start date changes
+		scope.$watch("conf.window.startDate", function (newValue, oldValue) {
+			$timeout(function() {
+				// Delay changes (dont redraw while the user is typing)
+				if(scope.conf.window.startDate == newValue) {
+					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+				}
+			}, 300);
+		});
+		
+	 	// Redraws the diagram if the end date changes
+		scope.$watch("conf.window.endDate", function (newValue, oldValue) {
+			$timeout(function() {
+				// Delay changes (dont redraw while the user is typing)
+				if(scope.conf.window.endDate == newValue) {
 					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
 				}
 			}, 300);

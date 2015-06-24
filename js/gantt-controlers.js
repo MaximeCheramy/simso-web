@@ -77,6 +77,8 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 		return "{'zoom' : " + $scope.ganttZoom/100.0 + "," +
 				"'width' : " + $scope.ganttWidth + "," +
 				"'height' : " + $scope.ganttHeight + "," + 
+				"'startDate' : " + $scope.conf.window.startDate + "," + 
+				"'endDate' : " + $scope.conf.window.endDate + "," + 
 				"'gantt_item' : " + gantt_item +
 				 "}";
 		
