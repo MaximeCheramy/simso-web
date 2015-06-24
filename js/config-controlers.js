@@ -37,11 +37,11 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		}
 		// Add processors
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
-			var task = $scope.conf.processors[i];
-			script += "configuration.add_processor(name=\"" + task.name + "\", identifier=" + i + ");";
+			var proc = $scope.conf.processors[i];
+			script += "configuration.add_processor(name=\"" + proc.name + "\", identifier=" + proc.id + ");";
 		}
 		// Set scheduler
-		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';"
+		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';";
 		script += "run()";
 		pypyService.vm.exec(script).then(function() {
 			$scope.enableResults();
@@ -138,7 +138,7 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 	};
 
 	$scope.gridProcessorsOptions.onRegisterApi = function(gridApi) {
-		gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+		var updateRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedProcessors.push(row.entity);
 			} else {
@@ -146,6 +146,14 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 				if (index > -1) {
 					$scope.selectedProcessors.splice(index, 1);
 				}
+			}
+		};
+		
+		gridApi.selection.on.rowSelectionChanged($scope, updateRow);
+		gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows)
+		{
+			for(var i = 0; i < rows.length; i++) {
+				updateRow(rows[i]);
 			}
 		});
 	};

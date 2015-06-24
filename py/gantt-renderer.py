@@ -53,7 +53,10 @@ class GanttRenderer(object):
                 self.plot_task(i, task)
                 i+= 1
         else:
+            print("processors : " + str(map((lambda x : x.identifier), self.results.model.processors)) + " ; id = " + str(self.selected_item["id"]))
             for proc in [x for x in self.results.model.processors if x.identifier == self.selected_item["id"]]:
+            
+                print("id = " + str(x.identifier))
                 self.plot_processor(i, proc)
                 i+= 1
         
