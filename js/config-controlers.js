@@ -80,7 +80,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 
 
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
-		gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+		var updateRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedTasks.push(row.entity);
 			} else {
@@ -88,6 +88,12 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				if (index > -1) {
 					$scope.selectedTasks.splice(index, 1);
 				}
+			}
+		};
+		gridApi.selection.on.rowSelectionChanged($scope, updateRow);
+		gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+			for(var i = 0; i < rows.length; i++) {
+				updateRow(rows[i]);
 			}
 		});
 	};
