@@ -31,18 +31,20 @@ def aggregate_general_results(model):
     return proc_loads
     
 def run():
+    js.globals["python"]["sim-running"] = True
+    
+    # Runs the model
     configuration.check_all()
-    
     model = Model(configuration)
-    
     model.run_model()
     
-    print("logs :")
-    #for log in model.logs:
-    #    print(log)
-    
-
+    # Shares results with js
     js.globals["python"]["results-general"] = aggregate_general_results(model)
+    
+    
+    # Shares results with other python scripts.
     globs["results"] = model.results
+    
+    js.globals["python"]["sim-running"] = False
     
     

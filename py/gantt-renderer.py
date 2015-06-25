@@ -336,9 +336,11 @@ class GanttRenderer(object):
         
 def draw_canvas(parameters):
     # Gets the gantt canvas using jquery.
+    js.globals["python"]["renderer-running"] = True
     jquery = js.globals["$"]
     item = parameters["gantt_item"]
     canvas = jquery("#resultsGantt" + item["type"] + str(item["id"]))[0];
     renderer = GanttRenderer(canvas, parameters, globs["results"])
     renderer.render()
+    js.globals["python"]["renderer-running"] = False
     
