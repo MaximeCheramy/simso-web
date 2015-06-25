@@ -19,10 +19,28 @@ function($scope, $controller, $timeout, uiGridConstants)
 			{name: 'Ctx Save Overhead', type:'string'},
 			{name: 'Ctx Load Overhead', type:'string'}],
 		minRowsToShow: 5,
-		data: 'python["results-processors"]'
+		data: $scope.python["results-processors"]
 	};
 	
 	$scope.gridOptions.onRegisterApi = function(gridApi) {
 		$scope.gridApi = gridApi;
 	};
+	
+	$scope.$watch("conf.window.startDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.startDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-processors"];
+			}
+		}, 100);
+	});
+	
+	$scope.$watch("conf.window.endDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.endDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-processors"];
+			}
+		}, 100);
+	});
 }]);

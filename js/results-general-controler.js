@@ -18,10 +18,28 @@ function($scope, $controller, $timeout, uiGridConstants)
 			{name: 'Payload', type: 'number'},
 			{name: 'System load', type:'number'}],
 		minRowsToShow: 5,
-		data: 'python["results-general"]'
+		data: $scope.python["results-general"]
 	};
 	
 	$scope.gridOptions.onRegisterApi = function(gridApi) {
 		$scope.gridApi = gridApi;
 	};
+	
+	$scope.$watch("conf.window.startDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.startDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-general"];
+			}
+		}, 100);
+	});
+	
+	$scope.$watch("conf.window.endDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.endDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-general"];
+			}
+		}, 100);
+	});
 }]);
