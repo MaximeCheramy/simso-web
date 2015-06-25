@@ -4,6 +4,37 @@ from simso.core import JobEvent, ProcEvent
 
 import js
 
+def change_observation_window(window):
+    """Changes the model observation window.
+    Window is a 2-tuple (start_date, end_date)."""
+    model = globs["model"]
+    model.results.observation_window = (window[0] * model.cycles_per_ms,
+                                        window[1] * model.cycles_per_ms)
+    print(window)
+    update_results(model)
+
+def update_results(model):
+    """Communicates all results to the 'python' global variable of js"""
+    js.globals["python"]["results-general"] = aggregate_general_results(model)
+    js.globals["python"]["results-processors"] = aggregate_processor_results(model)
+    
+def aggregate_processor_results(model):
+    """Gets an array containing the data to put in the 'Processors' tab of the result page"""
+    procs = []
+    for proc in model.processors:
+        proc_r = model.results.processors[proc]
+        values = { }
+        values["CPU"] = proc.name
+        values["Ctx Save Count"] = str(proc_r.context_save_count)
+        values["Ctx Load Count"] = str(proc_r.context_load_count)
+        overhead = float(proc_r.context_save_overhead) / model.cycles_per_ms
+        values["Ctx Save Overhead"] = "{0:.4f}ms ({1:.0f} cycles)".format(overhead, proc_r.context_save_overhead)
+        overhead = float(proc_r.context_load_overhead) / model.cycles_per_ms
+        values["Ctx Load Overhead"] = "{0:.4f}ms ({1:.0f} cycles)".format(overhead, proc_r.context_load_overhead)
+        procs.append(values)
+    return procs
+    
+    
 def aggregate_general_results(model):
     """Gets an array containing the data to put in the 'General' tab of the result page"""
     proc_loads = []
@@ -31,18 +62,20 @@ def aggregate_general_results(model):
     return proc_loads
     
 def run():
+    js.globals["python"]["sim-running"] = True
+    
+    # Runs the model
     configuration.check_all()
-    
     model = Model(configuration)
-    
     model.run_model()
     
-    print("logs :")
-    #for log in model.logs:
-    #    print(log)
     
-
-    js.globals["python"]["results-general"] = aggregate_general_results(model)
+    # Shares results with other python scripts.
+    globs["model"] = model
     globs["results"] = model.results
+    
+    # Shares results with js
+    update_results(globs["model"])
+    js.globals["python"]["sim-running"] = False
     
     

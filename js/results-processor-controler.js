@@ -1,5 +1,5 @@
 
-simsoControllers.controller('ResultsGeneralControler', 
+simsoControllers.controller('ResultsProcessorControler', 
 ['$scope', '$controller', '$timeout', 'uiGridConstants',
 function($scope, $controller, $timeout, uiGridConstants)
 {
@@ -14,11 +14,12 @@ function($scope, $controller, $timeout, uiGridConstants)
 		enableVerticalScrollbar: 1,
 		columnDefs: [
 			{name: 'CPU', type: 'string'},
-			{name: 'Total load', type: 'number'},
-			{name: 'Payload', type: 'number'},
-			{name: 'System load', type:'number'}],
+			{name: 'Ctx Save Count', type: 'number'},
+			{name: 'Ctx Load Count', type: 'number'},
+			{name: 'Ctx Save Overhead', type:'string'},
+			{name: 'Ctx Load Overhead', type:'string'}],
 		minRowsToShow: 5,
-		data: $scope.python["results-general"]
+		data: $scope.python["results-processors"]
 	};
 	
 	$scope.gridOptions.onRegisterApi = function(gridApi) {
@@ -29,7 +30,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.startDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-general"];
+				$scope.gridOptions.data = $scope.python["results-processors"];
 			}
 		}, 100);
 	});
@@ -38,7 +39,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.endDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-general"];
+				$scope.gridOptions.data = $scope.python["results-processors"];
 			}
 		}, 100);
 	});

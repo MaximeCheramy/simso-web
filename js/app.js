@@ -5,8 +5,8 @@ var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers',
 	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py"],
-	"files" : ["../py/gantt-renderer.py"],
-	"finalize" : "../py/simso-functions.py"
+	"files" : ["../py/gantt-renderer.py", "../py/simso-functions.py"],
+	"finalize" : "../py/simso-finalize.py"
 };
 
 // Variable used to communicate from and to the python vm.
@@ -39,7 +39,7 @@ simsoApp.service("confService", function() {
 		{'id': 2, 'name': 'T2', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 3},
 		{'id': 3, 'name': 'T3', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 1},
 	];
-	this.processors = [{'id' : 0, 'name': "Proc"}];
+	this.processors = [{'id' : 0, 'name': "Proc"}, {'id' : 1, 'name' : "Proc2" }];
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.window = {startDate: 0, endDate: 0};
 	
