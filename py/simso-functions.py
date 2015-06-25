@@ -16,6 +16,23 @@ def change_observation_window(window):
 def update_results(model):
     """Communicates all results to the 'python' global variable of js"""
     js.globals["python"]["results-general"] = aggregate_general_results(model)
+    js.globals["python"]["results-processors"] = aggregate_processor_results(model)
+    
+def aggregate_processor_results(model):
+    """Gets an array containing the data to put in the 'Processors' tab of the result page"""
+    procs = []
+    for proc in model.processors:
+        proc_r = model.results.processors[proc]
+        values = { }
+        values["CPU"] = proc.name
+        values["Ctx Save Count"] = str(proc_r.context_save_count)
+        values["Ctx Load Count"] = str(proc_r.context_load_count)
+        overhead = float(proc_r.context_save_overhead) / model.cycles_per_ms
+        values["Ctx Save Overhead"] = "{0:.4f}ms ({1:.0f} cycles)".format(overhead, proc_r.context_save_overhead)
+        overhead = float(proc_r.context_load_overhead) / model.cycles_per_ms
+        values["Ctx Load Overhead"] = "{0:.4f}ms ({1:.0f} cycles)".format(overhead, proc_r.context_load_overhead)
+        procs.append(values)
+    return procs
     
     
 def aggregate_general_results(model):
