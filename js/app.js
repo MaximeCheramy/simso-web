@@ -27,6 +27,7 @@ simsoApp.config(['$routeProvider',
 				redirectTo: '/configuration'
 			});
 	}]
+	
 );
 
 
@@ -79,15 +80,24 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	};
 	this.pythonFiles = pythonFiles;
 	var othis = this;
-	this.vm["hello"] = 6;
+	
+	// File execution with error output
+	this.safe_execfile = function(file) {
+		return othis.vm.execfile(file).then(function () {
+			
+		}, function(err) {
+			console.log("ERROR (" + file +" ) : " + err.name + ": " + err.message);
+		});
+	};
+	
 	this.vm.ready.then(function() {
 		for(var i = 0; i < othis.pythonFiles["init"].length; i++) {
-			othis.vm.execfile(othis.pythonFiles["init"][i]);
+			othis.safe_execfile(othis.pythonFiles["init"][i]);
 		}
 		for(var i = 0; i < othis.pythonFiles["files"].length; i++) {
-			othis.vm.execfile(othis.pythonFiles["files"][i]);
+			othis.safe_execfile(othis.pythonFiles["files"][i]);
 		}
-		othis.vm.execfile(othis.pythonFiles["finalize"]).then(function() {
+		othis.safe_execfile(othis.pythonFiles["finalize"]).then(function() {
 			othis.pypyready = true;
 			notifyObservers();
 		});

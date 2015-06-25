@@ -5,7 +5,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 {
 	// $controller('resultsCtrl', {$scope:$scope});	
 	
-	$scope.gridOptions = {
+	$scope.gridResultsGeneralOptions = {
 		enableRowSelection: false,
 		enableColumnResize: false,
 		enableCellEdit: false,
@@ -21,7 +21,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		data: $scope.python["results-general"]
 	};
 	
-	$scope.gridOptions.onRegisterApi = function(gridApi) {
+	$scope.gridResultsGeneralOptions.onRegisterApi = function(gridApi) {
 		$scope.gridApi = gridApi;
 	};
 	
@@ -29,7 +29,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.startDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-general"];
+				$scope.gridResultsGeneralOptions.data = $scope.python["results-general"];
 			}
 		}, 100);
 	});
@@ -38,7 +38,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.endDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-general"];
+				$scope.gridResultsGeneralOptions.data = $scope.python["results-general"];
 			}
 		}, 100);
 	});

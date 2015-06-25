@@ -5,7 +5,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 {
 	// $controller('resultsCtrl', {$scope:$scope});	
 	
-	$scope.gridOptions = {
+	$scope.gridResultsProcessorOptions = {
 		enableRowSelection: false,
 		enableColumnResize: false,
 		enableCellEdit: false,
@@ -22,7 +22,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		data: $scope.python["results-processors"]
 	};
 	
-	$scope.gridOptions.onRegisterApi = function(gridApi) {
+	$scope.gridResultsProcessorOptions.onRegisterApi = function(gridApi) {
 		$scope.gridApi = gridApi;
 	};
 	
@@ -30,7 +30,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.startDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-processors"];
+				$scope.gridResultsProcessorOptions.data = $scope.python["results-processors"];
 			}
 		}, 100);
 	});
@@ -39,7 +39,7 @@ function($scope, $controller, $timeout, uiGridConstants)
 		$timeout(function() {
 			// Delay changes (dont execute while the user is typing)
 			if($scope.conf.window.endDate == newValue) {
-				$scope.gridOptions.data = $scope.python["results-processors"];
+				$scope.gridResultsProcessorOptions.data = $scope.python["results-processors"];
 			}
 		}, 100);
 	});
