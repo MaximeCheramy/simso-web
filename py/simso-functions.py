@@ -4,6 +4,20 @@ from simso.core import JobEvent, ProcEvent
 
 import js
 
+def change_observation_window(window):
+    """Changes the model observation window.
+    Window is a 2-tuple (start_date, end_date)."""
+    model = globs["model"]
+    model.results.observation_window = (window[0] * model.cycles_per_ms,
+                                        window[1] * model.cycles_per_ms)
+    print(window)
+    update_results(model)
+
+def update_results(model):
+    """Communicates all results to the 'python' global variable of js"""
+    js.globals["python"]["results-general"] = aggregate_general_results(model)
+    
+    
 def aggregate_general_results(model):
     """Gets an array containing the data to put in the 'General' tab of the result page"""
     proc_loads = []
@@ -38,13 +52,13 @@ def run():
     model = Model(configuration)
     model.run_model()
     
-    # Shares results with js
-    js.globals["python"]["results-general"] = aggregate_general_results(model)
-    
     
     # Shares results with other python scripts.
+    globs["model"] = model
     globs["results"] = model.results
     
+    # Shares results with js
+    update_results(globs["model"])
     js.globals["python"]["sim-running"] = False
     
     

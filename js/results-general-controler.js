@@ -1,15 +1,17 @@
 
-simsoControllers.controller('ResultsGeneralControler', ['$scope', '$controller', function($scope, $controller)
+simsoControllers.controller('ResultsGeneralControler', 
+['$scope', '$controller', '$timeout', 'uiGridConstants',
+function($scope, $controller, $timeout, uiGridConstants)
 {
-	$controller('resultsCtrl', {$scope:$scope});	
+	// $controller('resultsCtrl', {$scope:$scope});	
 	
 	$scope.gridOptions = {
 		enableRowSelection: false,
-		enableColumnResize: true,
+		enableColumnResize: false,
 		enableCellEdit: false,
-		enableColumnMenus: false,
+		enableColumnMenus: true,
 		enableHorizontalScrollbar: 0,
-		enableVerticalScrollbar: 2,
+		enableVerticalScrollbar: 1,
 		columnDefs: [
 			{name: 'CPU', type: 'string'},
 			{name: 'Total load', type: 'number'},
@@ -19,5 +21,25 @@ simsoControllers.controller('ResultsGeneralControler', ['$scope', '$controller',
 		data: $scope.python["results-general"]
 	};
 	
+	$scope.gridOptions.onRegisterApi = function(gridApi) {
+		$scope.gridApi = gridApi;
+	};
 	
+	$scope.$watch("conf.window.startDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.startDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-general"];
+			}
+		}, 100);
+	});
+	
+	$scope.$watch("conf.window.endDate", function (newValue, oldValue) {
+		$timeout(function() {
+			// Delay changes (dont execute while the user is typing)
+			if($scope.conf.window.endDate == newValue) {
+				$scope.gridOptions.data = $scope.python["results-general"];
+			}
+		}, 100);
+	});
 }]);
