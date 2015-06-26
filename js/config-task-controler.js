@@ -16,6 +16,12 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		data: $scope.conf.tasks,
 	};
 	
+	$scope.taskTypes = [
+		{ id: 1, name:"Periodic" },
+		{ id: 2, name:"Aperiodic" },
+		{ id: 3, name:"Sporadic" } 
+	];
+	
 	// Column definitions
 	$scope.gridTasksOptions.columnDefs = [
 		{name: 'id', type: 'number'},
@@ -26,11 +32,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			editDropdownValueLabel:'name', 
 			cellFilter:'taskTypeFilter',
 			// /!\ This data is dupplicated in the taskTypeList factory...
-			editDropdownOptionsArray: [
-				{ id: 1, name:"Periodic" },
-				{ id: 2, name:"Aperiodic" },
-				{ id: 3, name:"Sporadic" } 
-			]
+			editDropdownOptionsArray: $scope.taskTypes
 		},
 		{
 			enableCellEdit: false,
@@ -50,6 +52,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			type:'number', 
 			displayName: 'Followed by',
 			editableCellTemplate: 'ui-grid/dropdownEditor',
+			cellFilter: 'followedByFilter'
 		}
 	];
 	
@@ -166,6 +169,8 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		{
 			
 		});
+		
+		
 	};
 	
 	$scope.addNewTask = function() {
@@ -188,26 +193,30 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 		$scope.selectedTasks = [];
 	};
+	
+	// *** Filters and stuff *** 
+	simsoApp.filter('followedByFilter', function(){
+		return function(taskId) {
+			var task = $scope.conf.tasks.filter(function(t)
+			{
+				return t.id == taskId;
+			});
+			return task.name + " ("  + task.id + ")";
+		};
+	});
+	
+	// Filter displaying the task types names given their id.
+	simsoApp.filter('taskTypeFilter', function() {
+		return function(input) {
+			var matches = $scope.taskTypes.filter(function(task) 
+			{
+				return task.id == input;
+			});
+			
+			if(matches.length == 1)
+				return matches[0].name;
+			
+			return "<unknown_value>";
+		};
+	});
 }])
-
-// Factory providing the mapping 
-.factory('taskTypeList', function() { 
-	return [
-		{ id: 1, name: "Periodic"},
-		{ id: 2, name: "Aperiodic"},
-		{ id: 3, name: "Sporadic"}
-	];
-})
-.filter('taskTypeFilter', function(taskTypeList) {
-	return function(input) {
-		var matches = taskTypeList.filter(function(task) 
-		{
-			return task.id == input;
-		});
-		
-		if(matches.length == 1)
-			return matches[0].name;
-		
-		return "<unknown_value>";
-	};
-});
