@@ -219,4 +219,4 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			return "<unknown_value>";
 		};
 	});
-}])
+}]);
