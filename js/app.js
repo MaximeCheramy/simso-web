@@ -12,6 +12,12 @@ var pythonFiles = {
 // Variable used to communicate from and to the python vm.
 var python = { };
 
+// Injects the filter provider into the app.
+simsoApp.config(['$filterProvider', function($filterProvider)
+{
+	simsoApp.filter = $filterProvider.register;
+}]);
+
 simsoApp.config(['$routeProvider',
 	function($routeProvider) {
 		$routeProvider.
