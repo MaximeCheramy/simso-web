@@ -69,6 +69,8 @@ def run():
     model = Model(configuration)
     model.run_model()
     
+    for log in model.logs:
+        print(log)
     
     # Shares results with other python scripts.
     globs["model"] = model

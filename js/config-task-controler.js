@@ -203,7 +203,6 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	
 	// Checks that all the followers are valid, and deletes invalid ones.
 	$scope.checkFollowers = function() {
-		console.log("alors bernard ?");
 		for(var i = 0; i < $scope.conf.tasks.length; i++) {
 			var task = $scope.conf.tasks[i];
 			var allowedFollowers = $scope.getFollowersList(task);
@@ -211,13 +210,11 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			for(var followerId = 0; followerId < allowedFollowers.length; followerId++) {
 				if(task.followedBy == allowedFollowers[followerId].id) {
 					followerOK = true;
-					console.log("#desbarres " + task.followedBy + " ; ");
 					break;
 				}
 			}
 			if(!followerOK) {
 				task.followedBy = -1;
-				console.log("euuuh ???");
 			}
 		}
 	};
