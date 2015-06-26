@@ -84,20 +84,19 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			'period':10	
 		};
 		
+		// Corrector ensuring the new value is a positive number
+		var isPositiveNumber = function(oldValue, newValue) {
+			if(isNaN(newValue))
+				return oldValue;
+			return Math.max(0, parseFloat(newValue));
+		};
+		
 		// List of functions that are called to correct user input.
 		var correctors = {
-			'activationDate': function(oldValue, newValue) {
-				// Ensures activation date is a positive number
-				if(isNaN(newValue))
-					return oldValue;
-				return Math.max(0, parseFloat(newValue));
-			},
-			'period': function(oldValue, newValue) {
-				// Ensures period is a positive number
-				if(isNaN(newValue))
-					return oldValue;
-				return Math.max(0, parseFloat(newValue));
-			}
+			'activationDate': isPositiveNumber,
+			'period': isPositiveNumber,
+			'wcet' : isPositiveNumber,
+			'deadline' : isPositiveNumber
 			
 		};
 		
