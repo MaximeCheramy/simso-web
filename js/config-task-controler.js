@@ -91,13 +91,27 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			return Math.max(0, parseFloat(newValue));
 		};
 		
+		// Corrector ensuring the new value is a comma-separated list of positive
+		// numbers. This corrector will reject incorrect values in the list.
+		var isListOfPositiveNumbers = function(oldValue, newValue) {
+			var numbers = newValue.split(",");
+			var list = []
+			for(var i = 0; i < numbers.length; i++) {
+				var correctedNumber = isPositiveNumber(-1, numbers[i]);
+				if(correctedNumber != -1)
+					list.push(correctedNumber);
+				
+			}
+			
+			return list.join(", ");	
+		};
 		// List of functions that are called to correct user input.
 		var correctors = {
 			'activationDate': isPositiveNumber,
 			'period': isPositiveNumber,
 			'wcet' : isPositiveNumber,
-			'deadline' : isPositiveNumber
-			
+			'deadline' : isPositiveNumber,
+			'activationDates' : isListOfPositiveNumbers
 		};
 		
 		// Raised after a cell was edited.
