@@ -19,7 +19,10 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	// Column definitions
 	$scope.gridTasksOptions.columnDefs = [
 		{name: 'id', type: 'number'},
-		{name: 'type', type:'number', editableCellTemplate: 'ui-grid/dropdownEditor', 
+		{
+			name: 'type', 
+			type:'number', 
+			editableCellTemplate: 'ui-grid/dropdownEditor', 
 			editDropdownValueLabel:'name', 
 			cellFilter:'taskTypeFilter',
 			// /!\ This data is dupplicated in the taskTypeList factory...
@@ -42,7 +45,12 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	    {name: 'name', type: 'string'},
 		{name: 'deadline', type: 'number'},
 		{name: 'wcet', type: 'number', displayName: 'WCET'},
-		{name: 'followedBy', type:'number', displayName: 'Followed by' }
+		{
+			name: 'followedBy', 
+			type:'number', 
+			displayName: 'Followed by',
+			editableCellTemplate: 'ui-grid/dropdownEditor',
+		}
 	];
 	
 	$scope.toggleAbortOnMiss = function(rowEntity) {
@@ -132,6 +140,9 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 						rowEntity[previouslyDisabledColumns[i]] = defaultList[previouslyDisabledColumns[i]];
 					}
 				}
+				
+				// TODO : check the "followed by" field.
+				
 			}
 			else {
 				var disabledColumns = disableList[rowEntity.type];
@@ -148,7 +159,13 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				}
 			}
 		});
-
+		
+		// Raised before a cell is edited
+		// We use this to get the available tasks to put in the "followed by" list.
+		gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef)
+		{
+			
+		});
 	};
 	
 	$scope.addNewTask = function() {

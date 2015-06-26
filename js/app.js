@@ -27,8 +27,9 @@ simsoApp.config(['$routeProvider',
 				redirectTo: '/configuration'
 			});
 	}]
-	
 );
+
+
 
 
 simsoApp.service("confService", function() {
