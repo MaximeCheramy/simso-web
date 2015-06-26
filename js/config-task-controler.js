@@ -100,7 +100,6 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				var correctedNumber = isPositiveNumber(-1, numbers[i]);
 				if(correctedNumber != -1)
 					list.push(correctedNumber);
-				
 			}
 			
 			return list.join(", ");	
@@ -115,46 +114,41 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		};
 		
 		// Raised after a cell was edited.
+		// We use this callback to update disabled cells after selection of the task's type
+		// We also use it to ensure the user's input is correct.
 		gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue)
 		{
-			if(colDef.name == "type")
-			{
+			if(colDef.name == "type") {
 				var disabledColumns = disableList[newValue];
 				// Disables the columns that are not needed for the new type.
-				for(var i = 0; i < disabledColumns.length; i++)
-				{
+				for(var i = 0; i < disabledColumns.length; i++) {
 					rowEntity[disabledColumns[i]] = "-";
 				}
 				// Gives default value to the columns that have been enabled.
 				var previouslyDisabledColumns = disableList[oldValue];
-				for(var i = 0; i < previouslyDisabledColumns.length; i++)
-				{
+				for(var i = 0; i < previouslyDisabledColumns.length; i++) {
 					// If the column has been enabled
-					if(disabledColumns.indexOf(previouslyDisabledColumns[i]) == -1)
-					{
+					if(disabledColumns.indexOf(previouslyDisabledColumns[i]) == -1) {
 						rowEntity[previouslyDisabledColumns[i]] = defaultList[previouslyDisabledColumns[i]];
 					}
 				}
 			}
-			else
-			{
+			else {
 				var disabledColumns = disableList[rowEntity.type];
 				// Cancels editing of disabled columns
-				if(disabledColumns.indexOf(colDef.name) != -1)
-				{
+				if(disabledColumns.indexOf(colDef.name) != -1) {
 					rowEntity[colDef.name] = oldValue;
 				}
-				else
-				{
+				else {
 					// Ensures the new value is correct.
-					if(colDef.name in correctors)
-					{
+					if(colDef.name in correctors) {
 						var corrector = correctors[colDef.name];
 						rowEntity[colDef.name] = corrector(oldValue, newValue);
 					}
 				}
 			}
 		});
+
 	};
 	
 	$scope.addNewTask = function() {
