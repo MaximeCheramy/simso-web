@@ -17,9 +17,9 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	};
 	
 	$scope.taskTypes = [
-		{ id: 1, name:"Periodic" },
-		{ id: 2, name:"Aperiodic" },
-		{ id: 3, name:"Sporadic" } 
+		{ id: 0, name:"Periodic" },
+		{ id: 1, name:"Aperiodic" },
+		{ id: 2, name:"Sporadic" } 
 	];
 	
 	// Column definitions
@@ -51,15 +51,20 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			name: 'followedBy', 
 			type:'number', 
 			displayName: 'Followed by',
-			editableCellTemplate: 'ui-grid/dropdownEditor',
-			cellFilter: 'followedByFilter'
+			enableCellEdit: false,
+			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html'
 		}
 	];
 	
+	// Function called when the checkboxof the abortOnMiss field is checked / unchecked.
 	$scope.toggleAbortOnMiss = function(rowEntity) {
 		rowEntity.abortonmiss = !rowEntity.abortonmiss;
 	};
 	
+	
+	// ------------------------------------------------------------------------
+	// *** API Registering *** 
+	// ------------------------------------------------------------------------
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
 		var updateRow = function(row) {
 			if (row.isSelected) {
@@ -79,13 +84,16 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		});
 		
 		
-		// **** Code ensuring grid data correctness. ****
+	
+		// ------------------------------------------------------------------------
+		// *** Code ensuring grid data correctness and managing disabled fields *** 
+		// ------------------------------------------------------------------------
 		
 		// List of disabled field indexed by their type.
 		var disableList = {
-			1: ['activationDates'],
-			2: ['activationDate', 'activationDates', 'period'],
-			3: ['activationDate', 'period']
+			0: ['activationDates'],
+			1: ['activationDate', 'activationDates', 'period'],
+			2: ['activationDate', 'period']
 		};
 		
 		// List of default value for some columns.
@@ -144,8 +152,11 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 					}
 				}
 				
-				// TODO : check the "followed by" field.
-				
+				$scope.checkFollowers();
+			}
+			else if(colDef.name == "followedBy")
+			{
+				rowEntity.edit = false;
 			}
 			else {
 				var disabledColumns = disableList[rowEntity.type];
@@ -162,17 +173,60 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				}
 			}
 		});
-		
-		// Raised before a cell is edited
-		// We use this to get the available tasks to put in the "followed by" list.
-		gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef)
-		{
-			
-		});
-		
-		
 	};
 	
+	
+	// ------------------------------------------------------------------------
+	// *** 'Followed by' field management *** 
+	// ------------------------------------------------------------------------
+	// This task is used to simulate the 'None' option.
+	var dummyTask = {id: -1, name:'None'};
+	
+	
+	// Returns the list of aperiodic tasks that can be set as
+	// followers for the given task.
+	$scope.getFollowersList = function(rowEntity) {
+		var tasks =  $scope.conf.tasks.filter(function(task) {
+			return task.type == 1 && task.id != rowEntity.id;
+		});
+		tasks.push(dummyTask);
+		return tasks;
+	};
+	
+	// Happens when a new follower is selected for a given task.
+	$scope.onSelectFollowedBy = function(task, follower) {
+		task.edit = false;
+		task.followedBy = follower.id;
+	};
+	
+
+	
+	// Checks that all the followers are valid, and deletes invalid ones.
+	$scope.checkFollowers = function() {
+		console.log("alors bernard ?");
+		for(var i = 0; i < $scope.conf.tasks.length; i++) {
+			var task = $scope.conf.tasks[i];
+			var allowedFollowers = $scope.getFollowersList(task);
+			var followerOK = false;
+			for(var followerId = 0; followerId < allowedFollowers.length; followerId++) {
+				if(task.followedBy == allowedFollowers[followerId].id) {
+					followerOK = true;
+					console.log("#desbarres " + task.followedBy + " ; ");
+					break;
+				}
+			}
+			if(!followerOK) {
+				task.followedBy = -1;
+				console.log("euuuh ???");
+			}
+		}
+	};
+	
+
+	
+	// ------------------------------------------------------------------------
+	// *** Add / Delete tasks *** 
+	// ------------------------------------------------------------------------
 	$scope.addNewTask = function() {
 		var id = 1;
 		for (var i = 0; i < $scope.conf.tasks.length; i++) {
@@ -181,7 +235,9 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				i = 0;
 			}
 		}
-		$scope.conf.tasks.push({'id': id, 'name': 'Task ' + id, 'activationDate': 0, 'period': 100, 'deadline': 0, 'wcet': 0});
+		$scope.conf.tasks.push(
+			{'id': id, 'type': 0, 'name': 'Task ' + id, 'activationDate': 0,
+			 'period': 100, 'deadline': 0, 'wcet': 0, 'followedBy': -1});
 	};
 	
 	$scope.delTasks = function() {
@@ -192,17 +248,30 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			}
 		}
 		$scope.selectedTasks = [];
+		$scope.checkFollowers();
 	};
 	
+	// ------------------------------------------------------------------------
 	// *** Filters and stuff *** 
-	simsoApp.filter('followedByFilter', function(){
-		return function(taskId) {
-			var task = $scope.conf.tasks.filter(function(t)
-			{
-				return t.id == taskId;
-			});
+	// ------------------------------------------------------------------------
+	$scope.followedByFilter = function(taskId) {
+		var tasks = $scope.conf.tasks.filter(function(t)
+		{
+			return t.id == taskId;
+		});
+		if(tasks.length == 0)
+			if(taskId == -1)
+				return "None";
+			else
+				return "<invalid id>";
+		else {
+			var task = tasks[0];
 			return task.name + " ("  + task.id + ")";
-		};
+		}
+	};
+	
+	simsoApp.filter('followedByFilter', function(){
+		return $scope.followedByFilter;
 	});
 	
 	// Filter displaying the task types names given their id.

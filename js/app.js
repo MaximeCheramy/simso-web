@@ -43,9 +43,9 @@ simsoApp.service("confService", function() {
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
 	this.tasks = [
-		{'id': 1, 'type': 1, 'name': 'T1', 'activationDate': 0, 'period': 10, 'deadline': 10, 'wcet': 5},
-		{'id': 2, 'type': 2, 'name': 'T2', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 3},
-		{'id': 3, 'type': 3, 'name': 'T3', 'activationDate': 0, 'period': 8, 'deadline': 8, 'wcet': 1},
+		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
+		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
+		{'id': 3, 'type': 2, 'name': 'T3', 'activationDate': "-", 'period': "-", 'activationDates':"", 'deadline': 8, 'wcet': 1, 'followedBy': -1},
 	];
 	this.processors = [{'id' : 0, 'name': "Proc"}, {'id' : 1, 'name' : "Proc2" }];
 	this.scheduler_class = 'simso.schedulers.EDF';
