@@ -36,28 +36,19 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		    displayName: "Abort on miss",
 			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">'
 		},
-		{
-			
-			name: 'activationDate',
-			type: 'number',
-			cellEditableCondition: function(scope) {
-				// This cell is editable if the task is perdiodic.
-				console.log(scope.row.entity);
-				return scope.row.entity.type == 1;
-			},
-			// cellTemplate: 'partial/cells/conf-activationdate-cell.html'
-		},
+		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)"},
+		{name: 'period', type: 'string', displayName:"Period (ms)"},
+		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)"},
 	    {name: 'name', type: 'string'},
-		{name: 'activationDate', type: 'number'},
-		{name: 'period', type: 'number'},
 		{name: 'deadline', type: 'number'},
-		{name: 'wcet', type: 'number', displayName: 'WCET'}
+		{name: 'wcet', type: 'number', displayName: 'WCET'},
+		{name: 'followedBy', type:'number', displayName: 'Followed by' }
 	];
 	
 	$scope.toggleAbortOnMiss = function(rowEntity) {
 		rowEntity.abortonmiss = !rowEntity.abortonmiss;
 	};
-
+	
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
 		var updateRow = function(row) {
 			if (row.isSelected) {
@@ -73,6 +64,82 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
 			for(var i = 0; i < rows.length; i++) {
 				updateRow(rows[i]);
+			}
+		});
+		
+		
+		// **** Code ensuring grid data correctness. ****
+		
+		// List of disabled field indexed by their type.
+		var disableList = {
+			1: ['activationDates'],
+			2: ['activationDate', 'activationDates', 'period'],
+			3: ['activationDate', 'period']
+		};
+		
+		// List of default value for some columns.
+		var defaultList = {
+			'activationDates': "",
+			'activationDate':0,
+			'period':10	
+		};
+		
+		// List of functions that are called to correct user input.
+		var correctors = {
+			'activationDate': function(oldValue, newValue) {
+				// Ensures activation date is a positive number
+				if(isNaN(newValue))
+					return oldValue;
+				return Math.max(0, parseFloat(newValue));
+			},
+			'period': function(oldValue, newValue) {
+				// Ensures period is a positive number
+				if(isNaN(newValue))
+					return oldValue;
+				return Math.max(0, parseFloat(newValue));
+			}
+			
+		};
+		
+		// Raised after a cell was edited.
+		gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue)
+		{
+			if(colDef.name == "type")
+			{
+				var disabledColumns = disableList[newValue];
+				// Disables the columns that are not needed for the new type.
+				for(var i = 0; i < disabledColumns.length; i++)
+				{
+					rowEntity[disabledColumns[i]] = "-";
+				}
+				// Gives default value to the columns that have been enabled.
+				var previouslyDisabledColumns = disableList[oldValue];
+				for(var i = 0; i < previouslyDisabledColumns.length; i++)
+				{
+					// If the column has been enabled
+					if(disabledColumns.indexOf(previouslyDisabledColumns[i]) == -1)
+					{
+						rowEntity[previouslyDisabledColumns[i]] = defaultList[previouslyDisabledColumns[i]];
+					}
+				}
+			}
+			else
+			{
+				var disabledColumns = disableList[rowEntity.type];
+				// Cancels editing of disabled columns
+				if(disabledColumns.indexOf(colDef.name) != -1)
+				{
+					rowEntity[colDef.name] = oldValue;
+				}
+				else
+				{
+					// Ensures the new value is correct.
+					if(colDef.name in correctors)
+					{
+						var corrector = correctors[colDef.name];
+						rowEntity[colDef.name] = corrector(oldValue, newValue);
+					}
+				}
 			}
 		});
 	};
