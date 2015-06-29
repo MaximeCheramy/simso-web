@@ -1,0 +1,13 @@
+<div class="ui-grid-cell-contents">
+	<div ng-show="row.entity.edit == 1">
+		<select 
+			ng-model="selectedFollower"
+			ng-blur="row.entity.edit=false"
+			ng-options="task as grid.appScope.followedByFilter(task.id) for task in grid.appScope.getFollowersList(row.entity)"
+			ng-change="grid.appScope.onSelectFollowedBy(row.entity, selectedFollower)">
+		</select>
+	</div>
+	<div ng-show="row.entity.edit != 1" ng-dblclick="row.entity.edit=true">
+		{{grid.appScope.followedByFilter(row.entity.followedBy)}}
+	</div>
+</div>
