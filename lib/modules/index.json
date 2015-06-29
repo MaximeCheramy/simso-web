@@ -6001,6 +6001,7 @@
         "pkgutil", 
         "pyi_importers", 
         "simso.core.SchedulerEvent", 
+        "simso.schedulers",
         "sys", 
         "SimPy.Simulation"
       ]
