@@ -71,11 +71,13 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';";
 		script += "run()";
 		console.log(script);
-		pypyService.vm.exec(script).then(function() {
-			$scope.enableResults();
-			$scope.conf.savedConf = $scope.conf.clone();
-			$scope.conf.window.startDate = 0;
-			$scope.conf.window.endDate = $scope.conf.duration_ms;
+		pypyService.vm.loadModuleData($scope.conf.scheduler_class).then(function() {
+			pypyService.vm.exec(script).then(function() {
+				$scope.enableResults();
+				$scope.conf.savedConf = $scope.conf.clone();
+				$scope.conf.window.startDate = 0;
+				$scope.conf.window.endDate = $scope.conf.duration_ms;
+			});
 		});
 	}
 }]);
