@@ -1,5 +1,12 @@
 <div class="panel-body" ng-controller="ConfigTasksCtrl">
 	<div ui-grid="gridTasksOptions" ui-grid-edit ui-grid-selection></div>
-	<button class="btn btn-default btn-sm" ng-click="addNewTask()"><span class="glyphicon glyphicon-plus"></span> Add task</button>
-	<button class="btn btn-default btn-sm" ng-click="delTasks()"><span class="glyphicon glyphicon-remove"></span> Delete selected task(s)</button>
+	<button class="btn btn-default btn-sm col-sm-2" ng-click="addNewTask()"><span class="glyphicon glyphicon-plus"></span> Add task</button>
+	<button class="btn btn-default btn-sm col-sm-2" ng-click="delTasks()"><span class="glyphicon glyphicon-remove"></span> Delete selected task(s)</button>
+	<span ng-controller="ConfigTasksAddFieldCtrl">
+		<a class="btn btn-default btn-sm col-sm-2" href="" ng-click="showAdditionalFieldsModal()">
+			<span class="glyphicon glyphicon-plus"></span>
+			Edit additional fields
+		</a>
+		<div ng-include="'partial/components/field-editor-modal.html'"></div>
+	</span>
 </div>

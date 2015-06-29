@@ -1,12 +1,7 @@
 <div class="panel-body" ng-controller="ConfigProcessorsCtrl">
 	<div ui-grid="gridProcessorsOptions" ui-grid-edit ui-grid-selection></div>
-	<button class="btn btn-default btn-sm" ng-click="addNewProcessor()"><span class="glyphicon glyphicon-plus"></span> Add processor</button>
-	<button class="btn btn-default btn-sm" ng-click="delProcessors()"><span class="glyphicon glyphicon-remove"></span> Delete selected processor(s)</button>
-	<div ng-controller="ConfigProcessorAddFieldCtrl">
-		<div ng-include="'partial/components/field-editor-modal.html'"></div>
-		<a class="btn btn-default btn-sm" href="" ng-click="showAdditionalFieldsModal()">
-			<span class="glyphicon glyphicon-plus"></span>
-			Edit additional fields
-		</a>
+	<div style="padding: 5px">
+		<button class="btn btn-default btn-sm col-sm-2" ng-click="addNewProcessor()"><span class="glyphicon glyphicon-plus"></span> Add processor</button>
+		<button class="btn btn-default btn-sm col-sm-2" ng-click="delProcessors()"><span class="glyphicon glyphicon-remove"></span> Delete selected processor(s)</button>
 	</div>
 </div>

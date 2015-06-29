@@ -16,14 +16,8 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		data: $scope.conf.tasks,
 	};
 	
-	$scope.taskTypes = [
-		{ id: 0, name:"Periodic" },
-		{ id: 1, name:"Aperiodic" },
-		{ id: 2, name:"Sporadic" } 
-	];
-	
-	// Column definitions
-	$scope.gridTasksOptions.columnDefs = [
+	// Column definitions for all required fields.
+	$scope.baseColumnDefs = [
 		{name: 'id', type: 'number'},
 		{
 			name: 'type', 
@@ -55,6 +49,15 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 	];
 	
+	$scope.taskTypes = [
+		{ id: 0, name:"Periodic" },
+		{ id: 1, name:"Aperiodic" },
+		{ id: 2, name:"Sporadic" } 
+	];
+	
+	// Column definitions
+	$scope.gridTasksOptions.columnDefs = $scope.baseColumnDefs;
+	
 	// Function called when the checkboxof the abortOnMiss field is checked / unchecked.
 	$scope.toggleAbortOnMiss = function(rowEntity) {
 		rowEntity.abortonmiss = !rowEntity.abortonmiss;
@@ -65,6 +68,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	// *** API Registering *** 
 	// ------------------------------------------------------------------------
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
+		$scope.gridApi = gridApi;
 		var updateRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedTasks.push(row.entity);
@@ -226,6 +230,14 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 		$scope.selectedTasks = [];
 		$scope.checkFollowers();
+	};	
+	
+	// ------------------------------------------------------------------------
+	// *** Additional fields *** 
+	// ------------------------------------------------------------------------
+
+	$scope.showAdditionalFieldsModal = function() {
+		$('#modalTasks').modal('show');
 	};
 	
 	// ------------------------------------------------------------------------
@@ -264,5 +276,47 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			
 			return "<unknown_value>";
 		};
+	});
+}]);
+// Manages the 'edit addional fields' modal dialog 
+simsoControllers.controller('ConfigTasksAddFieldCtrl', 
+['confService', '$scope', '$timeout',
+function(confService, $scope, $timeout)  {
+	
+	$scope.additionalFields = [];
+	var typemap = {
+		'string': ['string'],
+		'int': ['number', simsoApp.correctors.isInt],
+		'float': ['number'],
+		'bool': ['boolean'],
+	};
+	
+	createFieldEditorModal($scope, "Tasks", "Title", $scope.additionalFields, function()
+	{
+		$scope.gridTasksOptions.columnDefs = [];
+		// Puts all the base processor options in the list.
+		for(var i = 0; i < $scope.baseColumnDefs.length; i++) {
+			$scope.gridTasksOptions.columnDefs.push($scope.baseColumnDefs[i]);
+		}
+		
+		// Puts additional fields in the list
+		for(var i = 0; i < $scope.additionalFields.length; i++) {
+			var field = $scope.additionalFields[i];
+			// function($scope, gridApi, field, corrector)
+			var corrector = typemap[field.type][1];
+			if(typeof corrector != "undefined")
+			{
+				
+				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
+			}
+			
+			$scope.gridTasksOptions.columnDefs.push(
+			{
+				name:field.name,
+				type:typemap[field.type][0],
+				pytype:field.type
+			});
+			
+		}
 	});
 }]);

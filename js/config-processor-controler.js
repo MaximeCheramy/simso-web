@@ -86,37 +86,5 @@ function(confService, $scope) {
 		$scope.selectedProcessors = [];
 	};
 	
-	// ------------------------------------------------------------------------
-	// *** Additional fields *** 
-	// ------------------------------------------------------------------------
-
-	// For some reason, the modal event don't register when they are defined
-	// outside of the showAdditionalFieldsModal function...
-	$scope.modalEventRegistered = false;
-	
-	$scope.additionalFields = [];
-	$scope.showAdditionalFieldsModal = function() {
-		$('#modalProcessor').modal('show');
-	};
-		
-	
 }]);
 
-// Manages the 'edit addional fields' modal dialog 
-simsoControllers.controller('ConfigProcessorAddFieldCtrl', 
-['confService', '$scope', 
-function(confService, $scope)  {
-	createFieldEditorModal($scope, "Processor", "Title", $scope.additionalFields, function()
-	{
-		$scope.gridProcessorsOptions.columnDefs = [];
-		// Puts all the base processor options in the list.
-		for(var i = 0; i < $scope.baseColumnDefs.length; i++) {
-			$scope.gridProcessorsOptions.columnDefs.push($scope.baseColumnDefs[i]);
-		}
-		
-		// Puts additional fields in the list
-		for(var i = 0; i < $scope.additionalFields.length; i++) {
-			$scope.gridProcessorsOptions.columnDefs.push($scope.additionalFields[i]);
-		}
-	});
-}]);
