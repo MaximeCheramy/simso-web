@@ -213,6 +213,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 		$scope.conf.tasks.push(
 			{'id': id, 'type': 0, 'name': 'Task ' + id, 'activationDate': 0,
+			 'activationDates': "-",
 			 'period': 100, 'deadline': 0, 'wcet': 0, 'followedBy': -1});
 	};
 	
