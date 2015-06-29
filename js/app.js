@@ -48,7 +48,10 @@ simsoApp.service("confService", function() {
 		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
 		{'id': 3, 'type': 2, 'name': 'T3', 'activationDate': "-", 'period': "-", 'activationDates':"", 'deadline': 8, 'wcet': 1, 'followedBy': -1},
 	];
-	this.processors = [{'id' : 0, 'name': "Proc"}, {'id' : 1, 'name' : "Proc2" }];
+	this.processors = [
+		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}, 
+		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
+	];
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.window = {startDate: 0, endDate: 0};
 	
