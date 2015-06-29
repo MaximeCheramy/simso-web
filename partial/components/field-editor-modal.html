@@ -1,0 +1,31 @@
+<!-- 
+	Modal dialog used to add fields / remove additional fields to an object.
+	Parameters to set up in the controler :
+		modalId : id of the modal dialog, should be unique
+		modalTitle : title of the modal dialog
+		modalItems : array of fields (tuples : (name, type)) to edit.
+		modalGrid : the gridOptions of the grid.
+		
+	Usage : $('#modal<modalId>').modal('show');
+-->
+<div class="modal fade" id="modal{{modal.id}}" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					 <span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">{{modalTitle}}</h4>
+			</div>
+			<div class="modal-body">
+				<div ui-grid="modal.grid" ui-grid-edit ui-grid-selection></div>
+				<button ng-click="modal.addField()" class="btn btn-default btn-sm" ><span class="glyphicon glyphicon-plus"></span>Add field</button>
+				<button ng-click="modal.removeSelectedFields()" class="btn btn-default btn-sm" ><span class="glyphicon glyphicon-remove"></span> Remove selected fields</button>
+			</div>
+		    <div class="modal-footer">
+				<button ng-click="modal.cancel()" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button ng-click="modal.ok()" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

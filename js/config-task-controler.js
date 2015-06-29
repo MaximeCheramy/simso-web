@@ -10,8 +10,8 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		enableColumnResize: true,
 		enableCellEdit: true,
 		enableColumnMenus: false,
-		enableHorizontalScrollbar: 0,
-		enableVerticalScrollbar: 2,
+		enableHorizontalScrollbar: 1,
+		enableVerticalScrollbar: 1,
 		minRowsToShow: 6,
 		data: $scope.conf.tasks,
 	};
@@ -22,38 +22,46 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		{ id: 2, name:"Sporadic" } 
 	];
 	
-	// Column definitions
-	$scope.gridTasksOptions.columnDefs = [
-		{name: 'id', type: 'number'},
+	// Column definitions for all required fields.
+	$scope.baseColumnDefs = [
+		{name: 'id', type: 'number', width: 20},
 		{
 			name: 'type', 
 			type:'number', 
 			editableCellTemplate: 'ui-grid/dropdownEditor', 
 			editDropdownValueLabel:'name', 
 			cellFilter:'taskTypeFilter',
-			editDropdownOptionsArray: $scope.taskTypes
+			editDropdownOptionsArray: $scope.taskTypes,
+			width:100
+			
 		},
+		{name: 'name', type: 'string', width: 100},
 		{
 			enableCellEdit: false,
 			name: 'abortonmiss',
 			field: 'abortonmiss',
 		    displayName: "Abort on miss",
-			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">'
+			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">',
+			width: 100
 		},
-		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)"},
-		{name: 'period', type: 'string', displayName:"Period (ms)"},
-		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)"},
-	    {name: 'name', type: 'string'},
-		{name: 'deadline', type: 'number'},
-		{name: 'wcet', type: 'number', displayName: 'WCET'},
+		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)", width: 120},
+		{name: 'period', type: 'string', displayName:"Period (ms)", width: 120},
+		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)", width:250},
+		{name: 'deadline', type: 'number', width:100},
+		{name: 'wcet', type: 'number', displayName: 'WCET', width:100},
 		{
 			name: 'followedBy', 
 			type:'number', 
 			displayName: 'Followed by',
 			enableCellEdit: false,
-			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html'
+			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html',
+			width: 100
 		}
 	];
+	
+
+	// Column definitions
+	$scope.gridTasksOptions.columnDefs = $scope.baseColumnDefs;
 	
 	// Function called when the checkboxof the abortOnMiss field is checked / unchecked.
 	$scope.toggleAbortOnMiss = function(rowEntity) {
@@ -65,6 +73,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 	// *** API Registering *** 
 	// ------------------------------------------------------------------------
 	$scope.gridTasksOptions.onRegisterApi = function(gridApi) {
+		$scope.gridApi = gridApi;
 		var updateRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedTasks.push(row.entity);
@@ -226,6 +235,14 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		}
 		$scope.selectedTasks = [];
 		$scope.checkFollowers();
+	};	
+	
+	// ------------------------------------------------------------------------
+	// *** Additional fields *** 
+	// ------------------------------------------------------------------------
+
+	$scope.showAdditionalFieldsModal = function() {
+		$('#modalTasks').modal('show');
 	};
 	
 	// ------------------------------------------------------------------------
@@ -264,5 +281,48 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			
 			return "<unknown_value>";
 		};
+	});
+}]);
+// Manages the 'edit addional fields' modal dialog 
+simsoControllers.controller('ConfigTasksAddFieldCtrl', 
+['$scope', '$timeout',
+function($scope, $timeout)  {
+	
+	var typemap = {
+		'string': ['string'],
+		'int': ['number', simsoApp.correctors.isInt],
+		'float': ['number'],
+		'bool': ['boolean'],
+	};
+	
+	createFieldEditorModal($scope, "Tasks", "Title", $scope.conf.taskAdditionalFields, function()
+	{
+		$scope.gridTasksOptions.columnDefs = [];
+		// Puts all the base processor options in the list.
+		for(var i = 0; i < $scope.baseColumnDefs.length; i++) {
+			$scope.gridTasksOptions.columnDefs.push($scope.baseColumnDefs[i]);
+		}
+		
+		// Puts additional fields in the list
+		for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
+			var field = $scope.conf.taskAdditionalFields[i];
+			// function($scope, gridApi, field, corrector)
+			var corrector = typemap[field.type][1];
+			if(typeof corrector != "undefined")
+			{
+				
+				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
+			}
+			
+			$scope.gridTasksOptions.columnDefs.push(
+			{
+				name:field.name,
+				type:typemap[field.type][0],
+				pytype:field.type,
+				width:120
+			});
+			
+		}
+		
 	});
 }]);
