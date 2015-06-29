@@ -16,6 +16,7 @@ var python = { };
 simsoApp.config(['$filterProvider', function($filterProvider)
 {
 	simsoApp.filter = $filterProvider.register;
+	simsoApp.correctors = correctors;
 }]);
 
 simsoApp.config(['$routeProvider',

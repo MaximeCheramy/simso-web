@@ -122,13 +122,14 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			
 			return list.join(", ");	
 		};
+		
 		// List of functions that are called to correct user input.
 		var correctors = {
-			'activationDate': isPositiveNumber,
-			'period': isPositiveNumber,
-			'wcet' : isPositiveNumber,
-			'deadline' : isPositiveNumber,
-			'activationDates' : isListOfPositiveNumbers
+			'activationDate': simsoApp.correctors.isPositiveFloat,
+			'period': simsoApp.correctors.isPositiveFloat,
+			'wcet' : simsoApp.correctors.isPositiveFloat,
+			'deadline' : simsoApp.correctors.isPositiveFloat,
+			'activationDates' : simsoApp.correctors.isListOfPositiveFloats
 		};
 		
 		// Raised after a cell was edited.
