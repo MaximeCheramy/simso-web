@@ -36,7 +36,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				return "\"Sporadic\"";
 		};
 		var follower = function(task) {
-				
+			return task.followedBy == -1 ? "None" : task.followedBy;
 		};
 		// Global
 		script += "configuration.duration = " + $scope.conf.duration + ";";
@@ -52,7 +52,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ", period=" + pyNumber(task.period)
 				+ ", deadline=" + task.deadline
 				+ ", task_type=" + getType(task)
-				+ ", followed_by=" 
+				+ ", followed_by=" + follower(task)
 				+ ", wcet=" + task.wcet + ");";
 		}
 		// Add processors
