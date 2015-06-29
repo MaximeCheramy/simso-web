@@ -21,9 +21,11 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 	
 	$scope.run = function() {
 		var script = "configuration = Configuration();";
-		var pyNumber = function(n) {
-			return isNaN(n) ? 0 : n;
+		var pyNumber = function(n, defaultValue) {
+			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
+			return isNaN(n) ? defaultValue : n;
 		};
+		
 		var escape = function(n) {
 			return n == "-" ? "" : n;
 		};
@@ -58,7 +60,12 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		// Add processors
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
 			var proc = $scope.conf.processors[i];
-			script += "configuration.add_processor(name=\"" + proc.name + "\", identifier=" + proc.id + ");";
+			script += "configuration.add_processor(name=\"" + proc.name 
+				+ "\", identifier=" + proc.id 
+				+ ", cs_overhead=" + pyNumber(proc.csOverhead)
+				+ ", cl_overhead=" + pyNumber(proc.csOverhead)
+				+ ", speed=" + pyNumber(proc.speed, 1.0)
+				+ ");";
 		}
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';";

@@ -37,6 +37,11 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 			}
 		};
 		
+		// Registers correctors
+		simsoApp.correctors.register($scope, gridApi, "csOverhead", correctors.isPositiveInt);
+		simsoApp.correctors.register($scope, gridApi, "clOverhead", correctors.isPositiveInt);
+		simsoApp.correctors.register($scope, gridApi, "speed", correctors.isPositiveFloat);
+		
 		gridApi.selection.on.rowSelectionChanged($scope, updateRow);
 		gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows)
 		{
@@ -57,7 +62,14 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 				i = 0;
 			}
 		}
-		$scope.conf.processors.push({'id': id, 'name': 'ProcName'});
+		$scope.conf.processors.push(
+		{
+			'id': id,
+			 'name': 'ProcName',
+			 'csOverhead': 0,
+			 'clOverhead': 0,
+			 'speed': 1
+		});
 	};
 
 

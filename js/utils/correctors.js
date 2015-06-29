@@ -28,3 +28,12 @@ correctors.isListOfPositiveFloats = function(oldValue, newValue) {
 	
 	return list.join(", ");	
 };
+
+// Registers a corrector for the given field of a given gridApi.
+correctors.register = function($scope, gridApi, field, corrector) {
+	gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+		if(colDef.name == field) {
+			rowEntity[colDef.name] = corrector(oldValue, newValue);
+		}
+	});
+};

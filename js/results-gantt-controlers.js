@@ -31,8 +31,6 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', func
 	// Performs item selection / deselection
 	$scope.gridGanttOptions.onRegisterApi = function(gridApi) {
 		gridApi.selection.setMultiSelect(true);
-		gridApi.selection.selectAll = true;
-		gridApi.selection.selectAllVisibleRows();
 		var selectRow = function(row) {
 			if (row.isSelected) {
 				$scope.selectedItems.push(row.entity);
