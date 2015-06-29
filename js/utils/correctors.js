@@ -15,6 +15,12 @@ correctors.isPositiveInt = function(oldValue, newValue) {
 		return oldValue;
 	return Math.max(0, parseInt(newValue));
 };
+// Corrector ensuring the new value is a positive number
+correctors.isInt = function(oldValue, newValue) {
+	if(isNaN(newValue))
+		return oldValue;
+	return parseInt(newValue);
+};
 // Corrector ensuring the new value is a comma-separated list of positive
 // numbers. This corrector will reject incorrect values in the list.
 correctors.isListOfPositiveFloats = function(oldValue, newValue) {

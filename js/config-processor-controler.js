@@ -1,9 +1,17 @@
 
 // Manages the processors list
-simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', function(confService, $scope) {
+simsoControllers.controller('ConfigProcessorsCtrl', 
+['confService', '$scope', 
+function(confService, $scope) {
 	$scope.selectedProcessors = [];
 	$scope.conf = confService;
-
+	$scope.baseColumnDefs = [
+		{name: 'id', type: 'number', enableCellEdit: false},
+		{name: 'name', type: 'string'},
+		{name: 'csOverhead', displayName: 'CS overhead', type: 'number'},
+		{name: 'clOverhead', displayName: 'CL overhead', type: 'number'},
+		{name: 'speed', displayName: 'Speed', type: 'number'}
+	];
 	
 	$scope.gridProcessorsOptions = {
 		enableColumnResize: true,
@@ -12,13 +20,7 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 		enableHorizontalScrollbar: 0,
 		enableVerticalScrollbar: 2,
 		minRowsToShow: 4,
-		columnDefs: [
-			{name: 'id', type: 'number', enableCellEdit: false},
-			{name: 'name', type: 'string'},
-			{name: 'csOverhead', displayName: 'CS overhead', type: 'number'},
-			{name: 'clOverhead', displayName: 'CL overhead', type: 'number'},
-			{name: 'speed', displayName: 'Speed', type: 'number'}
-		],
+		columnDefs: $scope.baseColumnDefs,
 		data: $scope.conf.processors,
 	};
 	
@@ -83,4 +85,6 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 		}
 		$scope.selectedProcessors = [];
 	};
+	
 }]);
+
