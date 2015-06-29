@@ -98,7 +98,6 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 	// Cancel on hide.
 	window.setTimeout(function() {
 		$("#modal" + $scope.modal.id).on('shown.bs.modal', function() {
-			
 			$(window).resize();
 		});
 		$("#modal" + $scope.modal.id).on('hidden.bs.modal', function() {

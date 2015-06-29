@@ -10,44 +10,11 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		enableColumnResize: true,
 		enableCellEdit: true,
 		enableColumnMenus: false,
-		enableHorizontalScrollbar: 0,
-		enableVerticalScrollbar: 2,
+		enableHorizontalScrollbar: 1,
+		enableVerticalScrollbar: 1,
 		minRowsToShow: 6,
 		data: $scope.conf.tasks,
 	};
-	
-	// Column definitions for all required fields.
-	$scope.baseColumnDefs = [
-		{name: 'id', type: 'number'},
-		{
-			name: 'type', 
-			type:'number', 
-			editableCellTemplate: 'ui-grid/dropdownEditor', 
-			editDropdownValueLabel:'name', 
-			cellFilter:'taskTypeFilter',
-			editDropdownOptionsArray: $scope.taskTypes
-		},
-		{
-			enableCellEdit: false,
-			name: 'abortonmiss',
-			field: 'abortonmiss',
-		    displayName: "Abort on miss",
-			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">'
-		},
-		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)"},
-		{name: 'period', type: 'string', displayName:"Period (ms)"},
-		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)"},
-	    {name: 'name', type: 'string'},
-		{name: 'deadline', type: 'number'},
-		{name: 'wcet', type: 'number', displayName: 'WCET'},
-		{
-			name: 'followedBy', 
-			type:'number', 
-			displayName: 'Followed by',
-			enableCellEdit: false,
-			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html'
-		}
-	];
 	
 	$scope.taskTypes = [
 		{ id: 0, name:"Periodic" },
@@ -55,6 +22,44 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		{ id: 2, name:"Sporadic" } 
 	];
 	
+	// Column definitions for all required fields.
+	$scope.baseColumnDefs = [
+		{name: 'id', type: 'number', width: 20},
+		{
+			name: 'type', 
+			type:'number', 
+			editableCellTemplate: 'ui-grid/dropdownEditor', 
+			editDropdownValueLabel:'name', 
+			cellFilter:'taskTypeFilter',
+			editDropdownOptionsArray: $scope.taskTypes,
+			width:100
+			
+		},
+		{name: 'name', type: 'string', width: 100},
+		{
+			enableCellEdit: false,
+			name: 'abortonmiss',
+			field: 'abortonmiss',
+		    displayName: "Abort on miss",
+			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">',
+			width: 100
+		},
+		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)", width: 120},
+		{name: 'period', type: 'string', displayName:"Period (ms)", width: 120},
+		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)", width:250},
+		{name: 'deadline', type: 'number', width:100},
+		{name: 'wcet', type: 'number', displayName: 'WCET', width:100},
+		{
+			name: 'followedBy', 
+			type:'number', 
+			displayName: 'Followed by',
+			enableCellEdit: false,
+			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html',
+			width: 100
+		}
+	];
+	
+
 	// Column definitions
 	$scope.gridTasksOptions.columnDefs = $scope.baseColumnDefs;
 	
@@ -314,7 +319,8 @@ function(confService, $scope, $timeout)  {
 			{
 				name:field.name,
 				type:typemap[field.type][0],
-				pytype:field.type
+				pytype:field.type,
+				width:120
 			});
 			
 		}
