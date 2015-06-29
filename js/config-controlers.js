@@ -29,6 +29,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		var escape = function(n) {
 			return n == "-" ? "" : n;
 		};
+		
 		var getType = function(task) {
 			if(task.type == 0)
 				return "\"Periodic\"";
@@ -37,8 +38,18 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 			else if(task.type == 2)
 				return "\"Sporadic\"";
 		};
+		
 		var follower = function(task) {
 			return task.followedBy == -1 ? "None" : task.followedBy;
+		};
+		
+		var formatCustomData = function(task) {
+			var data = [];
+			for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
+				var attr = $scope.conf.taskAdditionalFields[i];
+				data.push("\"" + attr.name + "\" : \"" + task[attr.name] + "\"");
+			}
+			return "{" + data.join(',') + '}';
 		};
 		// Global
 		script += "configuration.duration = " + $scope.conf.duration + ";";
@@ -55,6 +66,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ", deadline=" + task.deadline
 				+ ", task_type=" + getType(task)
 				+ ", followed_by=" + follower(task)
+				+ ", data=" + formatCustomData(task)
 				+ ", wcet=" + task.wcet + ");";
 		}
 		// Add processors

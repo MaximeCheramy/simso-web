@@ -67,8 +67,8 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 	// *** Add / Delete field *** 
 	// ------------------------------------------------------------------------
 	$scope.modal.addField = function() {
-		var name = "field" + $scope.additionalFields.length;
-		$scope.additionalFields.push({name:name, type:'string'});
+		var name = "field" + $scope.modal.additionalFields.length;
+		$scope.modal.additionalFields.push({name:name, type:'string'});
 	};
 	
 	$scope.modal.removeSelectedFields = function() {
@@ -83,15 +83,15 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 	
 	// Calls the user's callback, and saves the additional fields.
 	$scope.modal.ok = function() {
-		$scope.savedAdditionalFields = $scope.additionalFields.slice();
-		modalEndCallback($scope.additionalFields);
+		$scope.modal.savedAdditionalFields = $scope.modal.additionalFields.slice();
+		modalEndCallback($scope.modal.additionalFields);
 	};
 	
 	// Restores the original additional fields.
 	$scope.modal.cancel = function() {
-		$scope.additionalFields.splice(0, $scope.additionalFields.length);
-		for(var i = 0; i < $scope.savedAdditionalFields.length; i++) {
-			$scope.additionalFields.push($scope.savedAdditionalFields[i]);
+		$scope.modal.additionalFields.splice(0, $scope.modal.additionalFields.length);
+		for(var i = 0; i < $scope.modal.savedAdditionalFields.length; i++) {
+			$scope.modal.additionalFields.push($scope.modal.savedAdditionalFields[i]);
 		}
 	};
 	

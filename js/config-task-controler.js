@@ -285,10 +285,9 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 }]);
 // Manages the 'edit addional fields' modal dialog 
 simsoControllers.controller('ConfigTasksAddFieldCtrl', 
-['confService', '$scope', '$timeout',
-function(confService, $scope, $timeout)  {
+['$scope', '$timeout',
+function($scope, $timeout)  {
 	
-	$scope.additionalFields = [];
 	var typemap = {
 		'string': ['string'],
 		'int': ['number', simsoApp.correctors.isInt],
@@ -296,7 +295,7 @@ function(confService, $scope, $timeout)  {
 		'bool': ['boolean'],
 	};
 	
-	createFieldEditorModal($scope, "Tasks", "Title", $scope.additionalFields, function()
+	createFieldEditorModal($scope, "Tasks", "Title", $scope.conf.taskAdditionalFields, function()
 	{
 		$scope.gridTasksOptions.columnDefs = [];
 		// Puts all the base processor options in the list.
@@ -305,8 +304,8 @@ function(confService, $scope, $timeout)  {
 		}
 		
 		// Puts additional fields in the list
-		for(var i = 0; i < $scope.additionalFields.length; i++) {
-			var field = $scope.additionalFields[i];
+		for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
+			var field = $scope.conf.taskAdditionalFields[i];
 			// function($scope, gridApi, field, corrector)
 			var corrector = typemap[field.type][1];
 			if(typeof corrector != "undefined")
@@ -324,5 +323,6 @@ function(confService, $scope, $timeout)  {
 			});
 			
 		}
+		
 	});
 }]);

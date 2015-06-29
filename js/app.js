@@ -52,6 +52,7 @@ simsoApp.service("confService", function() {
 		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}, 
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
 	];
+	this.taskAdditionalFields = [];
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.window = {startDate: 0, endDate: 0};
 	
