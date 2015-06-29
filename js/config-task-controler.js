@@ -31,7 +31,6 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			editableCellTemplate: 'ui-grid/dropdownEditor', 
 			editDropdownValueLabel:'name', 
 			cellFilter:'taskTypeFilter',
-			// /!\ This data is dupplicated in the taskTypeList factory...
 			editDropdownOptionsArray: $scope.taskTypes
 		},
 		{

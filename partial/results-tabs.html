@@ -13,10 +13,11 @@
 			</div>
 		</div>
 	</form>
-
-	<tabset>
-		<tab heading="Gantt"><ng:include src="'partial/gantt.html'"></ng:include></tab>
-		<tab heading="General"><ng:include src="'partial/results-general.html'"></ng:include></tab>
-		<tab heading="Processors"><ng:include src="'partial/results-processors.html'"></ng:include></tab>
-	</tabset>
+	<div ng-controller="ResultsTabsetControler">
+		<tabset>
+			<tab ng-click="fixLayout()" heading="Gantt"><ng:include src="'partial/gantt.html'"></ng:include></tab>
+			<tab ng-click="fixLayout()" heading="General"><ng:include src="'partial/results-general.html'"></ng:include></tab>
+			<tab ng-click="fixLayout()" heading="Processors"><ng:include src="'partial/results-processors.html'"></ng:include></tab>
+		</tabset>
+	</div>
 </div>
