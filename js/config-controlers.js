@@ -47,6 +47,11 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 			var data = [];
 			for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
 				var attr = $scope.conf.taskAdditionalFields[i];
+				
+				// Skip undefined values
+				if(typeof(task[attr.name]) == "undefined")
+					continue;
+					
 				data.push("\"" + attr.name + "\" : \"" + task[attr.name] + "\"");
 			}
 			return "{" + data.join(',') + '}';
