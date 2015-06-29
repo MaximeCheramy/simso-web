@@ -24,7 +24,7 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 		enableCellEdit: true,
 		enableColumnMenus: false,
 		enableHorizontalScrollbar: 0,
-		enableVerticalScrollbar: 2,
+		enableVerticalScrollbar: 1,
 		minRowsToShow: 4,
 		columnDefs: [
 			{name: 'name', type: 'string'},
@@ -97,6 +97,10 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 	
 	// Cancel on hide.
 	window.setTimeout(function() {
+		$("#modal" + $scope.modal.id).on('shown.bs.modal', function() {
+			
+			$(window).resize();
+		});
 		$("#modal" + $scope.modal.id).on('hidden.bs.modal', function() {
 			$scope.modal.cancel();
 		});
