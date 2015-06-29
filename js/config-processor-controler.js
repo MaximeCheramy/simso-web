@@ -12,10 +12,19 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 		enableHorizontalScrollbar: 0,
 		enableVerticalScrollbar: 2,
 		minRowsToShow: 4,
-		columnDefs: [{name: 'id', type: 'number'}, {name: 'name', type: 'string'}],
+		columnDefs: [
+			{name: 'id', type: 'number', enableCellEdit: false},
+			{name: 'name', type: 'string'},
+			{name: 'csOverhead', displayName: 'CS overhead', type: 'number'},
+			{name: 'clOverhead', displayName: 'CL overhead', type: 'number'},
+			{name: 'speed', displayName: 'Speed', type: 'number'}
+		],
 		data: $scope.conf.processors,
 	};
-
+	
+	// ------------------------------------------------------------------------
+	// *** API Registering *** 
+	// ------------------------------------------------------------------------
 	$scope.gridProcessorsOptions.onRegisterApi = function(gridApi) {
 		var updateRow = function(row) {
 			if (row.isSelected) {
@@ -36,7 +45,10 @@ simsoControllers.controller('ConfigProcessorsCtrl', ['confService', '$scope', fu
 			}
 		});
 	};
-
+	
+	// ------------------------------------------------------------------------
+	// *** Add / Delete processor *** 
+	// ------------------------------------------------------------------------
 	$scope.addNewProcessor = function() {
 		var id = 1;
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
