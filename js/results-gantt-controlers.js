@@ -1,17 +1,29 @@
 
 // Manages the list of gantt charts and the grid to display/hide them.
 // The gantt controler is a child of the results controler.
-simsoControllers.controller('GanttListControler', ['$scope', '$controller', function($scope, $controller)
+simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'confService', function($scope, $controller, confService)
 {
 	$controller('resultsCtrl', {$scope:$scope});
-	$scope.ganttWidth = 1500;
-	$scope.ganttHeight = 100;
 	$scope.ganttZoom = 100;
 	
 	// Options of the grid used to select processors and list to display.
 	$scope.selectedItems = [];
+
+	$scope.updateZoom = function() {
+		// These values MUST be identical to the one specified in gantt-renderer.py!
+		var GRAPH_SIZE_OFFSETX = 40;
+		var UNIT_WIDTH = 10;
+		var newWidth = (($scope.conf.window.endDate - $scope.conf.window.startDate) * UNIT_WIDTH * $scope.ganttZoom / 100.0 + 2 * GRAPH_SIZE_OFFSETX) + "px";
+
+		for (var i = 0; i < confService.savedConf.all_gantt_items.length; i++) {
+			var item = confService.savedConf.all_gantt_items[i];
+			var el = $("#resultsGantt" + item["type"] + item["id"])[0];
+			el.style.width = newWidth;
+		}
+	}
+
 	$scope.zoomPlus = function() {
-		$scope.ganttZoom = Math.min($scope.ganttZoom + 20, 300);
+		$scope.ganttZoom = Math.min($scope.ganttZoom + 10, 300);
 	}
 	$scope.zoomMinus = function() {
 		$scope.ganttZoom = Math.max($scope.ganttZoom - 10, 50);
@@ -73,8 +85,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 							"}";
 		
 		return "{'zoom' : " + $scope.ganttZoom/100.0 + "," +
-				"'width' : " + $scope.ganttWidth + "," +
-				"'height' : " + $scope.ganttHeight + "," + 
 				"'startDate' : " + $scope.conf.window.startDate + "," + 
 				"'endDate' : " + $scope.conf.window.endDate + "," + 
 				"'gantt_item' : " + gantt_item +

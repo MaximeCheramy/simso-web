@@ -143,6 +143,7 @@ simsoApp.directive("gantt", ['$timeout', function($timeout){
 		
 		// Redraws the diagram if the zoom value changes.
 		scope.$watch("ganttZoom", function (newValue, oldValue) {
+			scope.updateZoom();
 			$timeout(function() {
 				// Delay changes (dont redraw while the user is typing)
 				if(scope.ganttZoom == newValue) {

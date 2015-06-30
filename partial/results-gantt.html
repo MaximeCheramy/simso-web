@@ -1,6 +1,6 @@
 <div class="panel-body" ng-controller="GanttListControler">
 	<div ui-grid="gridGanttOptions" ui-grid-edit ui-grid-selection></div>
-	<div class="input-group">
+	<div class="input-group" ng-hide="selectedItems.length == 0">
 		<label for="btn-zoom-minus" class="control-label col-sm-1">Zoom(%):</label>
 		<span  class="input-group-btn" id="btn-zoom-minus">
 			<button ng-click="zoomMinus()" type="button" class="btn btn-default btn-number">
@@ -20,11 +20,9 @@
 	
 	</div>
 
-		
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
-		<span ng-controller="GanttControler" ng-repeat="item in conf.savedConf.all_gantt_items">
-			<canvas ng-hide="isDisabled()" gantt id="resultsGantt{{item.type}}{{item.id}}" width="{{ganttWidth}}" height="{{ganttHeight}}"></canvas>
-			<br ng-hide="isDisabled()"/>
-		</span>
+		<div ng-controller="GanttControler" ng-repeat="item in conf.savedConf.all_gantt_items">
+			<canvas ng-hide="isDisabled()" gantt id="resultsGantt{{item.type}}{{item.id}}"></canvas>
+		</div>
 	</div>
 <div>
