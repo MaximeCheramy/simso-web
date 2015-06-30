@@ -1,8 +1,6 @@
 from simso.core import Model
 from simso.configuration import Configuration
 from simso.core import JobEvent, ProcEvent
-from simso.core.Scheduler import get_schedulers
-
 import js
 
 def change_observation_window(window):
@@ -61,14 +59,6 @@ def aggregate_general_results(model):
     proc_loads[i]["Payload"] = str(load)
     proc_loads[i]["System load"] = str(overhead)
     return proc_loads
-
-
-def update_schedulers_list():
-    schedulers = []
-    for scheduler in get_schedulers():
-        schedulers.append({'name' : scheduler});
-    
-    js.globals["python"]["schedulers"] = schedulers;
     
 
 def run():
@@ -89,7 +79,3 @@ def run():
     # Shares results with js
     update_results(globs["model"])
     js.globals["python"]["sim-running"] = False
-    
-    
-
-update_schedulers_list();

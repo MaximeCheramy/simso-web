@@ -104,6 +104,13 @@ simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', funct
 	$scope.conf = confService;
 }]);
 
-simsoControllers.controller('ConfigSchedulerCtrl', ['confService', '$scope', function(confService, $scope) {
+simsoControllers.controller('ConfigSchedulerCtrl', 
+['confService', 'pypyService',  '$scope', 
+function(confService, pypyService, $scope) {
 	$scope.conf = confService;
+	
+	pypyService.registerObserverCallback($scope, function() {
+		confService.scheduler_list = python["schedulers"];
+		console.log("EXEC : " + confService.scheduler_list.toSource());
+	});
 }]);
