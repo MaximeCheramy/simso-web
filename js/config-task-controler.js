@@ -295,7 +295,8 @@ function($scope, $timeout)  {
 		'bool': ['boolean'],
 	};
 	
-	createFieldEditorModal($scope, "Tasks", "Title", $scope.conf.taskAdditionalFields, function()
+	// Updates the grid's column to include additional fields.
+	$scope.updateColumns = function()
 	{
 		$scope.gridTasksOptions.columnDefs = [];
 		// Puts all the base processor options in the list.
@@ -310,7 +311,6 @@ function($scope, $timeout)  {
 			var corrector = typemap[field.type][1];
 			if(typeof corrector != "undefined")
 			{
-				
 				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
 			}
 			
@@ -324,5 +324,15 @@ function($scope, $timeout)  {
 			
 		}
 		
-	});
+	};
+	
+	// Setup of the modal dialog.
+	createFieldEditorModal($scope, "Tasks", "Title", 
+		$scope.conf.taskAdditionalFields,
+		$scope.updateColumns);
+	
+	// Init additional fields.
+	if($scope.conf.taskAdditionalFields.length != 0) {
+		$scope.updateColumns();
+	}
 }]);
