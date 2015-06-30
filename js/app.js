@@ -98,7 +98,7 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 		return othis.vm.execfile(file).then(function () {
 			
 		}, function(err) {
-			console.log("ERROR (" + file +" ) : " + err.name + ": " + err.message);
+			console.log("Python ERROR (" + file +" ) : " + err.name + ": " + err.message + " || " + err.toSource());
 		});
 	};
 	
