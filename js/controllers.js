@@ -6,13 +6,13 @@ simsoControllers.controller('HeaderController', ['logsService', '$scope', '$root
 	};
 	$scope.go = function(path) {
 		$location.path(path);
-	}
+	};
 	$scope.disableResults = true;
 	$rootScope.enableResults = function() {
 		$scope.$apply(function() {
 			$scope.disableResults = false;
 		});
-	}
+	};
 }]);
 
 simsoControllers.controller('resultsCtrl', ['logsService', 'pypyService', '$scope', 'confService', 
