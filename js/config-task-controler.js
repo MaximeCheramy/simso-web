@@ -308,11 +308,14 @@ function($scope, $timeout)  {
 		for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
 			var field = $scope.conf.taskAdditionalFields[i];
 			// function($scope, gridApi, field, corrector)
-			var corrector = typemap[field.type][1];
+			var corrector = typemap[field.type][1] || simsoApp.correctors.string;
+			
 			if(typeof corrector != "undefined")
-			{
 				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
-			}
+			
+			// Corrects the current data
+			$scope.gridTasksOptions.data[field.name] = corrector("", $scope.gridTasksOptions.data[field.name]);
+			
 			
 			$scope.gridTasksOptions.columnDefs.push(
 			{
@@ -332,7 +335,9 @@ function($scope, $timeout)  {
 		$scope.updateColumns);
 	
 	// Init additional fields.
-	if($scope.conf.taskAdditionalFields.length != 0) {
-		$scope.updateColumns();
-	}
+	$timeout(function () {
+		if($scope.conf.taskAdditionalFields.length != 0) {
+			$scope.updateColumns();
+		}
+	}, 0);
 }]);
