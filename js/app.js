@@ -54,6 +54,7 @@ simsoApp.service("confService", function() {
 	];
 	this.taskAdditionalFields = [];
 	this.scheduler_class = 'simso.schedulers.EDF';
+	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
 	
 	// Creates a clone of the variables contained in this service
@@ -102,16 +103,26 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 		});
 	};
 	
+	// Recursive execution of the files in the given file group name.
+	var exec_rec = function(groupName, i) {		
+		return othis.safe_execfile(othis.pythonFiles[groupName][i]).then(function() {
+			if(i > 0)
+				exec_rec(groupName, i - 1);
+		});
+	};
+	
+	// Executes in this order :
+	// 		- the files in the init group name.
+	//		- the files in the files group name.
+	//		- the first file of the finalize group name.
 	this.vm.ready.then(function() {
-		for(var i = 0; i < othis.pythonFiles["init"].length; i++) {
-			othis.safe_execfile(othis.pythonFiles["init"][i]);
-		}
-		for(var i = 0; i < othis.pythonFiles["files"].length; i++) {
-			othis.safe_execfile(othis.pythonFiles["files"][i]);
-		}
-		othis.safe_execfile(othis.pythonFiles["finalize"]).then(function() {
-			othis.pypyready = true;
-			notifyObservers();
+		exec_rec("init", othis.pythonFiles["init"].length-1).then(function() {
+			exec_rec("files", othis.pythonFiles["files"].length-1).then(function() {
+				othis.safe_execfile(othis.pythonFiles["finalize"]).then(function() {
+					othis.pypyready = true;
+					notifyObservers();
+				});
+			});
 		});
 	});
 	
