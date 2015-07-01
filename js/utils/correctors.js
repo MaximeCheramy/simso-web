@@ -72,6 +72,10 @@ correctors.toJsType = function(pytype) {
 	return correctors.typemap[pytype][0];
 };
 
+correctors.applyTypeCorrector = function(value, pytype) {
+	return correctors.typemap[pytype][1](value, value);
+};
+
 correctors.toJsInputType = function(pytype) {
 	return correctors.typemap[pytype][2];
 };

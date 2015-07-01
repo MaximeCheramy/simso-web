@@ -14,6 +14,42 @@ function(confService, pypyService, $scope) {
 	$scope.showAdditionalFieldsModal = function() {
 		$('#modalSched').modal('show');
 	};
+	
+	
+	// Called when the scheduler changes
+	$scope.onSchedulerChanged = function() {
+		confService.schedAdditionalFields = [];
+		confService.taskAdditionalFields.splice(0, confService.taskAdditionalFields.length);
+		var sched = confService.scheduler_class;
+		for(var i = 0; i < sched.required_fields.length; i++) {
+			var field = sched.required_fields[i];
+			// Scheduler fields
+			confService.schedAdditionalFields.push(
+			{
+				'name' : field.name,
+			 	'type' : field.type, 
+			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type)
+			});
+		}
+		
+		for(var i = 0; i < sched.required_task_fields.length; i++) {
+			var field = sched.required_task_fields[i];
+			
+			// Scheduler fields
+			confService.taskAdditionalFields.push(
+				{'name' : field.name, 'type' : field.type}
+			);
+			
+			// Puts in default value
+			for(var taskId = 0; taskId < confService.tasks.length; taskId++) {
+				confService.tasks[taskId][field.name] = field.default;
+			}
+		}
+		
+		// Notify the change.
+		confService.onTaskFieldsChanged();
+	};
+	
 }]);
 
 // Manages the 'edit addional fields' modal dialog 
@@ -26,7 +62,7 @@ function($scope, $timeout)  {
 	{
 		
 	};
-	
+
 	// Setup of the modal dialog.
 	createFieldEditorModal($scope, "Sched", "Title", 
 		$scope.conf.schedAdditionalFields,

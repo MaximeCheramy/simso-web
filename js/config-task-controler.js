@@ -324,6 +324,10 @@ function($scope, $timeout)  {
 		
 	};
 	
+	// Update column will be called when the additional task fields
+	// are changed from outside of this controler.
+	$scope.conf.onTaskFieldsChanged = $scope.updateColumns;
+	
 	// Setup of the modal dialog.
 	createFieldEditorModal($scope, "Tasks", "Title", 
 		$scope.conf.taskAdditionalFields,

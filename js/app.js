@@ -52,8 +52,14 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}, 
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
 	];
+	
+	// Array of {'name':fieldName, 'type':fieldType }
+	// The value is in this.tasks.fieldName
 	this.taskAdditionalFields = [];
+	
+	// Array of : {'name':name, 'type':pytype, 'value':value}
 	this.schedAdditionalFields = [];
+	
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
@@ -62,6 +68,12 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	var othis = this;
 	
 	this.savedConf = null;
+	
+	// Must be called when the task's additional fields are modified.
+	this.onTaskFieldsChanged = function() {
+		console.log("conf.onTaskFieldsChanged : not overrided yet.");	
+	};
+	
 	this.clone = function() {
 		return {
 			cycles_per_ms: othis.cycles_per_ms,

@@ -3,7 +3,12 @@
 		<div class="form-group">
 			<label for="duration" class="control-label col-sm-2">Scheduler:</label>
 			<div class="col-sm-4">
-				<select class="form-control" ng-model="conf.scheduler_class" ng-options="sched.display_name for sched in conf.scheduler_list">
+				<select 
+					class="form-control"
+					ng-model="conf.scheduler_class" 
+					ng-options="sched.display_name for sched in conf.scheduler_list"
+					ng-change="onSchedulerChanged()"
+					>
 				</select>
 			</div>
 			<span ng-controller="ConfigSchedAddFieldCtrl">
