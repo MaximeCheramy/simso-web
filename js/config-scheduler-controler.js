@@ -20,10 +20,13 @@ function(confService, pypyService, $scope) {
 	$scope.onSchedulerChanged = function() {
 		confService.schedAdditionalFields = [];
 		confService.taskAdditionalFields.splice(0, confService.taskAdditionalFields.length);
+		confService.procAdditionalFields.splice(0, confService.procAdditionalFields.length);
 		var sched = confService.scheduler_class;
+		
+		
+		// Updates scheduler fields
 		for(var i = 0; i < sched.required_fields.length; i++) {
 			var field = sched.required_fields[i];
-			// Scheduler fields
 			confService.schedAdditionalFields.push(
 			{
 				'name' : field.name,
@@ -32,10 +35,11 @@ function(confService, pypyService, $scope) {
 			});
 		}
 		
+		// Updates task fields
 		for(var i = 0; i < sched.required_task_fields.length; i++) {
 			var field = sched.required_task_fields[i];
 			
-			// Scheduler fields
+			// Adds the fields.
 			confService.taskAdditionalFields.push(
 				{'name' : field.name, 'type' : field.type}
 			);
@@ -46,8 +50,23 @@ function(confService, pypyService, $scope) {
 			}
 		}
 		
+		// Updates proc fields
+		for(var i = 0; i < sched.required_proc_fields.length; i++) {
+			var field = sched.required_proc_fields[i];
+			
+			// Adds the fields.
+			confService.procAdditionalFields.push(
+				{'name' : field.name, 'type' : field.type}
+			);
+			
+			// Puts in default value
+			for(var procId = 0; procId < confService.processors.length; procId++) {
+				confService.processors[procId][field.name] = field.default;
+			}
+		} 
 		// Notify the change.
 		confService.onTaskFieldsChanged();
+		confService.onProcFieldsChanged();
 	};
 	
 }]);

@@ -56,6 +56,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	// Array of {'name':fieldName, 'type':fieldType }
 	// The value is in this.tasks.fieldName
 	this.taskAdditionalFields = [];
+	this.procAdditionalFields = [];
 	
 	// Array of : {'name':name, 'type':pytype, 'value':value}
 	this.schedAdditionalFields = [];
@@ -69,9 +70,14 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	
 	this.savedConf = null;
 	
-	// Must be called when the task's additional fields are modified.
+	// Must be called when the tasks' additional fields are modified.
 	this.onTaskFieldsChanged = function() {
 		console.log("conf.onTaskFieldsChanged : not overrided yet.");	
+	};
+	
+	// Must be called when the processors' additional fields are modified.
+	this.onProcFieldsChanged = function() {
+		console.log("conf.onProcFieldsChanged : not overrided yet.");	
 	};
 	
 	this.clone = function() {
@@ -84,6 +90,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			scheduler_class: othis.scheduler_class,
 			scheduler_list: othis.scheduler_list,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
+			procAdditionalFields: othis.procAdditionalFields.slice(),
 			schedAdditionalFields: othis.schedAdditionalFields.slice(),
 			// Aggregates all gantt items
 			all_gantt_items: $.merge(this.tasks.map(function(task) { 
