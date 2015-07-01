@@ -65,7 +65,9 @@ def aggregate_general_results(model):
     
 
 def run():
-    js.globals["python"]["sim-running"] = True
+    # Init
+    js.globals["python"]["sim-success"] = False
+    errorLogger = js.globals["python"]["logSchedulerError"];
     
     # Runs the model
     configuration.check_all()
@@ -75,9 +77,9 @@ def run():
         model.run_model()
         print("Successfully run simulation")
     except Exception, err:
-        print("Error running simulation : ", str(sys.exc_info()[0]))
-        print("Traceback : " + str(traceback.format_exc()))
-        #print("Traceback : " +str(traceback.print_exc()))
+        print("Simulation failed")
+        errorLogger("Error running simulation : ", str(sys.exc_info()[0]))
+        errorLogger("Traceback : " + str(traceback.format_exc()))
         return
         
     for log in model.logs:
@@ -89,4 +91,4 @@ def run():
     
     # Shares results with js
     update_results(globs["model"])
-    js.globals["python"]["sim-running"] = False
+    js.globals["python"]["sim-success"] = True

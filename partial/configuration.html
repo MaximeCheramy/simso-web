@@ -10,12 +10,17 @@
 		<span>
 			<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
 		</span>
+		
+		<span ng-show="schedHasErrors" ng-hide="!shedHasErrors">
+			<button onclick="$('#modalSchedErrorLog').modal('show'); " class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-error"></span>Show errors</button>
+		</span>
+		<div ng-include="'partial/config-errors-modal.html'"></div>
 	</p>
 	<conf-panel title="'General'" html="'config-general.html'"></conf-panel>
 	<conf-panel title="'Scheduler'" html="'config-scheduler.html'"></conf-panel>
 	<conf-panel title="'Tasks'" html="'config-tasks.html'"></conf-panel>
 	<conf-panel title="'Processors'" html="'config-processors.html'"></conf-panel>
-
+	
 </div>
 
 

@@ -1,9 +1,17 @@
 // Main controler of the conf service.
-simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 'pypyService', '$scope', function(confService, logsService, pypyService, $scope) {
+simsoControllers.controller('configurationCtrl', 
+['confService', 'logsService', 'pypyService', '$scope', 
+function(confService, logsService, pypyService, $scope) {
 	// conf is our model containing the configuration.
 	$scope.conf = confService;
 	$scope.pypyService = pypyService;
 	$scope.pypyready = pypyService.pypyready;
+	$scope.schedHasErrors = false;
+	$scope.setSchedErrors = function(value) {
+		$scope.$apply(function() {
+			$scope.schedHasErrors = value;
+		});
+	};
 	if (!$scope.pypyready) {
 		$scope.pypyService.registerObserverCallback($scope, function() {
 			$scope.$apply(function() {
@@ -102,19 +110,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 			script += "speed = " + pyNumber(proc.speed, 1.0) + ", ";
 			script += "data = " + formatProcData(proc);
 			script += "));\n";
-			/*script += "configuration.add_processor(name=\"" + proc.name 
-				+ "\", identifier=" + proc.id 
-				+ ", cs_overhead=" + pyNumber(proc.csOverhead)
-				+ ", cl_overhead=" + pyNumber(proc.clOverhead)
-				+ ", speed=" + pyNumber(proc.speed, 1.0)
-				+ ");\n";*/
 		}
-		
-		/*
-		        proc = ProcInfo(
-            identifier, name, cs_overhead, cl_overhead, migration_overhead,
-            speed)
-        self.proc_info_list.append(proc)*/
 		
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
@@ -131,10 +127,23 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 		console.log(script);
 		pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
 			pypyService.vm.exec(script).then(function() {
-				$scope.enableResults();
-				$scope.conf.savedConf = $scope.conf.clone();
-				$scope.conf.window.startDate = 0;
-				$scope.conf.window.endDate = $scope.conf.duration_ms;
+				if(python["sim-success"])
+				{
+					$scope.enableResults();
+					$scope.conf.savedConf = $scope.conf.clone();
+					$scope.conf.window.startDate = 0;
+					$scope.conf.window.endDate = $scope.conf.duration_ms;
+					
+					// Clear error logs
+					$scope.setSchedErrors(false);
+					logsService.schedErrorLogs.splice(0, logsService.schedErrorLogs.length);
+				}
+				else
+				{
+					$scope.disableResults();
+					$scope.setSchedErrors(true);
+				}
+			
 			});
 		});
 	}
@@ -145,3 +154,9 @@ simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', funct
 	$scope.conf = confService;
 }]);
 
+simsoControllers.controller('SchedErrorLogCtrl', 
+['confService', 'logsService', '$scope', 
+function(confService, logsService, $scope) {
+	$scope.conf = confService;
+	$scope.schedErrorLogs = logsService.schedErrorLogs;
+}]);

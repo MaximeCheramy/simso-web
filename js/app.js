@@ -104,17 +104,27 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 
 simsoApp.service("logsService", function() {
 	this.logs = [];
+	this.schedErrorLogs = [];
 });
 
 simsoApp.service("pypyService", ['logsService', function(logsService) {
+	var othis = this;
 	this.pypyready = false;
+	this.pythonFiles = pythonFiles;
 	this.vm = new PyPyJS();
 	this.vm.stdout = this.vm.stderr = function(data) {
 		logsService.logs.push(data);
-		console.log(data);
 	};
-	this.pythonFiles = pythonFiles;
-	var othis = this;
+	
+	// Function called to log errors that happen within the 
+	// schedulers.
+	this.logSchedulerError = function(error) {
+		console.log("Sched error : " + error);
+		logsService.schedErrorLogs.push(error);
+	};
+	
+	python["logSchedulerError"] = this.logSchedulerError;
+	
 	
 	// File execution with error output
 	this.safe_execfile = function(file) {

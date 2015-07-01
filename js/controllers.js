@@ -8,9 +8,16 @@ simsoControllers.controller('HeaderController', ['logsService', '$scope', '$root
 		$location.path(path);
 	};
 	$scope.disableResults = true;
+	
 	$rootScope.enableResults = function() {
 		$scope.$apply(function() {
 			$scope.disableResults = false;
+		});
+	};
+	
+	$rootScope.disableResults = function() {
+		$scope.$apply(function() {
+			$scope.disableResults = true;
 		});
 	};
 }]);
