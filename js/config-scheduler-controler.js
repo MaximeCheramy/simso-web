@@ -6,6 +6,5 @@ function(confService, pypyService, $scope) {
 	pypyService.registerObserverCallback($scope, function() {
 		confService.scheduler_list = python["schedulers"];
 		confService.scheduler_class = confService.scheduler_list[0];
-		console.log("EXEC : " + confService.scheduler_list.toSource());
 	});
 }]);
