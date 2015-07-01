@@ -77,9 +77,22 @@ def run():
         model.run_model()
         print("Successfully run simulation")
     except Exception, err:
-        errorLogger("Error running simulation : " + str(sys.exc_info()[0]))
-        for line in traceback.format_exc().splitlines():
-            errorLogger(line)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        error = traceback.format_exception_only(exc_type, exc_value)[0]
+        tb = traceback.extract_tb(exc_traceback)
+        
+        # Puts the error into the error logger.
+        errorLogger({
+            'type' : 'errorCode',
+            'value' : error
+        })
+        for tb_line in tb:
+            filename, line, inn, code = tb_line
+            errorLogger({
+                'type': 'stack',
+                'value' : "  File \"" + filename + "\", line " + str(line) + ", in " + inn,
+                'code' : code
+            })
         
         # errorLogger(str(traceback.format_exc()))
         return

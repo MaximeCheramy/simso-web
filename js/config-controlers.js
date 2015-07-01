@@ -125,6 +125,8 @@ function(confService, logsService, pypyService, $scope) {
 		
 		script += "run()";
 		console.log(script);
+		
+		logsService.schedErrorLogs.splice(0, logsService.schedErrorLogs.length);
 		pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
 			pypyService.vm.exec(script).then(function() {
 				if(python["sim-success"])
@@ -136,7 +138,6 @@ function(confService, logsService, pypyService, $scope) {
 					
 					// Clear error logs
 					$scope.setSchedErrors(false);
-					logsService.schedErrorLogs.splice(0, logsService.schedErrorLogs.length);
 				}
 				else
 				{
@@ -159,4 +160,18 @@ simsoControllers.controller('SchedErrorLogCtrl',
 function(confService, logsService, $scope) {
 	$scope.conf = confService;
 	$scope.schedErrorLogs = logsService.schedErrorLogs;
+	$scope.formatLogEntry = function(logEntry) {
+		var s = "";
+		if(logEntry.type == 'stack')
+		{
+			s += "<h2>" + logEntry.value + "</h2>";
+			s += "<p>" + logEntry.code + "<p>";
+		}
+		else if(logEntry.type == 'errorCode')
+		{
+			s += "<h4>" + logEntry.value + "</h4>";
+		}
+		
+		return s;
+	};
 }]);
