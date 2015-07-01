@@ -85,10 +85,10 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ");";
 		}
 		// Set scheduler
-		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class + "';";
+		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
 		script += "run()";
 		console.log(script);
-		pypyService.vm.loadModuleData($scope.conf.scheduler_class).then(function() {
+		pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
 			pypyService.vm.exec(script).then(function() {
 				$scope.enableResults();
 				$scope.conf.savedConf = $scope.conf.clone();
@@ -104,6 +104,14 @@ simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', funct
 	$scope.conf = confService;
 }]);
 
-simsoControllers.controller('ConfigSchedulerCtrl', ['confService', '$scope', function(confService, $scope) {
+simsoControllers.controller('ConfigSchedulerCtrl', 
+['confService', 'pypyService',  '$scope', 
+function(confService, pypyService, $scope) {
 	$scope.conf = confService;
+	
+	pypyService.registerObserverCallback($scope, function() {
+		confService.scheduler_list = python["schedulers"];
+		confService.scheduler_class = confService.scheduler_list[0];
+		console.log("EXEC : " + confService.scheduler_list.toSource());
+	});
 }]);

@@ -4,7 +4,7 @@ var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers',
 	'ui.bootstrap.tabs']);
 	
 var pythonFiles = { 
-	"init" : ["../py/simso-init.py"],
+	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py"],
 	"files" : ["../py/gantt-renderer.py", "../py/simso-functions.py"],
 	"finalize" : "../py/simso-finalize.py"
 };
@@ -39,7 +39,7 @@ simsoApp.config(['$routeProvider',
 
 
 
-simsoApp.service("confService", function() {
+simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.cycles_per_ms = 1000000;
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
@@ -56,7 +56,6 @@ simsoApp.service("confService", function() {
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
-	
 	// Creates a clone of the variables contained in this service
 	// This is used to get the simulation parameters in the results.
 	var othis = this;
@@ -69,8 +68,9 @@ simsoApp.service("confService", function() {
 			duration: othis.duration,
 			tasks: othis.tasks.slice(),
 			processors: othis.processors.slice(),
-			scheduler_class: othis.scheduler_class.slice(),
-			
+			scheduler_class: othis.scheduler_class,
+			scheduler_list: othis.scheduler_list,
+			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			// Aggregates all gantt items
 			all_gantt_items: $.merge(this.tasks.map(function(task) { 
 					return {'id': task.id, 'name':task.name, 'type':'task' };
@@ -79,10 +79,10 @@ simsoApp.service("confService", function() {
 			})) 
 		};
 	};
-});
+}]);
 
 simsoApp.service("logsService", function() {
-	this.logs = []
+	this.logs = [];
 });
 
 simsoApp.service("pypyService", ['logsService', function(logsService) {
