@@ -1,6 +1,7 @@
 from simso.core import Model
 from simso.configuration import Configuration
 from simso.core import JobEvent, ProcEvent
+from simso.core.Processor import ProcInfo
 import sys
 import traceback
 import js

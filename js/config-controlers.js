@@ -43,20 +43,27 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 			return task.followedBy == -1 ? "None" : task.followedBy;
 		};
 		
-		var formatCustomData = function(task) {
+		var formatCustomData = function(obj, arr) {
 			var data = [];
-			for(var i = 0; i < $scope.conf.taskAdditionalFields.length; i++) {
-				var attr = $scope.conf.taskAdditionalFields[i];
+			for(var i = 0; i < arr.length; i++) {
+				var attr = arr[i];
 				
 				// Skip undefined values
-				if(typeof(task[attr.name]) == "undefined")
+				if(typeof(obj[attr.name]) == "undefined")
 					continue;
 					
-				data.push("\"" + attr.name + "\" : \"" + task[attr.name] + "\"");
+				data.push("\"" + attr.name + "\" : \"" + obj[attr.name] + "\"");
 			}
 			return "{" + data.join(',') + '}';
 		};
 		
+		var formatTaskData = function(task) {
+			return formatCustomData(task, $scope.conf.taskAdditionalFields);	
+		};
+		
+		var formatProcData = function(proc) {
+			return formatCustomData(proc, $scope.conf.procAdditionalFields);
+		};
 		
 		var toPy = function(value, pytype) {
 			if(pytype == "float" || pytype == "int")
@@ -81,19 +88,34 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ", deadline=" + task.deadline
 				+ ", task_type=" + getType(task)
 				+ ", followed_by=" + follower(task)
-				+ ", data=" + formatCustomData(task)
+				+ ", data=" + formatTaskData(task)
 				+ ", wcet=" + task.wcet + ");\n";
 		}
 		// Add processors
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
 			var proc = $scope.conf.processors[i];
-			script += "configuration.add_processor(name=\"" + proc.name 
+			script += "configuration.proc_info_list.append(ProcInfo(";
+			script += proc.id + ", ";
+			script += '"' + proc.name + "\", ";
+			script += "cs_overhead=" + pyNumber(proc.csOverhead) + ", ";
+			script += "cl_overhead=" + pyNumber(proc.clOverhead) + ", ";
+			script += "speed = " + pyNumber(proc.speed, 1.0) + ", ";
+			script += "data = " + formatProcData(proc);
+			script += "));\n";
+			/*script += "configuration.add_processor(name=\"" + proc.name 
 				+ "\", identifier=" + proc.id 
 				+ ", cs_overhead=" + pyNumber(proc.csOverhead)
-				+ ", cl_overhead=" + pyNumber(proc.csOverhead)
+				+ ", cl_overhead=" + pyNumber(proc.clOverhead)
 				+ ", speed=" + pyNumber(proc.speed, 1.0)
-				+ ");\n";
+				+ ");\n";*/
 		}
+		
+		/*
+		        proc = ProcInfo(
+            identifier, name, cs_overhead, cl_overhead, migration_overhead,
+            speed)
+        self.proc_info_list.append(proc)*/
+		
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
 		
