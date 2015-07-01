@@ -8,7 +8,11 @@
 				<h4 class="modal-title">Errors</h4>
 			</div>
 			<div class="modal-body">
-				<span ng-repeat="log in schedErrorLogs">{{log}}</span>
+				<div class="list-group">
+					<div 
+						class="list-group-item {{$even ? 'list-group-item-success' : 'list-group-item-danger'}}" 
+						ng-repeat="log in schedErrorLogs track by $index">{{log}}</div>
+				</div>
 			</div>
 		    <div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

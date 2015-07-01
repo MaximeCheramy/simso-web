@@ -12,7 +12,12 @@
 		</span>
 		
 		<span ng-show="schedHasErrors" ng-hide="!shedHasErrors">
-			<button onclick="$('#modalSchedErrorLog').modal('show'); " class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-error"></span>Show errors</button>
+			<button onclick="$('#modalSchedErrorLog').modal('show'); "
+		    class="btn btn-default btn-danger" 
+			ng-disabled="!pypyready">
+					<span class="glyphicon glyphicon-error"></span>
+					Show errors
+			</button>
 		</span>
 		<div ng-include="'partial/config-errors-modal.html'"></div>
 	</p>

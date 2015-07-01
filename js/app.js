@@ -112,14 +112,17 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	this.pypyready = false;
 	this.pythonFiles = pythonFiles;
 	this.vm = new PyPyJS();
+	
+	// Python's 'print' is redirected here.
 	this.vm.stdout = this.vm.stderr = function(data) {
+		console.log("Python print : ");
+		console.log(data);
 		logsService.logs.push(data);
 	};
 	
 	// Function called to log errors that happen within the 
 	// schedulers.
 	this.logSchedulerError = function(error) {
-		console.log("Sched error : " + error);
 		logsService.schedErrorLogs.push(error);
 	};
 	

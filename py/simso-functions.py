@@ -77,9 +77,11 @@ def run():
         model.run_model()
         print("Successfully run simulation")
     except Exception, err:
-        print("Simulation failed")
-        errorLogger("Error running simulation : ", str(sys.exc_info()[0]))
-        errorLogger("Traceback : " + str(traceback.format_exc()))
+        errorLogger("Error running simulation : " + str(sys.exc_info()[0]))
+        for line in traceback.format_exc().splitlines():
+            errorLogger(line)
+        
+        # errorLogger(str(traceback.format_exc()))
         return
         
     for log in model.logs:
