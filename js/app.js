@@ -68,8 +68,8 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			duration: othis.duration,
 			tasks: othis.tasks.slice(),
 			processors: othis.processors.slice(),
-			scheduler_class: othis.scheduler_class.slice(),
-			scheduler_list: othis.scheduler_list.slice(),
+			scheduler_class: othis.scheduler_class,
+			scheduler_list: othis.scheduler_list,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			// Aggregates all gantt items
 			all_gantt_items: $.merge(this.tasks.map(function(task) { 

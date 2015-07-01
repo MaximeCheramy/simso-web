@@ -3,8 +3,11 @@
 		<div class="form-group">
 			<label for="duration" class="control-label col-sm-2">Scheduler:</label>
 			<div class="col-sm-4">
-			<input class="form-control input-sm" ng-model="conf.scheduler_class"></input>
+				<select class="form-control" ng-model="conf.scheduler_class" ng-options="sched.display_name for sched in conf.scheduler_list">
+				</select>
 			</div>
+			
+
 		</div>
 	</form>
 </div>
