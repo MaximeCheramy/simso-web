@@ -7,9 +7,11 @@ function(confService, logsService, pypyService, $scope) {
 	$scope.pypyService = pypyService;
 	$scope.pypyready = pypyService.pypyready;
 	$scope.schedHasErrors = false;
+	$scope.schedRun = false;
 	$scope.setSchedErrors = function(value) {
 		$scope.$apply(function() {
 			$scope.schedHasErrors = value;
+			$scope.schedRun = true;
 		});
 	};
 	if (!$scope.pypyready) {

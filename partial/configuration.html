@@ -16,9 +16,11 @@
 		<div ng-include="'partial/config-errors-modal.html'"></div>
 	</p>
 			
-	<div ng-show="schedHasErrors" ng-hide="!shedHasErrors" class="alert alert-danger" role="alert">
-			
-			<span ng-show="schedHasErrors" ng-hide="!shedHasErrors" style="margin-right: 1em">
+	<div ng-show="!schedHasErrors && schedRun" class="alert alert-success" role="alert">
+			Simulation successfull.
+	</div>
+	<div ng-show="schedHasErrors" class="alert alert-danger" role="alert">
+			<span style="margin-right: 1em">
 				<button onclick="$('#modalSchedErrorLog').modal('show'); "
 			    class="btn btn-default btn-danger">
 						<span class="glyphicon glyphicon-error"></span>
