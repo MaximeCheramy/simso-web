@@ -1,6 +1,7 @@
 
 <div id="confContainer" class="container">
 	<p style="text-align:right">
+				
 		<span ng-if="!pypyready">
 			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
 		</span>
@@ -11,16 +12,21 @@
 			<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
 		</span>
 		
-		<span ng-show="schedHasErrors" ng-hide="!shedHasErrors">
-			<button onclick="$('#modalSchedErrorLog').modal('show'); "
-		    class="btn btn-default btn-danger" 
-			ng-disabled="!pypyready">
-					<span class="glyphicon glyphicon-error"></span>
-					Show errors
-			</button>
-		</span>
+
 		<div ng-include="'partial/config-errors-modal.html'"></div>
 	</p>
+			
+	<div ng-show="schedHasErrors" ng-hide="!shedHasErrors" class="alert alert-danger" role="alert">
+			
+			<span ng-show="schedHasErrors" ng-hide="!shedHasErrors" style="margin-right: 1em">
+				<button onclick="$('#modalSchedErrorLog').modal('show'); "
+			    class="btn btn-default btn-danger">
+						<span class="glyphicon glyphicon-error"></span>
+						Show errors
+				</button>
+			</span>
+			An error has occured during the simulation. Please click the 'Show errors' button for more details.
+	</div>
 	<conf-panel title="'General'" html="'config-general.html'"></conf-panel>
 	<conf-panel title="'Scheduler'" html="'config-scheduler.html'"></conf-panel>
 	<conf-panel title="'Tasks'" html="'config-tasks.html'"></conf-panel>
