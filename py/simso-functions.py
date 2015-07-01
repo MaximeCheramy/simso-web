@@ -1,6 +1,8 @@
 from simso.core import Model
 from simso.configuration import Configuration
 from simso.core import JobEvent, ProcEvent
+import sys
+import traceback
 import js
 
 def change_observation_window(window):
@@ -66,9 +68,17 @@ def run():
     
     # Runs the model
     configuration.check_all()
-    model = Model(configuration)
-    model.run_model()
-    
+    print("Configuration OK")
+    try:
+        model = Model(configuration)
+        model.run_model()
+        print("Successfully run simulation")
+    except Exception, err:
+        print("Error running simulation : ", str(sys.exc_info()[0]))
+        print("Traceback : " + str(traceback.format_exc()))
+        #print("Traceback : " +str(traceback.print_exc()))
+        return
+        
     for log in model.logs:
         print(log)
     

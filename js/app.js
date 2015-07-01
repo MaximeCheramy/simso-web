@@ -53,6 +53,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
 	];
 	this.taskAdditionalFields = [];
+	this.schedAdditionalFields = [];
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
@@ -71,6 +72,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			scheduler_class: othis.scheduler_class,
 			scheduler_list: othis.scheduler_list,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
+			schedAdditionalFields: othis.schedAdditionalFields.slice(),
 			// Aggregates all gantt items
 			all_gantt_items: $.merge(this.tasks.map(function(task) { 
 					return {'id': task.id, 'name':task.name, 'type':'task' };
@@ -90,6 +92,7 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	this.vm = new PyPyJS();
 	this.vm.stdout = this.vm.stderr = function(data) {
 		logsService.logs.push(data);
+		console.log(data);
 	};
 	this.pythonFiles = pythonFiles;
 	var othis = this;

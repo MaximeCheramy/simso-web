@@ -288,12 +288,7 @@ simsoControllers.controller('ConfigTasksAddFieldCtrl',
 ['$scope', '$timeout',
 function($scope, $timeout)  {
 	
-	var typemap = {
-		'string': ['string'],
-		'int': ['number', simsoApp.correctors.isInt],
-		'float': ['number'],
-		'bool': ['boolean'],
-	};
+	var typemap = simsoApp.correctors.typemap;
 	
 	// Updates the grid's column to include additional fields.
 	$scope.updateColumns = function()

@@ -56,9 +56,19 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 			}
 			return "{" + data.join(',') + '}';
 		};
+		
+		
+		var toPy = function(value, pytype) {
+			if(pytype == "float" || pytype == "int")
+				return value;
+			else if(pytype == "bool")
+				return value == "true" ? "True" : "False";
+			else
+				return '"' + value + '"';
+		};
 		// Global
-		script += "configuration.duration = " + $scope.conf.duration + ";";
-		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";";
+		script += "configuration.duration = " + $scope.conf.duration + ";\n";
+		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
 		// Add tasks
 		for (var i = 0; i < $scope.conf.tasks.length; i++) {
 			var task = $scope.conf.tasks[i];
@@ -72,7 +82,7 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ", task_type=" + getType(task)
 				+ ", followed_by=" + follower(task)
 				+ ", data=" + formatCustomData(task)
-				+ ", wcet=" + task.wcet + ");";
+				+ ", wcet=" + task.wcet + ");\n";
 		}
 		// Add processors
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
@@ -82,10 +92,19 @@ simsoControllers.controller('configurationCtrl', ['confService', 'logsService', 
 				+ ", cs_overhead=" + pyNumber(proc.csOverhead)
 				+ ", cl_overhead=" + pyNumber(proc.csOverhead)
 				+ ", speed=" + pyNumber(proc.speed, 1.0)
-				+ ");";
+				+ ");\n";
 		}
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
+		
+		// Additional scheduler fields.
+		script += "configuration.scheduler_info.data = {};\n";
+		for(var i = 0; i < $scope.conf.schedAdditionalFields.length; i++) {
+			var field = $scope.conf.schedAdditionalFields[i];
+			script += "configuration.scheduler_info.data[\"" + field.name + "\"] = " + toPy(field.value, field.type) + ";\n";
+		}
+		
+		
 		script += "run()";
 		console.log(script);
 		pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
