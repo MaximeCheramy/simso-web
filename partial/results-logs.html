@@ -1,0 +1,23 @@
+<div class="panel-body"  ng-controller="ResultsLogsControler">
+	<div class="tab-content">
+		<table class="table table-hover" >
+			<thead>
+				<tr>
+					<th>Date (cycles)</th>
+					<th>Date (ms)</th>
+					<th>Message</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="log in logService.schedEventLogs track by $index" 
+					ng-show="log.date_ms >= conf.window.startDate && log.date_ms <= conf.window.endDate"
+					ng-class="log.is_kernel_code ? 'success' : 'warning'"
+					>
+					<td>{{log.date_cycles}}</td>
+					<td>{{log.date_ms}}</td>
+					<td>{{log.message}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
