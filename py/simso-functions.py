@@ -19,7 +19,25 @@ def update_results(model):
     """Communicates all results to the 'python' global variable of js"""
     js.globals["python"]["results-general"] = aggregate_general_results(model)
     js.globals["python"]["results-processors"] = aggregate_processor_results(model)
+    js.globals["python"]["results-scheduler"] = aggregate_scheduler_results(model)
+
+def aggregate_scheduler_results(model):
+    res = model.results.scheduler
+    timers = model.results.timers
+    timersJs = []
     
+    for proc, value in timers.items():
+        timersJs.append({'name':proc.name, 'value':value})
+    
+    return {
+        'schedule_overhead' : res.schedule_overhead,
+        'activate_overhead' : res.activate_overhead,
+        'terminate_overhead' : res.terminate_overhead,
+        'schedule_count' : res.schedule_count,
+        'activate_count' : res.activate_count,
+        'terminate_count' : res.terminate_count,
+        'timers' : timersJs
+    }
 def aggregate_processor_results(model):
     """Gets an array containing the data to put in the 'Processors' tab of the result page"""
     procs = []
@@ -77,6 +95,7 @@ def run():
         model = Model(configuration)
         model.run_model()
         print("Successfully run simulation")
+      
     except Exception, err:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         error = traceback.format_exception_only(exc_type, exc_value)[0]

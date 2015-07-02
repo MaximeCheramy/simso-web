@@ -1,0 +1,53 @@
+<div>
+	<div class="list-group">
+		<div class="list-group-item">
+			<h4 class="list-group-item-heading">Scheduling overhead</h4>
+			<table class="table table-hover table-striped table-bordered">
+				<tbody>
+					<tr>
+						<td style="width: 10em">Schedule overhead</td>
+						<td style="width: 20em">{{python['results-scheduler'].schedule_overhead}}</td>
+					</tr>
+					<tr>
+						<td>on_activate overhead</td>
+						<td>{{python['results-scheduler'].activate_overhead}}</td>
+					</tr>
+					<tr>
+						<td>on_terminate overhead</td>
+						<td>{{python['results-scheduler'].terminate_overhead}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="list-group-item">
+			<h4 class="list-group-item-heading">Scheduling events</h4>
+			<table class="table table-hover table-striped table-bordered">
+				<tbody>
+					<tr>
+						<td style="width: 10em">Schedule count</td>
+						<td style="width: 20em">{{python['results-scheduler'].schedule_count}}</td>
+					</tr>
+					<tr>
+						<td>on_activate count</td>
+						<td>{{python['results-scheduler'].activate_count}}</td>
+					</tr>
+					<tr>
+						<td>on_terminate count</td>
+						<td>{{python['results-scheduler'].terminate_count}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="list-group-item">
+			<h4 class="list-group-item-heading">Timers</h4>
+			<table class="table table-hover table-striped table-bordered">
+				<tbody>
+					<tr ng-repeat="timer in python['results-scheduler'].timers">
+						<td style="width: 10em">{{timer.name}}</td>
+						<td style="width: 20em">{{timer.value}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
