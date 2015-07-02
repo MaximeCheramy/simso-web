@@ -25,7 +25,7 @@ simsoControllers.controller('HeaderController', ['logsService', '$scope', '$root
 simsoControllers.controller('resultsCtrl', ['logsService', 'pypyService', '$scope', 'confService', 
 function(logsService, pypyService, $scope, confService) {
 	
-	$scope.logs = logsService.logs;
+	$scope.logService = logsService;
 	$scope.vm = pypyService.vm;
 	$scope.conf = confService;
 	$scope.python = python;

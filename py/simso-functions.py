@@ -68,6 +68,7 @@ def run():
     # Init
     js.globals["python"]["sim-success"] = False
     errorLogger = js.globals["python"]["logSchedulerError"];
+    eventLogger = js.globals["python"]["logSchedulerEvent"];
     
     # Runs the model
     configuration.check_all()
@@ -98,7 +99,15 @@ def run():
         return
         
     for log in model.logs:
-        print(log)
+        date_cycles, tup = log
+        message, isKernelCode = tup
+        date_ms = date_cycles / model.cycles_per_ms;
+        eventLogger({
+            'date_cycles' : date_cycles,
+            'date_ms' : date_ms,
+            'message' : message,
+            'is_kernel_code' : isKernelCode
+        })
     
     # Shares results with other python scripts.
     globs["model"] = model

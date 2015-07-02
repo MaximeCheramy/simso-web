@@ -104,6 +104,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 
 simsoApp.service("logsService", function() {
 	this.logs = [];
+	this.schedEventLogs = [];
 	this.schedErrorLogs = [];
 });
 
@@ -116,7 +117,6 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	// Python's 'print' is redirected here.
 	this.vm.stdout = this.vm.stderr = function(data) {
 		console.log("Python print : ");
-		console.log(data);
 		logsService.logs.push(data);
 	};
 	
@@ -126,8 +126,14 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 		logsService.schedErrorLogs.push(error);
 	};
 	
-	python["logSchedulerError"] = this.logSchedulerError;
+	// Function called to log events that happen within the 
+	// scheduler
+	this.logSchedulerEvent = function(event) {
+		logsService.schedEventLogs.push(event);
+	};
 	
+	python["logSchedulerError"] = this.logSchedulerError;
+	python["logSchedulerEvent"] = this.logSchedulerEvent;
 	
 	// File execution with error output
 	this.safe_execfile = function(file) {
