@@ -31,6 +31,7 @@ def update_results(model):
     js.globals["python"]["results-processors"] = aggregate_processor_results(model)
     js.globals["python"]["results-scheduler"] = aggregate_scheduler_results(model)
     js.globals["python"]["results-tasks-general"] = aggregate_task_results(model)
+    js.globals["python"]["results-tasks-jobs"] = aggregate_job_results(model)
 
 def aggregate_scheduler_results(model):
     res = model.results.scheduler
@@ -122,6 +123,7 @@ def get_metrics(model, field, metrics, transform=lambda x: x):
     
 def aggregate_task_results(model):
     result = model.results
+    cycles_per_ms = float(model.cycles_per_ms)
     data = {}
     data['general'] = {}
     data['general']['computation_time'] = []
@@ -176,8 +178,46 @@ def aggregate_task_results(model):
     data['general']['preemption_count'] = get_metrics(model, 'preemption_count', 
                                          ['min', 'avg', 'max', 'sum'])
     data['general']['response_time'] = get_metrics(model, 'response_time', 
-                                         ['min', 'avg', 'max', 'std_dev'])
+                                         ['min', 'avg', 'max', 'std_dev'],
+                                         lambda x : x / cycles_per_ms)
     return data
+
+
+
+def aggregate_job_results(model):
+    cycles_per_ms = float(model.cycles_per_ms)
+    data = {}
+    # Job data
+    # data['taskId'] = [ { 'name' : ..., 'Activation' : ..., ...}, ... ]
+    for task in model.task_list:
+        arr = []
+        jobs = model.results.tasks[task].jobs
+        for job in jobs:
+            # Spaces are a hacky way to put things in the right column.
+            elem = { '        name' : task.name }
+            elem['       Activation'] = str(job.activation_date / cycles_per_ms)
+            elem['      Start'] = job.start_date / cycles_per_ms if job.start_date is not None else ""
+            elem['     End'] = job.end_date / cycles_per_ms if job.end_date else ""
+            elem['   Deadline'] = job.absolute_deadline / cycles_per_ms
+            elem['deadline_ok'] = job.end_date <= job.absolute_deadline
+            elem['Preemptions'] = job.preemption_count
+            elem['Migrations'] = job.migration_count
+            
+            ok = job.computation_time and job.end_date
+            elem['  Comp. time'] = job.computation_time / cycles_per_ms if ok else ""
+            elem[' Resp. time'] = job.response_time / cycles_per_ms if ok else ""
+            if ok and job.task.n_instr != 0:
+                elem['CPI'] = float(job.computation_time) / job.task.n_instr
+            else:
+                elem['CPI'] = ""  
+                          
+            arr.append(elem)
+        
+        data[str(task.name) + " (" + str(task.identifier) + ")"] = arr
+        
+    
+    return data
+    
     
 def run():
     # Init
@@ -233,11 +273,11 @@ def run():
     try:
         update_results(globs["model"])
     except Exception, err:
+        # !!!!! TEMPORARY ERROR HANDLING / FOR DEBUG ONLY !!!!!
         exc_type, exc_value, exc_traceback = sys.exc_info()
         error = traceback.format_exception_only(exc_type, exc_value)[0]
         tb = traceback.extract_tb(exc_traceback)
         
-        # Puts the error into the error logger.
         errorLogger({
             'type' : 'errorCode',
             'value' : error

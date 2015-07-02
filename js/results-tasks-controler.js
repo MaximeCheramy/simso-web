@@ -6,4 +6,9 @@ function($scope, $controller, $timeout)
 	{
 		return $scope.python['results-tasks-general']['general'];
 	};
+	
+	// Returns all the jobs data
+	$scope.jobs = function() {
+		return $scope.python['results-tasks-jobs'];
+	};
 }]);
