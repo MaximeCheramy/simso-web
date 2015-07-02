@@ -155,6 +155,7 @@ PRELOAD_MODULES = [
     "os",
     "code",
     "traceback",
+    "numpy",
     # Python has some magic to auto-load encodings when they're needed,
     # which doesn't work right if they're not preloaded.
     "encodings.ascii",

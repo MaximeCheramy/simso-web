@@ -1,7 +1,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
 var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 
 	'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection', 
-	'ui.bootstrap.tabs']);
+	'ui.bootstrap.tabs', 'ui.bootstrap.accordion']);
 	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py"],

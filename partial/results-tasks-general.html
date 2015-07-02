@@ -1,5 +1,21 @@
 <div class="panel-body">
 	<div class="tab-content">
-		dede
+		<accordion close-others="true">
+			<accordion-group ng-repeat="(headerName, entries) in general()"
+							 heading="{{headerName}}">
+				<table class="table">
+					<thead>
+						<tr>
+							<th ng-repeat="(key, value) in entries[0]">{{key}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="entry in entries">
+							<th ng-repeat="(key, value) in entry">{{value}}</th>
+						</tr>
+					</tbody>
+				</table>
+			</accordion-group>
+		</accordion>
 	</div>
 </div>

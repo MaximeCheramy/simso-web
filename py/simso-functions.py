@@ -2,9 +2,19 @@ from simso.core import Model
 from simso.configuration import Configuration
 from simso.core import JobEvent, ProcEvent
 from simso.core.Processor import ProcInfo
+from math import sqrt
 import sys
 import traceback
 import js
+
+def average(l):
+    return float(sum(l))/max(len(l), 1)
+
+def std(l):
+    avg = average(l)
+    diffs = [(x - avg)**2 for x in l]
+    return sqrt(average(diffs))
+
 
 def change_observation_window(window):
     """Changes the model observation window.
@@ -20,6 +30,7 @@ def update_results(model):
     js.globals["python"]["results-general"] = aggregate_general_results(model)
     js.globals["python"]["results-processors"] = aggregate_processor_results(model)
     js.globals["python"]["results-scheduler"] = aggregate_scheduler_results(model)
+    js.globals["python"]["results-tasks-general"] = aggregate_task_results(model)
 
 def aggregate_scheduler_results(model):
     res = model.results.scheduler
@@ -38,6 +49,7 @@ def aggregate_scheduler_results(model):
         'terminate_count' : res.terminate_count,
         'timers' : timersJs
     }
+
 def aggregate_processor_results(model):
     """Gets an array containing the data to put in the 'Processors' tab of the result page"""
     procs = []
@@ -81,7 +93,92 @@ def aggregate_general_results(model):
     proc_loads[i]["System load"] = str(overhead)
     return proc_loads
     
-
+def get_metrics(model, field, metrics, transform=lambda x: x):
+    """
+    Returns the given set of metrics for the given field of all the tasks's jobs
+    The field value is transformed using the 'transform' function before being 
+    processed. """
+    funcs = {'min' : lambda l : min(l), 
+             'avg' : lambda l : average(l),
+             'max' : lambda l : max(l),
+             'sum' : lambda l : sum(l),
+             'std_dev' : lambda l : std(l) }
+    data = []
+    result = model.results
+    for task in model.task_list:
+        jobs = result.tasks[task].jobs
+        
+        # Gets the lists of job.field values transformed 
+        # by the given 'transform' function.
+        l = [transform(getattr(job, field)) for job in jobs 
+            if getattr(job, field) is not None and not job.aborted]
+            
+        if l:
+            elem = {' name' : task.name }
+            for m in metrics:
+                elem[m] = funcs[m](l)
+            data.append(elem)
+    return data
+    
+def aggregate_task_results(model):
+    result = model.results
+    data = {}
+    data['general'] = {}
+    data['general']['computation_time'] = []
+    data['general']['task_migrations'] = []
+    
+    # Taken from simso-gui
+    # -- Computation time
+    for curRow, task in enumerate(result.model.task_list):
+        jobs = result.tasks[task].jobs
+        computationTimes = [job.computation_time for job in jobs if
+                            job.computation_time and job.end_date
+                            and not job.aborted]
+        if len(computationTimes) == 0:
+            continue
+        cycles_per_ms = float(result.model.cycles_per_ms)
+        computationMin = min(computationTimes) / cycles_per_ms
+        computationMax = max(computationTimes) / cycles_per_ms
+        computationAvg = average(computationTimes) / cycles_per_ms
+        computationStdDev = std(computationTimes) / cycles_per_ms
+        computationOccupancy = sum(
+            [job.computation_time for job in jobs
+             if job.computation_time],
+            0.0) / result.observation_window_duration
+        
+        data['general']['computation_time'].append({
+          ' name' : task.name,
+          'min' : computationMin,
+          'max' : computationMax,
+          'avg' : computationAvg,
+          'std_dev' : computationStdDev,
+          'occupancy' : computationOccupancy  
+        })
+        
+    # -- Task Migrations
+    sum_ = 0
+    for task in model.task_list:
+        rtask = model.results.tasks[task]
+        data['general']['task_migrations'].append({
+            ' name': task.name,
+            'task_migrations' : str(len(rtask.task_migrations))
+        })
+        sum_ += len(rtask.task_migrations)
+    
+    data['general']['task_migrations'].append({
+        ' name' : 'sum',
+        'task_migrations' : str(sum_)
+    })
+        
+    # -- Others
+    data['general']['migration_count'] = get_metrics(model, 'migration_count', 
+                                         ['min', 'avg', 'max', 'sum'])
+    data['general']['preemption_count'] = get_metrics(model, 'preemption_count', 
+                                         ['min', 'avg', 'max', 'sum'])
+    data['general']['response_time'] = get_metrics(model, 'response_time', 
+                                         ['min', 'avg', 'max', 'std_dev'])
+    return data
+    
 def run():
     # Init
     js.globals["python"]["sim-success"] = False
@@ -133,5 +230,26 @@ def run():
     globs["results"] = model.results
     
     # Shares results with js
-    update_results(globs["model"])
+    try:
+        update_results(globs["model"])
+    except Exception, err:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        error = traceback.format_exception_only(exc_type, exc_value)[0]
+        tb = traceback.extract_tb(exc_traceback)
+        
+        # Puts the error into the error logger.
+        errorLogger({
+            'type' : 'errorCode',
+            'value' : error
+        })
+        for tb_line in tb:
+            filename, line, inn, code = tb_line
+            errorLogger({
+                'type': 'stack',
+                'value' : "  File \"" + filename + "\", line " + str(line) + ", in " + inn,
+                'code' : code
+            })
+        
+        return
+    
     js.globals["python"]["sim-success"] = True
