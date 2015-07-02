@@ -199,7 +199,7 @@ def aggregate_job_results(model):
             elem['      Start'] = job.start_date / cycles_per_ms if job.start_date is not None else ""
             elem['     End'] = job.end_date / cycles_per_ms if job.end_date else ""
             elem['   Deadline'] = job.absolute_deadline / cycles_per_ms
-            elem['deadline_ok'] = job.end_date <= job.absolute_deadline
+            elem['deadline_ok'] = job.end_date is not None and job.end_date <= job.absolute_deadline
             elem['Preemptions'] = job.preemption_count
             elem['Migrations'] = job.migration_count
             

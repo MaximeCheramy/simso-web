@@ -7,15 +7,14 @@
 				<table class="table table-hover table-striped table-bordered">
 					<thead>
 						<tr>
-							<th ng-repeat="(key, value) in jobdata[0]"
-								ng-if="key != deadline_ok"
-								>{{key}}</th>
+							<th ng-repeat="(key, value) in jobdata[0]">{{key}}</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="entry in jobdata"
-							ng-if="key != deadline_ok">
-							<th ng-repeat="(key, value) in entry">{{value}}</th>
+						<tr ng-repeat="entry in jobdata" 
+							ng-class="entry.deadline_ok ? '' : 'warning'"
+							>
+							<th ng-repeat="(key, value) in entry ">{{value}}</th>
 						</tr>
 					</tbody>
 				</table>
