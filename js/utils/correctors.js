@@ -26,7 +26,7 @@ correctors.isInt = function(oldValue, newValue) {
 	return parseInt(newValue);
 };
 // Corrector ensuring the new value is a positive float
-correctors.isInt = function(oldValue, newValue) {
+correctors.isFloat = function(oldValue, newValue) {
 	if(isNaN(newValue))
 		return oldValue;
 	return parseFloat(newValue);
@@ -66,6 +66,7 @@ correctors.typemap = {
 	'int': ['number', correctors.isInt, 'number'],
 	'float': ['number', correctors.isFloat, 'number'],
 	'bool': ['boolean', correctors.isBoolean, 'checkbox'],
+	'file': ['string', correctors.string, 'string']
 };
 
 correctors.toJsType = function(pytype) {
@@ -73,6 +74,7 @@ correctors.toJsType = function(pytype) {
 };
 
 correctors.applyTypeCorrector = function(value, pytype) {
+	console.log(pytype + "... " + correctors.typemap[pytype] + "..." + correctors.typemap.toSource());
 	return correctors.typemap[pytype][1](value, value);
 };
 

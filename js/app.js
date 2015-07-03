@@ -44,16 +44,16 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
 	this.overhead_schedule = 0;
-	this.overhead_on_activate = 0;
-	this.overhead_on_terminate = 0;
+	this.overhead_activate = 0;
+	this.overhead_terminate = 0;
 	this.memory_access_time = 0; // Cache Model only
-	this.etm = "wcet";
 	
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
 		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
 		{'id': 3, 'type': 2, 'name': 'T3', 'activationDate': "-", 'period': "-", 'activationDates':"", 'deadline': 8, 'wcet': 1, 'followedBy': -1},
 	];
+	
 	this.processors = [
 		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}, 
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
@@ -64,22 +64,28 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.taskAdditionalFields = [];
 	this.procAdditionalFields = [];
 	this.cleanAdditionalFields = function(fieldArray, source) {
-		console.log("hello " + fieldArray.toSource());
 		for(var i = 0; i < fieldArray.length; i++) {
 			if(fieldArray[i].from == source) {
 				fieldArray.splice(i, 1);
 				i--;
-				console.log("haha" + i);
 			}
 		}
 	};
 	
-	// Array of : {'name':name, 'type':pytype, 'value':value}
-	this.schedAdditionalFields = [];
 	
+	// -- ETM conf
+	this.etm = null;
+	this.etm_list = [];
+	this.etmAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
+	
+	
+	// -- Scheduler conf
+	this.schedAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
+	
+	
 	// Creates a clone of the variables contained in this service
 	// This is used to get the simulation parameters in the results.
 	var othis = this;
@@ -101,8 +107,8 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			duration_ms: othis.duration_ms,
 			duration: othis.duration,
 			overhead_schedule: othis.overhead_schedule,
-			overhead_on_activate: othis.overhead_on_activate,
-			overhead_on_terminate: othis.overhead_on_terminate,
+			overhead_activate: othis.overhead_activate,
+			overhead_terminate: othis.overhead_terminate,
 			ram_access_time: othis.ram_access_time,
 			tasks: othis.tasks.slice(),
 			processors: othis.processors.slice(),
@@ -111,6 +117,9 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			procAdditionalFields: othis.procAdditionalFields.slice(),
 			schedAdditionalFields: othis.schedAdditionalFields.slice(),
+			etmAdditionalFields: othis.etmAdditionalFields.slice(),
+			etm: othis.etm,
+			etm_list: othis.etm_list,
 			// Aggregates all gantt items
 			all_gantt_items: $.merge(this.tasks.map(function(task) { 
 					return {'id': task.id, 'name':task.name, 'type':'task' };

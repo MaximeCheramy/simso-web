@@ -316,6 +316,7 @@ function($scope, $timeout)  {
 			{
 				name:field.name,
 				type:typemap[field.type][0],
+				display_name: field.display_name || field.name,
 				pytype:field.type,
 				width:120
 			});

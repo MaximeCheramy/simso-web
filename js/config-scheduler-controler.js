@@ -15,7 +15,6 @@ function(confService, pypyService, $scope) {
 		$('#modalSched').modal('show');
 	};
 	
-	
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
 		confService.schedAdditionalFields = [];
@@ -30,7 +29,8 @@ function(confService, pypyService, $scope) {
 			confService.schedAdditionalFields.push(
 			{
 				'name' : field.name,
-			 	'type' : field.type, 
+			 	'type' : field.type,
+				'display_name' : field.display_name || field.name,
 			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type)
 			});
 		}
@@ -41,7 +41,12 @@ function(confService, pypyService, $scope) {
 			
 			// Adds the fields.
 			confService.taskAdditionalFields.push(
-				{'name' : field.name, 'type' : field.type, 'from' : 'scheduler'}
+				{
+					'name' : field.name,
+					'type' : field.type,
+					'display_name' : field.display_name || field.name,
+					'from' : 'scheduler'
+				}
 			);
 			
 			// Puts in default value
@@ -56,7 +61,12 @@ function(confService, pypyService, $scope) {
 			
 			// Adds the fields.
 			confService.procAdditionalFields.push(
-				{'name' : field.name, 'type' : field.type, 'from' : 'scheduler'}
+				{
+					'name' : field.name,
+					'type' : field.type,
+					'display_name' : field.display_name || field.name,
+					'from' : 'scheduler'
+				}
 			);
 			
 			// Puts in default value

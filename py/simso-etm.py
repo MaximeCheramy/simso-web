@@ -62,7 +62,7 @@ js.globals['python']['etm'] = [
 			},
 			{
 				'name' : 'mix',
-				'display_name' : 'Mix',
+				'display_name' : 'MIX',
 				'type' : 'float',
 				'default' : '0.0'
 			},

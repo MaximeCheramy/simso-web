@@ -86,6 +86,16 @@ function(confService, logsService, pypyService, $scope) {
 		// Global
 		script += "configuration.duration = " + $scope.conf.duration + ";\n";
 		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
+		
+		// Etm
+		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\"";
+		
+		// Additional conf fields
+		for(var i = 0; i < $scope.conf.etmAdditionalFields.length; i++) {
+			var field = $scope.conf.etmAdditionalFields[i];
+			script += "configuration." + field.name + " = " + toPy(field.value, field.type);
+		}
+		
 		// Add tasks
 		for (var i = 0; i < $scope.conf.tasks.length; i++) {
 			var task = $scope.conf.tasks[i];
@@ -116,12 +126,16 @@ function(confService, logsService, pypyService, $scope) {
 		
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
+		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";";
+		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overhead_activate + ";";
+		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overhead_terminate + ";";
 		
 		// Additional scheduler fields.
 		script += "configuration.scheduler_info.data = {};\n";
 		for(var i = 0; i < $scope.conf.schedAdditionalFields.length; i++) {
 			var field = $scope.conf.schedAdditionalFields[i];
 			script += "configuration.scheduler_info.data[\"" + field.name + "\"] = " + toPy(field.value, field.type) + ";\n";
+			
 		}
 		
 		
@@ -153,9 +167,6 @@ function(confService, logsService, pypyService, $scope) {
 }]);
 
 
-simsoControllers.controller('ConfigGeneralCtrl', ['confService', '$scope', function(confService, $scope) {
-	$scope.conf = confService;
-}]);
 
 simsoControllers.controller('SchedErrorLogCtrl', 
 ['confService', 'logsService', '$scope', 

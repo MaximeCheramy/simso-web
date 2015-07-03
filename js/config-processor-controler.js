@@ -128,6 +128,7 @@ function($scope, $timeout)  {
 			$scope.gridProcessorsOptions.columnDefs.push(
 			{
 				name:field.name,
+				display_name: field.display_name || field.name,
 				type:typemap[field.type][0],
 				pytype:field.type,
 				width:120
