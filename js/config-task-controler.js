@@ -309,17 +309,35 @@ function($scope, $timeout)  {
 				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
 			
 			// Corrects the current data
-			$scope.gridTasksOptions.data[field.name] = corrector("", $scope.gridTasksOptions.data[field.name]);
+			var tasks = $scope.conf.tasks;
+			for(var j = 0; j < tasks.length; j++) {
+				tasks[j][field.name] = corrector(
+					simsoApp.correctors.defaultValue(field.type),
+					tasks[j][field.name]);
+			}
 			
-			
-			$scope.gridTasksOptions.columnDefs.push(
+			if(field.type == 'file')
 			{
-				name:field.name,
-				type:typemap[field.type][0],
-				display_name: field.display_name || field.name,
-				pytype:field.type,
-				width:120
-			});
+				$scope.gridTasksOptions.columnDefs.push({
+					 enableCellEdit:false,
+					 name: field.name,
+					 cellTemplate:'<input type="file" filecontent="row.entity.' + field.name + '"' +
+					 			   'filename="row.entity.' + field.name + '_"></input></div>',
+					 pytype:field.type,
+					 width: 400,
+				});
+			}
+			else
+			{
+				$scope.gridTasksOptions.columnDefs.push(
+				{
+					name:field.name,
+					type:typemap[field.type][0],
+					display_name: field.display_name || field.name,
+					pytype:field.type,
+					width:120
+				});
+			}
 			
 		}
 		

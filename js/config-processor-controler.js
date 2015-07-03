@@ -124,15 +124,36 @@ function($scope, $timeout)  {
 			// Corrects the current data
 			$scope.gridProcessorsOptions.data[field.name] = corrector("", $scope.gridProcessorsOptions.data[field.name]);
 			
+			// Corrects the current data
+			var procs = $scope.conf.processors;
+			for(var j = 0; j < procs.length; j++) {
+				procs[j][field.name] = corrector(
+					simsoApp.correctors.defaultValue(field.type),
+					procs[j][field.name]);
+			}
 			
-			$scope.gridProcessorsOptions.columnDefs.push(
+			if(field.type == 'file')
 			{
-				name:field.name,
-				display_name: field.display_name || field.name,
-				type:typemap[field.type][0],
-				pytype:field.type,
-				width:120
-			});
+				$scope.gridProcessorsOptions.columnDefs.push({
+					 enableCellEdit:false,
+					 name: field.name,
+					 cellTemplate:'<input type="file" filecontent="row.entity.' + field.name + '"' +
+					 			   'filename="row.entity.' + field.name + '_"></input></div>',
+					 pytype:field.type,
+					 width: 400,
+				});
+			}
+			else
+			{
+				$scope.gridProcessorsOptions.columnDefs.push(
+				{
+					name:field.name,
+					display_name: field.display_name || field.name,
+					type:typemap[field.type][0],
+					pytype:field.type,
+					width:120
+				});
+			}
 			
 		}
 		
