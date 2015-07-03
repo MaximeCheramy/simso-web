@@ -35,7 +35,7 @@ function(confService, logsService, pypyService, $scope) {
 		python["resx_strings"] = [];
 		var stringId = 0;
 		
-		var script = "configuration = Configuration();\n";
+		var script = "configuration = Configuration();\nx";
 		
 		var pyNumber = function(n, defaultValue) {
 			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
@@ -98,7 +98,7 @@ function(confService, logsService, pypyService, $scope) {
 		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
 		
 		// Etm
-		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\";\n";
+		script += "configuration.etm = \"" + $scope.conf.etm.name + "\";\n";
 		
 		// Additional conf fields
 		for(var i = 0; i < $scope.conf.etmAdditionalFields.length; i++) {
