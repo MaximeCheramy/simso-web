@@ -4,7 +4,7 @@ var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers',
 	'ui.bootstrap.tabs', 'ui.bootstrap.accordion']);
 	
 var pythonFiles = { 
-	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py"],
+	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py", "../py/simso-etm.py"],
 	"files" : ["../py/gantt-renderer.py", "../py/simso-functions.py"],
 	"finalize" : "../py/simso-finalize.py"
 };
@@ -43,6 +43,12 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.cycles_per_ms = 1000000;
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
+	this.overhead_schedule = 0;
+	this.overhead_on_activate = 0;
+	this.overhead_on_terminate = 0;
+	this.memory_access_time = 0; // Cache Model only
+	this.etm = "wcet";
+	
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
 		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
@@ -67,7 +73,6 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	// Creates a clone of the variables contained in this service
 	// This is used to get the simulation parameters in the results.
 	var othis = this;
-	
 	this.savedConf = null;
 	
 	// Must be called when the tasks' additional fields are modified.
@@ -85,6 +90,10 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			cycles_per_ms: othis.cycles_per_ms,
 			duration_ms: othis.duration_ms,
 			duration: othis.duration,
+			overhead_schedule: othis.overhead_schedule,
+			overhead_on_activate: othis.overhead_on_activate,
+			overhead_on_terminate: othis.overhead_on_terminate,
+			ram_access_time: othis.ram_access_time,
 			tasks: othis.tasks.slice(),
 			processors: othis.processors.slice(),
 			scheduler_class: othis.scheduler_class,
