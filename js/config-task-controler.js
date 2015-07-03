@@ -304,9 +304,7 @@ function($scope, $timeout)  {
 			var field = $scope.conf.taskAdditionalFields[i];
 			// function($scope, gridApi, field, corrector)
 			var corrector = typemap[field.type][1] || simsoApp.correctors.string;
-			
-			if(typeof corrector != "undefined")
-				simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
+			simsoApp.correctors.register($scope, $scope.gridApi, field.name, corrector);
 			
 			// Corrects the current data
 			var tasks = $scope.conf.tasks;
