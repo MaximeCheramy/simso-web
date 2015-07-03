@@ -296,10 +296,11 @@ simsoApp.directive("filecontent", [function () {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
-						if(scope.filecontent)
-                    		scope.filecontent = loadEvent.target.result;
-						if(scope.filename)
+	                   	scope.filecontent = loadEvent.target.result;
+						if(scope.filename) {
+							console.log("FILECONTENT CHANGE !!!");
 							scope.filename = changeEvent.target.files[0];
+						}
                     });
                 };
                 reader.readAsText(changeEvent.target.files[0]);
