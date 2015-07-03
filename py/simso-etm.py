@@ -76,7 +76,7 @@ js.globals['python']['etm'] = [
 			{
 				'name' : 'preemption_cost',
 				'display_name' : 'Preemption Cost',
-				'type' : 'int',
+				'type' : 'float',
 				'default' : '0'
 			}
 		]
