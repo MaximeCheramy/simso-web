@@ -283,3 +283,22 @@ simsoApp.directive('confPanel', function() {
 		templateUrl: 'confPanel.html'
 	};	
 });
+
+simsoApp.directive("filecontent", [function () {
+    return {
+        scope: {
+            filecontent: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                var reader = new FileReader();
+                reader.onload = function (loadEvent) {
+                    scope.$apply(function () {
+                        scope.filecontent = loadEvent.target.result;
+                    });
+                };
+                reader.readAsText(changeEvent.target.files[0]);
+            });
+        }
+    };
+}]);
