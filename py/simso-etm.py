@@ -52,7 +52,7 @@ js.globals['python']['etm'] = [
 				'name' : 'base_cpi',
 				'display_name' : 'Base CPI',
 				'type' : 'float',
-				'default' : '0.0'
+				'default' : '1.0'
 			},
 			{
 				'name' : 'n_instr',
@@ -64,7 +64,7 @@ js.globals['python']['etm'] = [
 				'name' : 'mix',
 				'display_name' : 'MIX',
 				'type' : 'float',
-				'default' : '0.0'
+				'default' : '0.5'
 			},
 			{
 				'name' : 'sdp',
@@ -76,7 +76,7 @@ js.globals['python']['etm'] = [
 			{
 				'name' : 'preemption_cost',
 				'display_name' : 'Preemption Cost',
-				'type' : 'float',
+				'type' : 'int',
 				'default' : '0'
 			}
 		]
