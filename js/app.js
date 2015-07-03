@@ -284,6 +284,7 @@ simsoApp.directive('confPanel', function() {
 	};	
 });
 
+// For use with <input type="file" filecontent="scopeVariable">
 simsoApp.directive("filecontent", [function () {
     return {
         scope: {
