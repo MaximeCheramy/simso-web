@@ -62,20 +62,22 @@ correctors.isListOfPositiveFloats = function(oldValue, newValue) {
 
 // maps python types to js types and their correctors
 correctors.typemap = {
-	'string': ['string', correctors.string, 'string'],
-	'int': ['number', correctors.isInt, 'number'],
-	'float': ['number', correctors.isFloat, 'number'],
-	'bool': ['boolean', correctors.isBoolean, 'checkbox'],
-	'file': ['string', correctors.string, 'file']
+	'string': ['string', correctors.string, 'string', ""],
+	'int': ['number', correctors.isInt, 'number', 0],
+	'float': ['number', correctors.isFloat, 'number', 0.0],
+	'bool': ['boolean', correctors.isBoolean, 'checkbox', false],
+	'file': ['string', correctors.string, 'file', ""]
 };
 
 correctors.toJsType = function(pytype) {
 	return correctors.typemap[pytype][0];
 };
+correctors.defaultValue = function(pytype) {
+	return correctors.typemap[pytype][3];
+};
 
 correctors.applyTypeCorrector = function(value, pytype) {
-	console.log(pytype + "... " + correctors.typemap[pytype] + "..." + correctors.typemap.toSource());
-	return correctors.typemap[pytype][1](value, value);
+	return correctors.typemap[pytype][1](correctors.defaultValue(pytype), value);
 };
 
 correctors.toJsInputType = function(pytype) {
