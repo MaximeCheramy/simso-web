@@ -30,7 +30,13 @@ function(confService, logsService, pypyService, $scope) {
 	};
 	
 	$scope.run = function() {
+		// Files and strings are directly passed to python to avoid escape sequence
+		// issues.
+		python["resx_strings"] = [];
+		var stringId = 0;
+		
 		var script = "configuration = Configuration();";
+		
 		var pyNumber = function(n, defaultValue) {
 			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
 			return isNaN(n) ? defaultValue : n;
@@ -80,11 +86,13 @@ function(confService, logsService, pypyService, $scope) {
 				return value;
 			else if(pytype == "bool")
 				return value == "true" ? "True" : "False";
-			else if(pytype == "file")
-				return '"TODO : escape file caracter sequence"';
 			else
-				return '"' + value + '"';
+			{
+				python["resx_strings"].push(value);
+				return 'js.globals["python"]["resx_strings"]['+ stringId++ + ']';
+			}
 		};
+		
 		// Global
 		script += "configuration.duration = " + $scope.conf.duration + ";\n";
 		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
