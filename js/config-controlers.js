@@ -98,7 +98,7 @@ function(confService, logsService, pypyService, $scope) {
 		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
 		
 		// Etm
-		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\"";
+		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\";";
 		
 		// Additional conf fields
 		for(var i = 0; i < $scope.conf.etmAdditionalFields.length; i++) {
