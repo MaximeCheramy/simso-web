@@ -35,7 +35,7 @@ function(confService, logsService, pypyService, $scope) {
 		python["resx_strings"] = [];
 		var stringId = 0;
 		
-		var script = "configuration = Configuration();";
+		var script = "configuration = Configuration();\n";
 		
 		var pyNumber = function(n, defaultValue) {
 			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
@@ -98,12 +98,12 @@ function(confService, logsService, pypyService, $scope) {
 		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
 		
 		// Etm
-		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\";";
+		script.etm += "configuration.etm = \"" + $scope.conf.etm.name + "\";\n";
 		
 		// Additional conf fields
 		for(var i = 0; i < $scope.conf.etmAdditionalFields.length; i++) {
 			var field = $scope.conf.etmAdditionalFields[i];
-			script += "configuration." + field.name + " = " + toPy(field.value, field.type);
+			script += "configuration." + field.name + " = " + toPy(field.value, field.type) + ";\n";
 		}
 		
 		// Add tasks
@@ -135,10 +135,10 @@ function(confService, logsService, pypyService, $scope) {
 		}
 		
 		// Set scheduler
-		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';";
-		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";";
-		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overhead_activate + ";";
-		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overhead_terminate + ";";
+		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
+		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";\n";
+		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overhead_activate + ";\n";
+		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overhead_terminate + ";\n";
 		
 		// Additional scheduler fields.
 		script += "configuration.scheduler_info.data = {};\n";
