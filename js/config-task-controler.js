@@ -318,7 +318,7 @@ function($scope, $timeout)  {
 			{
 				$scope.gridTasksOptions.columnDefs.push({
 					 enableCellEdit:false,
-					 name: field.name,
+					 name: field.display_name || field.name,
 					 cellTemplate:'<input type="file" filecontent="row.entity.' + field.name + '"' +
 					 			   'filename="row.entity.' + field.name + '_"></input></div>',
 					 pytype:field.type,
