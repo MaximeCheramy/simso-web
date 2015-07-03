@@ -226,9 +226,9 @@ def run():
     eventLogger = js.globals["python"]["logSchedulerEvent"];
     
     # Runs the model
-    configuration.check_all()
-    print("Configuration OK")
     try:
+        configuration.check_all()
+        print("Configuration OK")
         model = Model(configuration)
         model.run_model()
         print("Successfully run simulation")
