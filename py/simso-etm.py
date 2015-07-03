@@ -66,12 +66,12 @@ js.globals['python']['etm'] = [
 				'type' : 'float',
 				'default' : '0.0'
 			},
-			# {
-			# 	'name' : 'sdp',
-			# 	'display_name' : 'Instructions'
-			# 	'type' : 'file',
-			# 	'default' : '0'
-			# },
+			{
+				'name' : 'sdp',
+				'display_name' : 'Stack file',
+				'type' : 'file',
+				'default' : ''
+			},
 			
 			{
 				'name' : 'preemption_cost',
