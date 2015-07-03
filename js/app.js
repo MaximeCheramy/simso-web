@@ -59,10 +59,20 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
 	];
 	
-	// Array of {'name':fieldName, 'type':fieldType }
+	// Array of {'name':fieldName, 'type':fieldType, 'from' : 'scheduler' | 'etm' }
 	// The value is in this.tasks.fieldName
 	this.taskAdditionalFields = [];
 	this.procAdditionalFields = [];
+	this.cleanAdditionalFields = function(fieldArray, source) {
+		console.log("hello " + fieldArray.toSource());
+		for(var i = 0; i < fieldArray.length; i++) {
+			if(fieldArray[i].from == source) {
+				fieldArray.splice(i, 1);
+				i--;
+				console.log("haha" + i);
+			}
+		}
+	};
 	
 	// Array of : {'name':name, 'type':pytype, 'value':value}
 	this.schedAdditionalFields = [];

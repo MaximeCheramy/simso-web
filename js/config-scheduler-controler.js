@@ -19,8 +19,8 @@ function(confService, pypyService, $scope) {
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
 		confService.schedAdditionalFields = [];
-		confService.taskAdditionalFields.splice(0, confService.taskAdditionalFields.length);
-		confService.procAdditionalFields.splice(0, confService.procAdditionalFields.length);
+		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'scheduler');
+		confService.cleanAdditionalFields(confService.procAdditionalFields, 'scheduler');
 		var sched = confService.scheduler_class;
 		
 		
@@ -41,7 +41,7 @@ function(confService, pypyService, $scope) {
 			
 			// Adds the fields.
 			confService.taskAdditionalFields.push(
-				{'name' : field.name, 'type' : field.type}
+				{'name' : field.name, 'type' : field.type, 'from' : 'scheduler'}
 			);
 			
 			// Puts in default value
@@ -56,7 +56,7 @@ function(confService, pypyService, $scope) {
 			
 			// Adds the fields.
 			confService.procAdditionalFields.push(
-				{'name' : field.name, 'type' : field.type}
+				{'name' : field.name, 'type' : field.type, 'from' : 'scheduler'}
 			);
 			
 			// Puts in default value
