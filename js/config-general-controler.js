@@ -11,7 +11,7 @@ function(confService, pypyService, $scope) {
 	
 	// Called when the ETM changes
 	$scope.onEtmChanged = function() {
-		confService.etmAdditionalFields = [];
+		confService.cleanAdditionalFields(confService.etmAdditionalFields, 'etm');
 		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'etm');
 		confService.cleanAdditionalFields(confService.procAdditionalFields, 'etm');
 		var etm = confService.etm;
@@ -25,7 +25,8 @@ function(confService, pypyService, $scope) {
 				'name' : field.name,
 				'display_name' : field.display_name || field.name,
 			 	'type' : field.type, 
-			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type)
+			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type),
+				'from' : 'etm'
 			});
 		}
 		

@@ -66,7 +66,7 @@ correctors.typemap = {
 	'int': ['number', correctors.isInt, 'number'],
 	'float': ['number', correctors.isFloat, 'number'],
 	'bool': ['boolean', correctors.isBoolean, 'checkbox'],
-	'file': ['string', correctors.string, 'string']
+	'file': ['string', correctors.string, 'file']
 };
 
 correctors.toJsType = function(pytype) {

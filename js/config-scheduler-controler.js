@@ -17,7 +17,7 @@ function(confService, pypyService, $scope) {
 	
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
-		confService.schedAdditionalFields = [];
+		confService.cleanAdditionalFields(confService.schedAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.procAdditionalFields, 'scheduler');
 		var sched = confService.scheduler_class;
@@ -31,7 +31,8 @@ function(confService, pypyService, $scope) {
 				'name' : field.name,
 			 	'type' : field.type,
 				'display_name' : field.display_name || field.name,
-			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type)
+			 	'value' : simsoApp.correctors.applyTypeCorrector(field.default, field.type),
+				'from' : 'scheduler'
 			});
 		}
 		

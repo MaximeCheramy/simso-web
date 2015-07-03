@@ -16,7 +16,8 @@ var createFieldEditorModal = function($scope, id, title, additionalFieldsArray, 
 		{ name:'string' },
 		{ name:'int' },
 		{ name:'float' },
-		{ name:'bool' }
+		{ name:'bool' },
+		{ name:'file' }
 	];
 	
 	$scope.modal.grid = {

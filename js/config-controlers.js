@@ -80,6 +80,8 @@ function(confService, logsService, pypyService, $scope) {
 				return value;
 			else if(pytype == "bool")
 				return value == "true" ? "True" : "False";
+			else if(pytype == "file")
+				return '"TODO : escape file caracter sequence"';
 			else
 				return '"' + value + '"';
 		};
