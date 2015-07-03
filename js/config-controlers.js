@@ -35,7 +35,7 @@ function(confService, logsService, pypyService, $scope) {
 		python["resx_strings"] = [];
 		var stringId = 0;
 		
-		var script = "configuration = Configuration();\nx";
+		var script = "configuration = Configuration();\n";
 		
 		var pyNumber = function(n, defaultValue) {
 			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
