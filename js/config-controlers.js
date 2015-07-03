@@ -62,7 +62,7 @@ function(confService, logsService, pypyService, $scope) {
 				if(typeof(obj[attr.name]) == "undefined")
 					continue;
 					
-				data.push("\"" + attr.name + "\" : \"" + obj[attr.name] + "\"");
+				data.push("\"" + attr.name + "\" : " + toPy(obj[attr.name], attr.type));
 			}
 			return "{" + data.join(',') + '}';
 		};
