@@ -288,14 +288,18 @@ simsoApp.directive('confPanel', function() {
 simsoApp.directive("filecontent", [function () {
     return {
         scope: {
-            filecontent: "="
+            filecontent: "=",
+			filename:"="
         },
         link: function (scope, element, attributes) {
             element.bind("change", function (changeEvent) {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
-                        scope.filecontent = loadEvent.target.result;
+						if(scope.filecontent)
+                    		scope.filecontent = loadEvent.target.result;
+						if(scope.filename)
+							scope.filename = changeEvent.target.files[0];
                     });
                 };
                 reader.readAsText(changeEvent.target.files[0]);
