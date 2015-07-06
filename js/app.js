@@ -149,7 +149,7 @@ simsoApp.service("pypyService", ['logsService', function(logsService) {
 	
 	// Python's 'print' is redirected here.
 	this.vm.stdout = this.vm.stderr = function(data) {
-		console.log("Python print : ");
+		console.log("Python print : " + data);
 		logsService.logs.push(data);
 	};
 	
