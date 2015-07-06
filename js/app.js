@@ -59,6 +59,10 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
 	];
 	
+	this.caches = [
+		{ 'id': 1, 'name': 'Cache 1', 'size': 0, 'acces_time': 0, 'miss_penalty': 0 }
+	];
+	
 	// Array of {'name':fieldName, 'type':fieldType, 'from' : 'scheduler' | 'etm' }
 	// The value is in this.tasks.fieldName
 	this.taskAdditionalFields = [];
@@ -112,6 +116,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			ram_access_time: othis.ram_access_time,
 			tasks: othis.tasks.slice(),
 			processors: othis.processors.slice(),
+			caches: othis.caches.slice(),
 			scheduler_class: othis.scheduler_class,
 			scheduler_list: othis.scheduler_list,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),

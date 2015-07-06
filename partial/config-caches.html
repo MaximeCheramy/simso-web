@@ -1,0 +1,15 @@
+<div class="panel-body" ng-controller="ConfigCachesCtrl">
+	<div ui-grid="gridCachesOptions" ui-grid-edit ui-grid-selection></div>
+	<form class="form-horizontal" role="form" style="margin: 1em">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default btn-sm" ng-click="addNewCache()">
+				<span class="glyphicon glyphicon-plus"></span>
+				Add cache
+			</button>
+			<button type="button" class="btn btn-default btn-sm" ng-click="delCaches()">
+				<span class="glyphicon glyphicon-remove"></span>
+				 Delete selected caches(s)
+			</button>
+		</div>
+	</form>
+</div>

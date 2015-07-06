@@ -133,7 +133,18 @@ function(confService, logsService, pypyService, $scope) {
 			script += "data = " + formatProcData(proc);
 			script += "));\n";
 		}
-		
+
+		// Add caches
+		for (var i = 0; i < $scope.conf.caches.length; i++) {
+			var cache = $scope.conf.caches[i];
+			script += "configuration.caches_list.append(Cache(";
+			script += cache.id + ", ";
+			script += '"' + cache.name + "\", ";
+			script += pyNumber(cache.size) + ", ";
+			script += "0, ";
+			script += pyNumber(cache.access_time) + ", ";
+			script += "));\n";
+		}
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
 		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";\n";
