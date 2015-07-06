@@ -95,16 +95,41 @@ function(confService, $scope) {
 		$scope.selectedCaches = [];
 	};
 
+	// Returns a getter/setter function that gets or sets a value
+	// indicating if the given processor has the given cache
+	// in its cache list.
+	$scope.isAssociated = function(proc, cache) {
+		return function(value) 
+		{
+			if(typeof value != "undefined")
+			{
+				// Setter
+				$scope.toggleCache(proc, cache, value);
+			}
+			else
+			{
+				return $scope.procHasCache(proc, cache);
+			}
+		}
+	}
+	
+	// Returns true if the given processor has the given cache
+	// in its cache list.
+	$scope.procHasCache = function(proc, cache) {
+		for(var i = 0; i < proc.caches.length; i++) {
+			if(proc.caches[i] == cache)
+				return true;
+		}
+		return false;
+	}
+	
 	// Toggles the presence of the given cache of the proc's
 	// cache list.
 	$scope.toggleCache = function(proc, cache, checked) {
 		if(checked) {
 			// Adds the cache (if it is not yet in the cache list)
-			for(var i = 0; i < proc.caches.length; i++) {
-				if(proc.caches[i] == cache)
-					return;
-			}
-			proc.caches.push(cache);
+			if(!$scope.procHasCache(proc, cache))
+				proc.caches.push(cache);
 		}
 		else
 		{

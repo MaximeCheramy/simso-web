@@ -13,7 +13,7 @@
 		</div>
 	</form>
 	
-	<table class="table">
+	<table class="table table-hover table-striped table-bordered">
 		<thead>
 			<tr>
 				<th>Processor</th>
@@ -24,7 +24,9 @@
 			<tr ng-repeat="proc in conf.processors">
 				<td>{{proc.name}} ({{proc.id}})</td>
 				<th ng-repeat="cache in conf.caches">
-					<input type="checkbox" ng-model="checked" ng-click="toggleCache(proc, cache, checked)"></input>
+					<input type="checkbox" 
+						ng-model="isAssociated(proc, cache)" 
+						ng-model-options="{ getterSetter: true}"></input>
 				</th>
 			</tr>
 		</tbody>
