@@ -121,30 +121,44 @@ function(confService, logsService, pypyService, $scope) {
 				+ ", data=" + formatTaskData(task)
 				+ ", wcet=" + task.wcet + ");\n";
 		}
+		
+		script += "caches = {};\n";
+		// Add caches
+		for (var i = 0; i < $scope.conf.caches.length; i++) {
+			var cache = $scope.conf.caches[i];
+			
+			script += "caches['" + cache.id + "'] = Cache(";
+			script += cache.id + ", ";
+			script += '"' + cache.name + "\", ";
+			script += pyNumber(cache.size) + ", ";
+			script += "0, ";
+			script += pyNumber(cache.access_time);
+			script += ");\n";
+			
+			
+			script += "configuration.caches_list.append(caches['" + cache.id + "']);\n";
+		}
+		
 		// Add processors
 		for (var i = 0; i < $scope.conf.processors.length; i++) {
 			var proc = $scope.conf.processors[i];
-			script += "configuration.proc_info_list.append(ProcInfo(";
+			script += "proc = ProcInfo(";
 			script += proc.id + ", ";
 			script += '"' + proc.name + "\", ";
 			script += "cs_overhead=" + pyNumber(proc.csOverhead) + ", ";
 			script += "cl_overhead=" + pyNumber(proc.clOverhead) + ", ";
 			script += "speed = " + pyNumber(proc.speed, 1.0) + ", ";
 			script += "data = " + formatProcData(proc);
-			script += "));\n";
+			script += ");\n";
+			
+			for(var j = 0; j < proc.caches.length; j++) {
+				script += "proc.add_cache(caches['" + proc.caches[j].id + "']);\n";
+			}
+			
+			script += "configuration.proc_info_list.append(proc);\n";
 		}
 
-		// Add caches
-		for (var i = 0; i < $scope.conf.caches.length; i++) {
-			var cache = $scope.conf.caches[i];
-			script += "configuration.caches_list.append(Cache(";
-			script += cache.id + ", ";
-			script += '"' + cache.name + "\", ";
-			script += pyNumber(cache.size) + ", ";
-			script += "0, ";
-			script += pyNumber(cache.access_time) + ", ";
-			script += "));\n";
-		}
+
 		// Set scheduler
 		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
 		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";\n";

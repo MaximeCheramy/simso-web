@@ -71,7 +71,8 @@ function(confService, $scope) {
 			 'name': 'ProcName',
 			 'csOverhead': 0,
 			 'clOverhead': 0,
-			 'speed': 1
+			 'speed': 1, 
+			 'caches' : []
 		});
 	};
 

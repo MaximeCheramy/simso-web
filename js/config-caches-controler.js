@@ -79,8 +79,6 @@ function(confService, $scope) {
 		});
 	};
 
-
-
 	$scope.delCaches = function() {
 		for (var i = 0; i < $scope.selectedCaches.length; i++) {
 			var index = $scope.conf.caches.indexOf($scope.selectedcaches[i]);
@@ -89,6 +87,29 @@ function(confService, $scope) {
 			}
 		}
 		$scope.selectedCaches = [];
+	};
+
+	// Toggles the presence of the given cache of the proc's
+	// cache list.
+	$scope.toggleCache = function(proc, cache, checked) {
+		if(checked) {
+			// Adds the cache (if it is not yet in the cache list)
+			for(var i = 0; i < proc.caches.length; i++) {
+				if(proc.caches[i] == cache)
+					return;
+			}
+			proc.caches.push(cache);
+		}
+		else
+		{
+			// Removes the cache
+			for(var i = 0; i < proc.caches.length; i++) {
+				if(proc.caches[i] == cache) {
+					proc.caches.splice(i, 1);
+					return;
+				}
+			}
+		}
 	};
 	// ------------------------------------------------------------------------
 	// *** Additional fields *** 

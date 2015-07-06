@@ -2,6 +2,8 @@ from simso.core import Model
 from simso.configuration import Configuration
 from simso.core import JobEvent, ProcEvent
 from simso.core.Processor import ProcInfo
+from simso.core.Caches import Cache
+from simso.core.Caches import Cache_LRU
 from math import sqrt
 import sys
 import traceback

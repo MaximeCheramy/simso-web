@@ -12,4 +12,21 @@
 			</button>
 		</div>
 	</form>
+	
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Processor</th>
+				<th ng-repeat="cache in conf.caches">{{cache.name}} ({{cache.id}})</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="proc in conf.processors">
+				<td>{{proc.name}} ({{proc.id}})</td>
+				<th ng-repeat="cache in conf.caches">
+					<input type="checkbox" ng-model="checked" ng-click="toggleCache(proc, cache, checked)"></input>
+				</th>
+			</tr>
+		</tbody>
+	</table>
 </div>

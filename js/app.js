@@ -55,8 +55,8 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	];
 	
 	this.processors = [
-		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}, 
-		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1}
+		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}, 
+		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}
 	];
 	
 	this.caches = [
