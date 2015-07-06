@@ -81,7 +81,7 @@ function(confService, $scope) {
 
 	$scope.delCaches = function() {
 		for (var i = 0; i < $scope.selectedCaches.length; i++) {
-			var index = $scope.conf.caches.indexOf($scope.selectedcaches[i]);
+			var index = $scope.conf.caches.indexOf($scope.selectedCaches[i]);
 			if (index > -1) {
 				$scope.conf.caches.splice(index, 1);
 			}
