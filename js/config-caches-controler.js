@@ -81,7 +81,13 @@ function(confService, $scope) {
 
 	$scope.delCaches = function() {
 		for (var i = 0; i < $scope.selectedCaches.length; i++) {
-			var index = $scope.conf.caches.indexOf($scope.selectedCaches[i]);
+			var cache = $scope.selectedCaches[i];
+			var index = $scope.conf.caches.indexOf(cache);
+			
+			// Removes reference to that cache from the processors.
+			for(var j = 0; j < $scope.conf.processors.length; j++)
+				$scope.toggleCache($scope.conf.processors[j], cache, false);
+				
 			if (index > -1) {
 				$scope.conf.caches.splice(index, 1);
 			}
