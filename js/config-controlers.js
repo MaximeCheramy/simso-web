@@ -1,8 +1,11 @@
 // Main controler of the conf service.
 simsoControllers.controller('configurationCtrl', 
-['confService', 'logsService', 'pypyService', '$scope', 
-function(confService, logsService, pypyService, $scope) {
+['confService', 'logsService', 'pypyService', '$scope', '$timeout',
+function(confService, logsService, pypyService, $scope, $timeout) {
 	// conf is our model containing the configuration.
+	$scope.tmp =  {};
+	$scope.tmp.importedJSON = "";
+	
 	$scope.conf = confService;
 	$scope.pypyService = pypyService;
 	$scope.pypyready = pypyService.pypyready;
@@ -28,6 +31,23 @@ function(confService, logsService, pypyService, $scope) {
 			pypyService.vm.execfile(pypyService.pythonFiles["files"][i]);
 		}
 	};
+	
+	// JSON Export
+	$scope.onJSONExport = function() {
+		$("#config-download").attr(
+			{href: "data:application/json;charset=utf-8," + $scope.conf.toJSON()}
+		);
+	};
+	
+	// JSON import
+	$scope.onJSONImport = function() {
+		$("#config-upfile").trigger('click');	
+	};
+	
+	$scope.$watch('tmp.importedJSON', function() {
+		if($scope.tmp.importedJSON != "")
+			$scope.conf.fromJSON($scope.tmp.importedJSON);
+	});
 	
 	$scope.run = function() {
 		// Files and strings are directly passed to python to avoid escape sequence
@@ -183,7 +203,7 @@ function(confService, logsService, pypyService, $scope) {
 				if(python["sim-success"])
 				{
 					$scope.enableResults();
-					$scope.conf.savedConf = $scope.conf.clone();
+					$scope.conf.allGanttItems = $scope.conf.getAllGanttItems();
 					$scope.conf.window.startDate = 0;
 					$scope.conf.window.endDate = $scope.conf.duration_ms;
 					

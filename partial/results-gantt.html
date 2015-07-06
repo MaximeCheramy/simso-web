@@ -21,7 +21,7 @@
 	</div>
 
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
-		<div ng-controller="GanttControler" ng-repeat="item in conf.savedConf.all_gantt_items">
+		<div ng-controller="GanttControler" ng-repeat="item in conf.allGanttItems">
 			<canvas ng-hide="isDisabled()" gantt id="resultsGantt{{item.type}}{{item.id}}"></canvas>
 		</div>
 	</div>

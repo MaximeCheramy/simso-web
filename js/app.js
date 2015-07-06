@@ -47,7 +47,6 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.overhead_activate = 0;
 	this.overhead_terminate = 0;
 	this.memory_access_time = 0; // Cache Model only
-	
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
 		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
@@ -88,12 +87,7 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.scheduler_class = 'simso.schedulers.EDF';
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
-	
-	
-	// Creates a clone of the variables contained in this service
-	// This is used to get the simulation parameters in the results.
 	var othis = this;
-	this.savedConf = null;
 	
 	// Must be called when the tasks' additional fields are modified.
 	this.onTaskFieldsChanged = function() {
@@ -105,6 +99,16 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 		console.log("conf.onProcFieldsChanged : not overrided yet.");	
 	};
 	
+	this.allGanttItems = null;
+	this.getAllGanttItems = function() {
+		return $.merge(this.tasks.map(function(task) { 
+				return {'id': task.id, 'name':task.name, 'type':'task' };
+			}), this.processors.map(function(task) { 
+				return {'id': task.id, 'name':task.name, 'type':'processor' };
+		}));
+	};
+	
+	// Creates a clone of the current configuration.
 	this.clone = function() {
 		return {
 			cycles_per_ms: othis.cycles_per_ms,
@@ -114,24 +118,29 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			overhead_activate: othis.overhead_activate,
 			overhead_terminate: othis.overhead_terminate,
 			ram_access_time: othis.ram_access_time,
-			tasks: othis.tasks.slice(),
-			processors: othis.processors.slice(),
-			caches: othis.caches.slice(),
 			scheduler_class: othis.scheduler_class,
-			scheduler_list: othis.scheduler_list,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			procAdditionalFields: othis.procAdditionalFields.slice(),
 			schedAdditionalFields: othis.schedAdditionalFields.slice(),
 			etmAdditionalFields: othis.etmAdditionalFields.slice(),
 			etm: othis.etm,
-			etm_list: othis.etm_list,
-			// Aggregates all gantt items
-			all_gantt_items: $.merge(this.tasks.map(function(task) { 
-					return {'id': task.id, 'name':task.name, 'type':'task' };
-				}), this.processors.map(function(task) { 
-					return {'id': task.id, 'name':task.name, 'type':'processor' };
-			})) 
+			tasks: othis.tasks,
+			processors: othis.processors,
+			caches: othis.caches
 		};
+	};
+	
+	// Returns a string containing the current configuration in the JSON format.
+	this.toJSON = function() {
+		return JSON.stringify(this.clone());
+	};
+	
+	// Loads the configuration from a JSON string.
+	this.fromJSON = function(jsonStr) {
+		var conf = JSON.parse(jsonStr);
+		for(var key in conf) {
+			this[key] = conf[key];
+		}
 	};
 }]);
 

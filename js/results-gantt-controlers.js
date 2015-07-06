@@ -15,8 +15,8 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 		var UNIT_WIDTH = 10;
 		var newWidth = (($scope.conf.window.endDate - $scope.conf.window.startDate) * UNIT_WIDTH * $scope.ganttZoom / 100.0 + 2 * GRAPH_SIZE_OFFSETX) + "px";
 
-		for (var i = 0; i < confService.savedConf.all_gantt_items.length; i++) {
-			var item = confService.savedConf.all_gantt_items[i];
+		for (var i = 0; i < confService.allGanttItems.length; i++) {
+			var item = confService.allGanttItems[i];
 			var el = $("#resultsGantt" + item["type"] + item["id"])[0];
 			el.style.width = newWidth;
 		}
@@ -37,7 +37,7 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 		enableVerticalScrollbar: 2,
 		columnDefs: [{name: 'id', type: 'number'}, {name: 'name', type: 'string'}, {name:'type', type:'string'}],
 		minRowsToShow: 5,
-		data: $scope.conf.savedConf.all_gantt_items
+		data: $scope.conf.allGanttItems
 	};
 	
 	// Performs item selection / deselection
