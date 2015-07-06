@@ -17,7 +17,9 @@ def std(l):
     diffs = [(x - avg)**2 for x in l]
     return sqrt(average(diffs))
 
-
+def toReadable(n, digits=3):
+    return ("{:." + str(digits) + "f}").format(n);
+    
 def change_observation_window(window):
     """Changes the model observation window.
     Window is a 2-tuple (start_date, end_date)."""
@@ -119,7 +121,7 @@ def get_metrics(model, field, metrics, transform=lambda x: x):
         if l:
             elem = {' name' : task.name }
             for m in metrics:
-                elem[m] = funcs[m](l)
+                elem[m] = toReadable(funcs[m](l))
             data.append(elem)
     return data
     
@@ -131,6 +133,8 @@ def aggregate_task_results(model):
     data['general']['computation_time'] = []
     data['general']['task_migrations'] = []
     
+
+        
     # Taken from simso-gui
     # -- Computation time
     for curRow, task in enumerate(result.model.task_list):
@@ -152,11 +156,11 @@ def aggregate_task_results(model):
         
         data['general']['computation_time'].append({
           ' name' : task.name,
-          'min' : computationMin,
-          'max' : computationMax,
-          'avg' : computationAvg,
-          'std_dev' : computationStdDev,
-          'occupancy' : computationOccupancy  
+          'min' : toReadable(computationMin),
+          'max' : toReadable(computationMax),
+          'avg' : toReadable(computationAvg),
+          'std_dev' : toReadable(computationStdDev),
+          'occupancy' : toReadable(computationOccupancy  )
         })
         
     # -- Task Migrations
