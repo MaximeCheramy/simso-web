@@ -15,6 +15,11 @@ function(confService, pypyService, $scope) {
 		$('#modalSched').modal('show');
 	};
 	
+	// Code editor management
+	$scope.editor = ace.edit("editor");
+	$scope.editor.setTheme("ace/theme/chrome"); // chrome, dreamweaver
+	$scope.editor.getSession().setMode("ace/mode/python");
+	
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
 		confService.cleanAdditionalFields(confService.schedAdditionalFields, 'scheduler');

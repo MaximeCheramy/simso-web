@@ -85,7 +85,7 @@ simsoApp.service("confService",
 	
 	// -- Scheduler conf
 	this.schedAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
-	this.scheduler_class = 'simso.schedulers.EDF';
+	this.scheduler_class = null;
 	this.scheduler_list = [];
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;
