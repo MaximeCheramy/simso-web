@@ -19,6 +19,6 @@ function readTextFile(file, callback)
 
 function readSchedulerFile(name, callback) 
 {
-    var filename = "http://localhost:8000/lib/modules/" + name.replace(/\./g, "/") + ".py";
+    var filename = "lib/modules/" + name.replace(/\./g, "/") + ".py";
     return readTextFile(filename, callback);
 }
