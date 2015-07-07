@@ -14,7 +14,15 @@ function(confService, pypyService, $scope, $timeout) {
 	$scope.showAdditionalFieldsModal = function() {
 		$('#modalSched').modal('show');
 	};
-		
+	
+	$scope.scheduler_template = null;
+	$scope.onSchedulerTemplateChanged = function() {
+		readSchedulerFile($scope.scheduler_template.name, function(code)
+		{
+			$scope.conf.custom_sched_code = code;
+		});
+	};
+	
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
 		confService.cleanAdditionalFields(confService.schedAdditionalFields, 'scheduler');

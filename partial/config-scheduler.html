@@ -93,6 +93,24 @@
 						   type="string"></input>
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2">Scheduler template:</label>
+				<div class="col-sm-4">
+					<select 
+						class="form-control"
+						ng-model="scheduler_template" 
+						ng-options="sched.display_name for sched in conf.scheduler_list"
+						ng-change="onSchedulerTemplateChanged()"
+						>
+					</select>
+				</div>
+				<span class="alert alert-warning col-sm-5" role="alert">
+					<span class="glyphicon glyphicon-alert">
+					</span>
+					Warning : Selecting a template will delete all your modifications !
+				</span>
+			</div>
+			<h4>Custom scheduler code</h4>
 			<div ui-ace="{
 				 	theme:'chrome',
 					mode:'python'
