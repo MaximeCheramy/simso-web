@@ -83,8 +83,26 @@
 			<label class="control-label col-sm-1">(cycles)</label>
 		</div>
 		
-		
-		<div ng-show="conf.custom_sched" id="editor" class="editor" style="width: auto; height: 400px">
+		<div ng-show="conf.custom_sched">
+			<div class="form-group">
+				<label for="customschedclassname" class="control-label col-sm-2">Main class name : </label>
+				<div class="col-sm-4">
+					<input id="customschedclassname" 
+						   ng-model="conf.custom_sched_name"
+						   class="form-control col-sm-2" 
+						   type="string"></input>
+				</div>
+			</div>
+			<div ui-ace="{
+				 	theme:'chrome',
+					mode:'python'
+				 }"
+				 ng-model="conf.custom_sched_code"
+				 id="editor" class="editor" style="width: auto; height: 400px">
+			from simso.core.Scheduler import Scheduler
+			class Custom(Scheduler):
+				pass
+			</div>
 		</div>
 	</form>
 </div>

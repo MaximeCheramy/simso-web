@@ -16,3 +16,10 @@ function readTextFile(file, callback)
     }
     rawFile.send(null);
 }
+
+
+function readSchedulerFile(name, callback) 
+{
+    var filename = "lib/modules/" + name.replace(".", "/", "g") + ".py";
+    return readTextFile(filename, callback);
+}

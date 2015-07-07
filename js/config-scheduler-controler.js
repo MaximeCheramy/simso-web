@@ -14,19 +14,13 @@ function(confService, pypyService, $scope, $timeout) {
 	$scope.showAdditionalFieldsModal = function() {
 		$('#modalSched').modal('show');
 	};
-	
-	// Code editor management
-	$scope.editor = ace.edit("editor");
-	$scope.editor.setTheme("ace/theme/chrome"); // chrome, dreamweaver
-	$scope.editor.getSession().setMode("ace/mode/python");
-	
+		
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
 		confService.cleanAdditionalFields(confService.schedAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.procAdditionalFields, 'scheduler');
 		var sched = confService.scheduler_class;
-		
 		
 		// Updates scheduler fields
 		for(var i = 0; i < sched.required_fields.length; i++) {

@@ -1,7 +1,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
 var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 
 	'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection', 
-	'ui.bootstrap.tabs', 'ui.bootstrap.accordion']);
+	'ui.bootstrap.tabs', 'ui.bootstrap.accordion', 'ui.ace']);
 	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py", "../py/simso-etm.py"],
@@ -88,7 +88,8 @@ simsoApp.service("confService",
 	this.scheduler_class = null; // if custom_shed == false
 	this.scheduler_list = [];
 	this.custom_sched = false;
-	this.custom_sched_code = ""; // if custom_shed == true
+	this.custom_sched_code = "";
+	this.custom_sched_name = "Custom";
 	
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;

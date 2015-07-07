@@ -12,10 +12,17 @@ function(logsService, pypyService, $scope, confService) {
 	$scope.codeviewer.setTheme("ace/theme/chrome");
 	$scope.codeviewer.getSession().setMode("ace/mode/python");
 	$scope.codeviewer.setReadOnly(true);
-	var filename = "lib/modules/" + $scope.conf.scheduler_class.name.replace(".", "/", "g") + ".py";
-	readTextFile(filename, function(code) {
-		$scope.codeviewer.setValue(code);
-	});
+	if($scope.conf.custom_sched)
+	{
+		$scope.codeviewer.setValue($scope.conf.custom_sched_code);
+	}
+	else
+	{
+		readSchedulerFile($scope.conf.scheduler_class.name, function(code) {
+			$scope.codeviewer.setValue(code);
+		});
+	}
+
 
 	$scope.updateObservationWindow = function() {
 		var windowStr = "(" + $scope.conf.window.startDate + ", " + $scope.conf.window.endDate + ")";

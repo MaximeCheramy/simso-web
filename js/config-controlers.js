@@ -62,6 +62,27 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 			return isNaN(n) ? defaultValue : n;
 		};
 		
+		var logScriptErrors = function(err) {
+			// err : object given by pypy.js
+			pypyService.logSchedulerError({
+	            'type' : 'errorCode',
+	            'value' : err.name + " : " + err.message
+	        });
+			var stacklines = err.trace.split("\n");
+			for(var i = 0; i < stacklines.length; i++)
+			{
+				pypyService.logSchedulerError({
+					'type' : 'stack',
+					'value' : stacklines[i]
+				});
+			}
+		
+			$scope.disableResults();
+			$scope.setSchedErrors(true);
+		}
+
+			
+		
 		var escape = function(n) {
 			return n == "-" ? "" : n;
 		};
@@ -180,7 +201,14 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 
 
 		// Set scheduler
-		script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
+		if($scope.conf.custom_sched)
+		{
+			script += "configuration.scheduler_info.clas = "  + $scope.conf.custom_sched_name +  ";\n";
+		}
+		else
+		{
+			script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
+		}
 		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";\n";
 		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overhead_activate + ";\n";
 		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overhead_terminate + ";\n";
@@ -198,26 +226,42 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		console.log(script);
 		
 		logsService.schedErrorLogs.splice(0, logsService.schedErrorLogs.length);
-		pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
-			pypyService.vm.exec(script).then(function() {
-				if(python["sim-success"])
-				{
-					$scope.enableResults();
-					$scope.conf.allGanttItems = $scope.conf.getAllGanttItems();
-					$scope.conf.window.startDate = 0;
-					$scope.conf.window.endDate = $scope.conf.duration_ms;
-					
-					// Clear error logs
-					$scope.setSchedErrors(false);
-				}
-				else
-				{
-					$scope.disableResults();
-					$scope.setSchedErrors(true);
-				}
-			
-			});
-		});
+		
+		// Callback executed once the python simulation has ended.
+		function execScriptCallback() {
+			if(python["sim-success"])
+			{
+				$scope.enableResults();
+				$scope.conf.allGanttItems = $scope.conf.getAllGanttItems();
+				$scope.conf.window.startDate = 0;
+				$scope.conf.window.endDate = $scope.conf.duration_ms;
+				
+				// Clear error logs
+				$scope.setSchedErrors(false);
+			}
+			else
+			{
+				$scope.disableResults();
+				$scope.setSchedErrors(true);
+			}
+		
+		};
+		
+		if($scope.conf.custom_sched)
+		{
+			// Custom scheduler
+			pypyService.vm.exec($scope.conf.custom_sched_code).then(function() {
+				pypyService.vm.exec(script).then(execScriptCallback);
+			}, logScriptErrors);
+		}
+		else
+		{
+			// Non custom scheduler
+			pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
+				pypyService.vm.exec(script).then(execScriptCallback);
+			}, logScriptErrors);
+		}
+
 	}
 }]);
 
