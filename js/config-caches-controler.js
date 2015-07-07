@@ -94,7 +94,7 @@ function(confService, $scope) {
 		}
 		$scope.selectedCaches = [];
 	};
-
+	
 	// Returns a getter/setter function that gets or sets a value
 	// indicating if the given processor has the given cache
 	// in its cache list.
@@ -117,7 +117,7 @@ function(confService, $scope) {
 	// in its cache list.
 	$scope.procHasCache = function(proc, cache) {
 		for(var i = 0; i < proc.caches.length; i++) {
-			if(proc.caches[i] == cache)
+			if(proc.caches[i] == cache.id)
 				return true;
 		}
 		return false;
@@ -129,13 +129,13 @@ function(confService, $scope) {
 		if(checked) {
 			// Adds the cache (if it is not yet in the cache list)
 			if(!$scope.procHasCache(proc, cache))
-				proc.caches.push(cache);
+				proc.caches.push(cache.id);
 		}
 		else
 		{
 			// Removes the cache
 			for(var i = 0; i < proc.caches.length; i++) {
-				if(proc.caches[i] == cache) {
+				if(proc.caches[i] == cache.id) {
 					proc.caches.splice(i, 1);
 					return;
 				}

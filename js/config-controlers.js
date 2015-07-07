@@ -172,7 +172,7 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 			script += ");\n";
 			
 			for(var j = 0; j < proc.caches.length; j++) {
-				script += "proc.add_cache(caches['" + proc.caches[j].id + "']);\n";
+				script += "proc.add_cache(caches['" + proc.caches[j] + "']);\n";
 			}
 			
 			script += "configuration.proc_info_list.append(proc);\n";

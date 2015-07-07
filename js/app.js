@@ -39,7 +39,8 @@ simsoApp.config(['$routeProvider',
 
 
 
-simsoApp.service("confService", ["pypyService", function(pypyService) {
+simsoApp.service("confService", 
+["pypyService", "$timeout", function(pypyService, $timeout) {
 	this.cycles_per_ms = 1000000;
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
@@ -118,12 +119,12 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 			overhead_activate: othis.overhead_activate,
 			overhead_terminate: othis.overhead_terminate,
 			ram_access_time: othis.ram_access_time,
-			scheduler_class: othis.scheduler_class,
+			scheduler_class: othis.scheduler_class.name,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			procAdditionalFields: othis.procAdditionalFields.slice(),
 			schedAdditionalFields: othis.schedAdditionalFields.slice(),
 			etmAdditionalFields: othis.etmAdditionalFields.slice(),
-			etm: othis.etm,
+			etm: othis.etm.name,
 			tasks: othis.tasks,
 			processors: othis.processors,
 			caches: othis.caches
@@ -139,8 +140,62 @@ simsoApp.service("confService", ["pypyService", function(pypyService) {
 	this.fromJSON = function(jsonStr) {
 		var conf = JSON.parse(jsonStr);
 		for(var key in conf) {
-			this[key] = conf[key];
+			switch(key) {
+				case "taskAdditionalFields":
+				case "procAdditionalFields":
+				case "schedAdditionalFields":
+				case "etmAdditionalFields":
+				case "tasks":
+				case "processors":
+				case "caches":
+					// We first delete all content.
+					othis[key].splice(0, othis[key].length);
+					break;
+				case "etm":
+					// ETM from name
+					othis[key] = othis.etm_list.filter(function(value, index) {
+						return value.name === conf[key];
+					})[0];
+					break;
+				case "scheduler_class":
+					// Class from name
+					othis[key] = othis.scheduler_list.filter(function(value, index) {
+						return value.name === conf[key];
+					})[0];
+					break;
+				default:
+					this[key] = conf[key]
+			}
 		}
+		
+		// We add the content in the arrays at the end of the digest cycle.
+		// If we don't do that, the rows that were already present in the grid
+		// won't change.
+		$timeout(function() 
+		{
+			for(var key in conf) {
+				switch(key) {
+					case "taskAdditionalFields":
+					case "procAdditionalFields":
+					case "schedAdditionalFields":
+					case "etmAdditionalFields":
+					case "tasks":
+					case "processors":
+					case "caches":
+						// Make a copy but keep the reference	
+						othis[key].splice(0, othis[key].length);
+						
+						console.log("key = " + key);
+						othis[key].splice(0, othis[key].length);
+						for(var i = 0; i < conf[key].length; i++) {
+							othis[key].push(conf[key][i]);
+						}
+	
+						break;
+				}
+			}
+		}, 0);
+	
 	};
 }]);
 
