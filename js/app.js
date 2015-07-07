@@ -85,8 +85,11 @@ simsoApp.service("confService",
 	
 	// -- Scheduler conf
 	this.schedAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
-	this.scheduler_class = null;
+	this.scheduler_class = null; // if custom_shed == false
 	this.scheduler_list = [];
+	this.custom_sched = false;
+	this.custom_sched_code = ""; // if custom_shed == true
+	
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;
 	

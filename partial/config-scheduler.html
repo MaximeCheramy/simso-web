@@ -1,40 +1,54 @@
 <div class="panel-body" ng-controller="ConfigSchedulerCtrl">
 	<form class="form-horizontal" role="form" style="margin: 1em">
 		<div class="form-group">
-			<label for="duration" class="control-label col-sm-2">Scheduler:</label>
+			<label for="iscustom" class="control-label col-sm-2">Use custom scheduler</label>
 			<div class="col-sm-4">
-				<select 
-					class="form-control"
-					ng-model="conf.scheduler_class" 
-					ng-options="sched.display_name for sched in conf.scheduler_list"
-					ng-change="onSchedulerChanged()"
-					>
-				</select>
-			</div>
-			<span ng-controller="ConfigSchedAddFieldCtrl">
-				<a class="btn btn-default btn-sm col-sm-2" href="" ng-click="showAdditionalFieldsModal()">
-					<span class="glyphicon glyphicon-plus"></span>
-					Edit additional fields
-				</a>
-				<div ng-include="'partial/components/field-editor-modal.html'"></div>
-				
-				
-			</span>
-		</div>
-		<div class="form-group" ng-repeat="field in conf.schedAdditionalFields">
-			<label for="schedField{{field.name}}" class="control-label col-sm-2">{{field.display_name || field.name}}</label>
-			<div class="col-sm-4">
-				<input id="schedField{{field.name}}" 
-					   ng-model="field.value"
+				<input id="iscustom" 
+					   ng-model="conf.custom_sched"
+					   ng-click="fixLayout()"
 					   ng-true-value="true"
 					   ng-false-value="false"
-					   filecontent="field.value"
 					   class="form-control col-sm-2" 
-					   type="{{toJsInputType(field.type)}}"></input>
+					   type="checkbox"></input>
 			</div>
-			<label class="control-label col-sm-1">({{field.type}})</label>
 		</div>
 		
+		<div ng-show="!conf.custom_sched">
+			<div class="form-group">
+				<label class="control-label col-sm-2">Scheduler:</label>
+				<div class="col-sm-4">
+					<select 
+						class="form-control"
+						ng-model="conf.scheduler_class" 
+						ng-options="sched.display_name for sched in conf.scheduler_list"
+						ng-change="onSchedulerChanged()"
+						>
+					</select>
+				</div>
+				<span ng-controller="ConfigSchedAddFieldCtrl">
+					<a class="btn btn-default btn-sm col-sm-2" href="" ng-click="showAdditionalFieldsModal()">
+						<span class="glyphicon glyphicon-plus"></span>
+						Edit additional fields
+					</a>
+					<div ng-include="'partial/components/field-editor-modal.html'"></div>
+					
+					
+				</span>
+			</div>
+			<div class="form-group" ng-repeat="field in conf.schedAdditionalFields">
+				<label for="schedField{{field.name}}" class="control-label col-sm-2">{{field.display_name || field.name}}</label>
+				<div class="col-sm-4">
+					<input id="schedField{{field.name}}" 
+						   ng-model="field.value"
+						   ng-true-value="true"
+						   ng-false-value="false"
+						   filecontent="field.value"
+						   class="form-control col-sm-2" 
+						   type="{{toJsInputType(field.type)}}"></input>
+				</div>
+				<label class="control-label col-sm-1">({{field.type}})</label>
+			</div>
+		</div>
 		
 		<div class="form-group">
 			<label for="overhead" class="control-label col-sm-2">Overhead schedule</label>
@@ -70,7 +84,7 @@
 		</div>
 		
 		
-		<div id="editor" class="editor" style="width: auto; height: 400px">
+		<div ng-show="conf.custom_sched" id="editor" class="editor" style="width: auto; height: 400px">
 		</div>
 	</form>
 </div>

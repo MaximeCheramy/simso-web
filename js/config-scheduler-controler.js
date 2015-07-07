@@ -1,6 +1,6 @@
 simsoControllers.controller('ConfigSchedulerCtrl', 
-['confService', 'pypyService',  '$scope', 
-function(confService, pypyService, $scope) {
+['confService', 'pypyService', '$scope', '$timeout',
+function(confService, pypyService, $scope, $timeout) {
 	$scope.conf = confService;
 	
 	pypyService.registerObserverCallback($scope, function() {
@@ -83,6 +83,13 @@ function(confService, pypyService, $scope) {
 		// Notify the change.
 		confService.onTaskFieldsChanged();
 		confService.onProcFieldsChanged();
+	};
+	
+	// Used to fix the layout of the code editor.
+	$scope.fixLayout = function() {
+		$timeout(function(){
+			$(window).resize();
+		}, 100);
 	};
 	
 }]);
