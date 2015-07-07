@@ -19,10 +19,20 @@
 		</span>
 	
 	</div>
-
+	
+	<div style="margin: 1em">
+		<a  id="gantt-download" class="btn btn-default" download="gantt.png"
+			href="data:image/png,nodata" ng-click="onGanttExport(false)">
+			<span class="glyphicon glyphicon-save"></span> Save selected as png
+		</a>
+	</div>
+	
 	<div style="overflow:auto; margin-left:auto; margin-right:auto;">
 		<div ng-controller="GanttControler" ng-repeat="item in conf.allGanttItems">
 			<canvas ng-hide="isDisabled()" gantt id="resultsGantt{{item.type}}{{item.id}}"></canvas>
 		</div>
 	</div>
+	
+	
+	<canvas style="display: none;" id="buffer"></canvas>
 <div>

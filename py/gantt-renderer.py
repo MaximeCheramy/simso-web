@@ -41,16 +41,20 @@ class GanttRenderer(object):
         if self.zoom < 2:
             return 2
         return 1
-
+    
+    def draw_background(self):
+        self.ctx.fillStyle = "#FFFFFF"
+        self.ctx.fillRect(0, 0, self.canvas.width, self.canvas.height)
+        
     def render(self):
         self.resize_canvas()
+        self.draw_background()
         i = 0
         if(self.selected_item["type"] == "task"):
             for task in [x for x in self.results.model.task_list if x.identifier == self.selected_item["id"]]:
                 self.plot_task(i, task)
                 i+= 1
         else:
-            print("processors : " + str(map((lambda x : x.identifier), self.results.model.processors)) + " ; id = " + str(self.selected_item["id"]))
             for proc in [x for x in self.results.model.processors if x.identifier == self.selected_item["id"]]:
                 print("id = " + str(x.identifier))
                 self.plot_processor(i, proc)
@@ -83,7 +87,7 @@ class GanttRenderer(object):
              origin[1],
              self.get_abs_x(self.end_date) - self.get_abs_x(self.start_date),
              self.ITEM_HEIGHT]
-
+             
     def get_style(self, taskId):
         """Gets the style of a given taskId"""
         colors = [

@@ -24,10 +24,12 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 
 	$scope.zoomPlus = function() {
 		$scope.ganttZoom = Math.min($scope.ganttZoom + 10, 300);
-	}
+	};
+	
 	$scope.zoomMinus = function() {
 		$scope.ganttZoom = Math.max($scope.ganttZoom - 10, 50);
-	}
+	};
+	
 	$scope.gridGanttOptions = {
 		enableRowSelection: true,
 		enableColumnResize: true,
@@ -69,7 +71,55 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 			}
 		});
 	};
-	
+
+	// Gantt export
+	$scope.onGanttExport = function(all) {
+		
+		
+		var buff = document.getElementById('buffer');
+		
+		// Calculates the total size of the image, and gets all the images
+		// to draw on the buffer
+		var width = 0; var height = 0;
+		var imgs = [];
+		var heights = [];
+		for(var i = 0; i < $scope.conf.allGanttItems.length; i++) {
+			var item = $scope.conf.allGanttItems[i];
+			var ganttCanvas = document.getElementById("resultsGantt" + item.type + "" + item.id);
+			if(!all) {
+				// Draw only the selected gantt items
+				if($scope.selectedItems.indexOf(item) < 0)
+					continue;
+			}
+			
+			imgs.push(ganttCanvas);
+			width = Math.max(ganttCanvas.width, width);
+			heights.push(ganttCanvas.height);
+			height += ganttCanvas.height;
+			
+		}
+		
+		// Resizes the buffer
+		buff.width = width;
+		buff.height = height;
+		
+		// Draws the images on the buffer (1 per diagram)
+		var ctx = buff.getContext("2d");
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, ctx.width, ctx.height);
+		
+		var y = 0;
+		for(var i = 0; i < imgs.length; i++) {
+			ctx.drawImage(imgs[i], 0, y);
+			y += heights[i];
+		}
+		
+		// Saves the buffer
+		var image = buff.toDataURL("image/png");
+		$("#gantt-download").attr(
+			{href: image}
+		);
+	};
 }]);
 
 // Manages each gantt chart instance.
