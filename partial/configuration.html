@@ -2,11 +2,15 @@
 <div id="confContainer" class="container">
 
 	<p style="text-align:right">
-
+		<span ng-if="!pypyready">
+			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
+		</span>
+		
 		<input filecontent="tmp.importedJSON" 
 			id="config-upfile" 
 			type="file" 
 			style="visibility: hidden;"></input>
+			
 		<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
 			href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
 			<span class="glyphicon glyphicon-save"></span> Export (json)
@@ -16,13 +20,10 @@
 			<span class="glyphicon glyphicon-open"></span> Import (json)
 		</button>
 
-		
-		<span ng-if="!pypyready">
-			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
-		</span>
 		<span>
 			<button ng-click="run()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-play"></span> Run!</button>
 		</span>
+		
 		<span>
 			<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
 		</span>
