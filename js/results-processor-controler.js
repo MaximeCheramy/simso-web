@@ -44,3 +44,21 @@ function($scope, $controller, $timeout, uiGridConstants)
 		}, 100);
 	});
 }]);
+
+// Manages each gantt chart instance.
+simsoControllers.controller('ActiveTasksGanttControler', ['$scope', '$controller', function($scope, $controller) 
+{
+	// Aggregates parameters into a 'python' dict
+	$scope.aggregateParameters = function()
+	{
+		// List of items to be displayed in the gantt chart
+		var gantt_item =  "{'id' : 0, 'type' : 'active_tasks'}";
+		
+		return "{'zoom' : 1," +
+				"'startDate' : " + $scope.conf.window.startDate + "," + 
+				"'endDate' : " + $scope.conf.window.endDate + "," + 
+				"'gantt_item' : " + gantt_item +
+				 "}";
+		
+	};
+}]);
