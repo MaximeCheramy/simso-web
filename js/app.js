@@ -5,7 +5,7 @@ var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers',
 	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py", "../py/simso-etm.py"],
-	"files" : ["../py/gantt-renderer.py", "../py/simso-functions.py"],
+	"files" : ["../py/gantt-renderer.py", "../py/simso-bridge.py"],
 	"finalize" : "../py/simso-finalize.py"
 };
 
