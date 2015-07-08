@@ -1,0 +1,57 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=sh,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\author{Josué Alvarez}
+\title{Simso web - Developper Documentation}
+\begin{document}
+\maketitle
+\newpage
+\section{Preamble}
+This document is a non-exhaustive developer documentation, whose goal is to help future maintainers of the simso-web application to get started with the code. 
+This document is written with the assumption that the developper is using an UNIX environment.
+
+\section{Getting Started}
+\paragraph{Introduction}
+Simso web is a graphical interface built on top of simso. It runs as a full-client application (no server-side) written in javascript, and uses PypyJS (a javascript implementation of \href{"http://www.pypy.org/"}{Pypy}) to run Python in order to execute simso.
+The main frameworks/tools used for the front-end development are \href{"https://angularjs.org/"}{Angular JS} and \href{"http://getbootstrap.com/"}{Bootstrap}.
+
+\paragraph{Getting the code}
+The code is available on github here : https://github.com/MaximeCheramy/simso-web. 
+As simso-web embbeds its own version of simso, it is included in the form of a git submodule.
+
+To setup your working copy, you have to run the following commands :
+\begin{lstlisting}
+git clone https://github.com/MaximeCheramy/simso-web.git
+cd simso-web/submodules/simso
+git submodule init
+git submodule update
+\end{lstlisting}
+
+\paragraph{Architecture}
+
+
+
+\end{document}
