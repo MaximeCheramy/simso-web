@@ -1,0 +1,3 @@
+[submodule "simso"]
+	path = submodules/simso
+	url = https://github.com/Scriptopathe/simso.git
