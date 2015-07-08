@@ -1,0 +1,13 @@
+# Ignore all latex generated files
+*.dvi
+*.log
+*.out
+*.ps
+*.aux
+*.gz
+*-converted-to.pdf
+# Open document files
+*.odg
+*.odg#
+# Vim / other swap files
+*.swp
