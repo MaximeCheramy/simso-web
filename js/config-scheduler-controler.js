@@ -1,6 +1,6 @@
 simsoControllers.controller('ConfigSchedulerCtrl', 
-['confService', 'pypyService',  '$scope', 
-function(confService, pypyService, $scope) {
+['confService', 'pypyService', '$scope', '$timeout',
+function(confService, pypyService, $scope, $timeout) {
 	$scope.conf = confService;
 	
 	pypyService.registerObserverCallback($scope, function() {
@@ -15,10 +15,13 @@ function(confService, pypyService, $scope) {
 		$('#modalSched').modal('show');
 	};
 	
-	// Code editor management
-	$scope.editor = ace.edit("editor");
-	$scope.editor.setTheme("ace/theme/chrome"); // chrome, dreamweaver
-	$scope.editor.getSession().setMode("ace/mode/python");
+	$scope.scheduler_template = null;
+	$scope.onSchedulerTemplateChanged = function() {
+		readSchedulerFile($scope.scheduler_template.name, function(code)
+		{
+			$scope.conf.custom_sched_code = code;
+		});
+	};
 	
 	// Called when the scheduler changes
 	$scope.onSchedulerChanged = function() {
@@ -26,7 +29,6 @@ function(confService, pypyService, $scope) {
 		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.procAdditionalFields, 'scheduler');
 		var sched = confService.scheduler_class;
-		
 		
 		// Updates scheduler fields
 		for(var i = 0; i < sched.required_fields.length; i++) {
@@ -83,6 +85,13 @@ function(confService, pypyService, $scope) {
 		// Notify the change.
 		confService.onTaskFieldsChanged();
 		confService.onProcFieldsChanged();
+	};
+	
+	// Used to fix the layout of the code editor.
+	$scope.fixLayout = function() {
+		$timeout(function(){
+			$(window).resize();
+		}, 100);
 	};
 	
 }]);

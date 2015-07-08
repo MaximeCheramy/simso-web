@@ -1,7 +1,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
 var simsoApp = angular.module('simso', ['ngRoute', 'simsoControllers', 
 	'ui.bootstrap', 'ui.grid', 'ui.grid.edit', 'ui.grid.selection', 
-	'ui.bootstrap.tabs', 'ui.bootstrap.accordion']);
+	'ui.bootstrap.tabs', 'ui.bootstrap.accordion', 'ui.ace']);
 	
 var pythonFiles = { 
 	"init" : ["../py/simso-init.py", "../py/simso-schedulers.py", "../py/simso-etm.py"],
@@ -85,8 +85,12 @@ simsoApp.service("confService",
 	
 	// -- Scheduler conf
 	this.schedAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
-	this.scheduler_class = null;
+	this.scheduler_class = null; // if custom_shed == false
 	this.scheduler_list = [];
+	this.custom_sched = false;
+	this.custom_sched_code = "";
+	this.custom_sched_name = "Custom";
+	
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;
 	
@@ -292,13 +296,16 @@ simsoApp.directive("gantt", ['$timeout', function($timeout){
 		
 		// Redraws the diagram if the zoom value changes.
 		scope.$watch("ganttZoom", function (newValue, oldValue) {
-			scope.updateZoom();
-			$timeout(function() {
-				// Delay changes (dont redraw while the user is typing)
-				if(scope.ganttZoom == newValue) {
-					scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
-				}
-			}, 300);
+			if(scope.updateZoom)
+			{
+				scope.updateZoom();
+				$timeout(function() {
+					// Delay changes (dont redraw while the user is typing)
+					if(scope.ganttZoom == newValue) {
+						scope.vm.exec("draw_canvas(" + scope.aggregateParameters() + ")");
+					}
+				}, 300);
+			}
 		});
 		
 		// Redraws the diagram if the start date changes

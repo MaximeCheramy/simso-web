@@ -17,8 +17,9 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 
 		for (var i = 0; i < confService.allGanttItems.length; i++) {
 			var item = confService.allGanttItems[i];
-			var el = $("#resultsGantt" + item["type"] + item["id"])[0];
-			el.style.width = newWidth;
+			var el = $("#resultsGantt" + item["type"] + item["id"]);
+			if(el)
+				el[0].style.width = newWidth;
 		}
 	}
 
@@ -74,8 +75,6 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 
 	// Gantt export
 	$scope.onGanttExport = function(all) {
-		
-		
 		var buff = document.getElementById('buffer');
 		
 		// Calculates the total size of the image, and gets all the images

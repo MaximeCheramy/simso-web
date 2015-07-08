@@ -10,6 +10,15 @@ class Style(object):
         self.color = color
         self.linedash = linedash
 
+def array_sum(arrList):
+    """Creates a new array which is the contatenation of all the arrays
+    in the given list"""
+    arr = []
+    for x in arrList:
+        arr += x
+    return arr
+
+
 # Class used to render gantt charts.
 class GanttRenderer(object):
     ITEM_HEIGHT = 60 # Height of a gantt chart
@@ -54,9 +63,10 @@ class GanttRenderer(object):
             for task in [x for x in self.results.model.task_list if x.identifier == self.selected_item["id"]]:
                 self.plot_task(i, task)
                 i+= 1
+        elif self.selected_item["type"] == "active_tasks":
+             self.plot_active_tasks(i)
         else:
             for proc in [x for x in self.results.model.processors if x.identifier == self.selected_item["id"]]:
-                print("id = " + str(x.identifier))
                 self.plot_processor(i, proc)
                 i+= 1
 
@@ -102,9 +112,9 @@ class GanttRenderer(object):
 
     def plot_processor(self, itemId, processor):
         """Plots a processor on the graph with the given itemId"""
+        
         # Plot processors
         self.plot_graph(itemId, processor.name)
-
         x1 = self.start_date
         style = None
         for evt in processor.monitor:
@@ -132,6 +142,96 @@ class GanttRenderer(object):
         if style:
             self.plot_rect(itemId, x1, self.end_date, style)
 
+    def plot_active_tasks(self, itemId):
+        """Plots the 'active tasks' metric on the graph with the given itemId
+        'Active tasks' is the total number of active tasks for all processors
+        at a given time.
+        """
+        self.plot_graph(itemId, "All")
+
+
+        style = None
+        x1 = self.start_date
+
+        # Gets all events of all tasks for the given processor
+        tasks_monitors = [task.monitor for task in self.results.tasks]
+        # All events sorted by date
+        allEvents = sorted(array_sum(tasks_monitors), key=lambda x : x[0])
+        active_tasks = 0
+        max_active_tasks = len(self.results.model.task_list)
+        lastPoint = (self.start_date, 0)
+        plots = [(self.start_date, 0)]
+        
+        origin = self.get_graph_rect(itemId)
+        posX, posY = 0, 0
+        
+        for t, evt in allEvents:
+            # Only keep the events concerning the current processor
+            # if(evt.cpu != processor):
+            #    continue
+            
+            current_date = t / float(self.results.model.cycles_per_ms)
+            if(current_date > self.end_date):
+                break
+            
+            # Adds the item to the drawing list
+            if x1 < current_date and current_date > self.start_date:
+                plots.append((max(current_date, self.start_date), active_tasks))
+
+            
+            if evt.event == JobEvent.ACTIVATE:
+                # print("ACTIVATE ", current_date, active_tasks, " / ", max_active_tasks, " evt = ", evt.event, evt.cpu)
+                active_tasks += 1
+            if evt.event == JobEvent.EXECUTE:
+                # print("EXECUTE ", current_date, evt.cpu.identifier)
+                pass
+            elif evt.event == JobEvent.PREEMPTED:
+                # print("PREEMPT ", current_date, active_tasks, " / ", max_active_tasks, " evt = ", evt.event, evt.cpu)
+                pass
+            elif evt.event == JobEvent.TERMINATED:
+                # print("TERMINATE ", current_date, active_tasks, " / ", max_active_tasks, " evt = ", evt.event, evt.cpu)
+                active_tasks -= 1
+            elif evt.event == JobEvent.ABORTED:
+                # print("ABORTED ", current_date, active_tasks, " / ", max_active_tasks, " evt = ", evt.event)
+                active_tasks -= 1
+            elif evt.cpu != None:
+                # print("Type : ", current_date, evt.event, evt.cpu.identifier)
+                pass
+                
+            x1 = current_date
+            lastPoint = (current_date, active_tasks)
+            max_active_tasks = max(max_active_tasks, active_tasks)
+
+        # Draws the last item
+        if x1 < self.end_date:
+            plots.append(lastPoint)
+        
+        # Used to close the path
+        plots.append((self.end_date, plots[-1][1]));
+        plots.append((self.end_date, 0))
+        
+        # Starts drawing
+        self.ctx.strokeStyle = "#0040F0"
+        self.ctx.fillStyle = "rgba(40, 125, 255, 0.5)"
+        self.ctx.beginPath();
+        
+        for current_date, active_tasks in plots:
+            posX = origin[0] + self.get_abs_x(current_date)
+            posY = origin[1] + (1 - float(active_tasks)/max_active_tasks) * self.ITEM_HEIGHT
+            self.ctx.lineTo(posX, posY)
+        
+        posY = origin[1] + (1 - float(len(self.results.tasks))/max_active_tasks) * self.ITEM_HEIGHT
+        
+        self.ctx.closePath()
+        self.ctx.fill()
+        self.ctx.stroke()
+        # Draws the red line indicating the number of tasks.
+        self.ctx.strokeStyle = "#FF0000"
+        self.ctx.beginPath()
+        self.ctx.moveTo(origin[0] + self.get_abs_x(self.start_date), posY)
+        self.ctx.lineTo(origin[0] + self.get_abs_x(self.end_date), posY)
+        self.ctx.stroke();
+    
     def plot_task(self, itemId, task):
         """Plots a task on the graph with the given itemId"""
         style = None

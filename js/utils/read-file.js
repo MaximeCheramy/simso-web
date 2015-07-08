@@ -1,7 +1,6 @@
 function readTextFile(file, callback)
 {
     var rawFile = new XMLHttpRequest();
-	var txt = "";
     rawFile.open("GET", file, false);
     rawFile.onreadystatechange = function ()
     {
@@ -15,4 +14,11 @@ function readTextFile(file, callback)
         }
     }
     rawFile.send(null);
+}
+
+
+function readSchedulerFile(name, callback) 
+{
+    var filename = "lib/modules/" + name.replace(/\./g, "/") + ".py";
+    return readTextFile(filename, callback);
 }
