@@ -103,7 +103,7 @@ The front end is built upon the MVC architecture.
 \pagebreak
 
 \paragraph{The bridge}
-The bridge is responsible for passing configuration to simso, gathering results and passing them back to javascript.
+The bridge is responsible for passing configuration to simso, gathering results and passing them back to javascript. The brige's source files are located in the py/ folder.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.50]{figure2.eps}
@@ -113,6 +113,42 @@ The bridge is responsible for passing configuration to simso, gathering results 
 
 \paragraph{Simso}
 Simso is integrated in simso-web as a submodule. Simso's documentation is available here : \href{"http://homepages.laas.fr/mcheramy/simso/doc"}{http://homepages.laas.fr/mcheramy/simso/doc}.
+
+\section{Diving into the code}
+The goal of this section is to explain tricky or important parts of the code, as well as explaining some design choices.
+
+\subsection{The python virtual machine}
+As of this writting, Pypy.js doesn't have any form of documentation. In this section the functions used will get some documentation love. 
+\paragraph{Setup}
+pass
+\paragraph{Running a python script}
+First make sure you have an access to pypyService. The code to execute python code should look like the following : 
+\lstset{language=python}
+\begin{lstlisting}
+pypyService.vm.exec(code).then(function() {
+	// Your code
+}, logScriptErrors);
+\end{lstlisting}
+Where logScriptErrors is the function defined in config-controlers.js. This function will be called on error with an object as parameter containing a 'name', 'message' and 'trace'.
+
+\paragraph{Managing imports}
+As the pypy.js will run in the user's browser with its own python environment, it is important to bundle all the needed modules.
+A listing of all the bundled modules can be found in lib/modules/index.json.
+TODO : documenter moduler bundler.py (le comprendre avant :p)
+
+\paragraph{Passing variables to and from python}
+pass
+
+\subsection{Simso integration in the configuration}
+pass
+
+\paragraph{Scheduler auto-detection mechanism}
+Explain scheduler discovery.py / simso-schedulers.py
+
+
+\paragraph{ETM auto-detection}
+Explain simso-etm.py
+
 
 \end{document}
 
