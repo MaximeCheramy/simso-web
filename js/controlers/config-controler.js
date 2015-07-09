@@ -79,7 +79,7 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		
 			$scope.disableResults();
 			$scope.setSchedErrors(true);
-		}
+		};
 
 			
 		
@@ -251,14 +251,14 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		{
 			// Custom scheduler
 			pypyService.vm.exec($scope.conf.custom_sched_code).then(function() {
-				pypyService.vm.exec(script).then(execScriptCallback);
+				pypyService.vm.exec(script).then(execScriptCallback, logScriptErrors);
 			}, logScriptErrors);
 		}
 		else
 		{
 			// Non custom scheduler
 			pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
-				pypyService.vm.exec(script).then(execScriptCallback);
+				pypyService.vm.exec(script).then(execScriptCallback, logScriptErrors);
 			}, logScriptErrors);
 		}
 
