@@ -11,7 +11,7 @@ function(confService, $scope) {
 		{name: 'csOverhead', displayName: 'CS overhead', type: 'number'},
 		{name: 'clOverhead', displayName: 'CL overhead', type: 'number'},
 	];
-	
+		
 	$scope.gridProcessorsOptions = {
 		enableColumnResize: true,
 		enableCellEdit: true,
@@ -56,27 +56,7 @@ function(confService, $scope) {
 	// ------------------------------------------------------------------------
 	// *** Add / Delete processor *** 
 	// ------------------------------------------------------------------------
-	$scope.addNewProcessor = function() {
-		var id = 1;
-		for (var i = 0; i < $scope.conf.processors.length; i++) {
-			if ($scope.conf.processors[i].id == id) {
-				id++;
-				i = 0;
-			}
-		}
-		$scope.conf.processors.push(
-		{
-			'id': id,
-			 'name': 'ProcName',
-			 'csOverhead': 0,
-			 'clOverhead': 0,
-			 'speed': 1, 
-			 'caches' : []
-		});
-	};
-
-
-
+	$scope.addNewProcessor = $scope.conf.add_new_processor;
 	$scope.delProcessors = function() {
 		for (var i = 0; i < $scope.selectedProcessors.length; i++) {
 			var index = $scope.conf.processors.indexOf($scope.selectedProcessors[i]);

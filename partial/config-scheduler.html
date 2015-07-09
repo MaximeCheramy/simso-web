@@ -12,7 +12,6 @@
 					   type="checkbox"></input>
 			</div>
 		</div>
-		
 		<div ng-show="!conf.custom_sched">
 			<div class="form-group">
 				<label class="control-label col-sm-2">Scheduler:</label>
@@ -50,37 +49,39 @@
 			</div>
 		</div>
 		
-		<div class="form-group">
-			<label for="overhead" class="control-label col-sm-2">Overhead schedule</label>
-			<div class="col-sm-4">
-				<input id="overhead" 
-					   ng-model="conf.overhead_schedule"
-					   class="form-control col-sm-2" 
-					   type="{{toJsInputType('int')}}"></input>
+		<div ng-show="conf.expert_mode">
+			<div class="form-group">
+				<label for="overhead" class="control-label col-sm-2">Overhead schedule</label>
+				<div class="col-sm-4">
+					<input id="overhead" 
+						   ng-model="conf.overhead_schedule"
+						   class="form-control col-sm-2" 
+						   type="{{toJsInputType('int')}}"></input>
+				</div>
+				<label class="control-label col-sm-1">(cycles)</label>
 			</div>
-			<label class="control-label col-sm-1">(cycles)</label>
-		</div>
-		
-		<div class="form-group">
-			<label for="overhead_activate" class="control-label col-sm-2">Overhead on activate</label>
-			<div class="col-sm-4">
-				<input id="overhead_activate" 
-					   ng-model="conf.overhead_activate"
-					   class="form-control col-sm-2" 
-					   type="{{toJsInputType('int')}}"></input>
+			
+			<div class="form-group">
+				<label for="overhead_activate" class="control-label col-sm-2">Overhead on activate</label>
+				<div class="col-sm-4">
+					<input id="overhead_activate" 
+						   ng-model="conf.overhead_activate"
+						   class="form-control col-sm-2" 
+						   type="{{toJsInputType('int')}}"></input>
+				</div>
+				<label class="control-label col-sm-1">(cycles)</label>
 			</div>
-			<label class="control-label col-sm-1">(cycles)</label>
-		</div>
-		
-		<div class="form-group">
-			<label for="overhead_terminate" class="control-label col-sm-2">Overhead on terminate</label>
-			<div class="col-sm-4">
-				<input id="overhead_terminate" 
-					   ng-model="conf.overhead_terminate"
-					   class="form-control col-sm-2" 
-					   type="{{toJsInputType('int')}}"></input>
+			
+			<div class="form-group">
+				<label for="overhead_terminate" class="control-label col-sm-2">Overhead on terminate</label>
+				<div class="col-sm-4">
+					<input id="overhead_terminate" 
+						   ng-model="conf.overhead_terminate"
+						   class="form-control col-sm-2" 
+						   type="{{toJsInputType('int')}}"></input>
+				</div>
+				<label class="control-label col-sm-1">(cycles)</label>
 			</div>
-			<label class="control-label col-sm-1">(cycles)</label>
 		</div>
 		
 		<div ng-show="conf.custom_sched">

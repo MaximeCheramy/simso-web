@@ -1,5 +1,6 @@
 simsoApp.service("confService", 
 ["pypyService", "$timeout", function(pypyService, $timeout) {
+	this.expert_mode = false;
 	this.cycles_per_ms = 1000000;
 	this.duration_ms = 100;
 	this.duration = this.duration_ms * this.cycles_per_ms;
@@ -35,7 +36,6 @@ simsoApp.service("confService",
 		}
 	};
 	
-	
 	// -- ETM conf
 	this.etm = null;
 	this.etm_list = [];
@@ -53,16 +53,18 @@ simsoApp.service("confService",
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;
 	
+	/* ------------------------------------------------------------------------
+	 * Task functions
+	 * ----------------------------------------------------------------------*/
 	// Must be called when the tasks' additional fields are modified.
 	this.onTaskFieldsChanged = function() {
 		console.log("conf.onTaskFieldsChanged : not overrided yet.");	
 	};
 	
-	// Must be called when the processors' additional fields are modified.
-	this.onProcFieldsChanged = function() {
-		console.log("conf.onProcFieldsChanged : not overrided yet.");	
-	};
-	
+
+	/* ------------------------------------------------------------------------
+	 * Gantt functions
+	 * ----------------------------------------------------------------------*/
 	this.allGanttItems = null;
 	this.getAllGanttItems = function() {
 		return $.merge(this.tasks.map(function(task) { 
@@ -72,6 +74,53 @@ simsoApp.service("confService",
 		}));
 	};
 	
+	/* ------------------------------------------------------------------------
+	 * Processor functions
+	 * ----------------------------------------------------------------------*/
+	// Must be called when the processors' additional fields are modified.
+	this.onProcFieldsChanged = function() {
+		console.log("conf.onProcFieldsChanged : not overrided yet.");	
+	};
+	
+	// Getter setter of the processor count used in BASIC mode.
+	this.processor_count = function(val) {
+		if(val) {
+			// Setter
+			var diff = val - this.processors.length;
+			if(diff < 0)
+				this.processors.splice(this.processors.length + diff, -diff);
+			else if(diff > 0)
+				for(var i = 0; i < diff; i++)
+					this.add_new_processor();
+		} else {
+			// Getter
+			return this.processors.length;
+		}
+	};
+	
+	// Adds a new processor
+	this.add_new_processor = function() {
+		var id = 1;
+		for (var i = 0; i < this.processors.length; i++) {
+			if (this.processors[i].id == id) {
+				id++;
+				i = 0;
+			}
+		}
+		
+		this.processors.push(
+		{
+			'id': id,
+			 'name': 'ProcName',
+			 'csOverhead': 0,
+			 'clOverhead': 0,
+			 'speed': 1, 
+			 'caches' : []
+		});
+	};
+	/* ------------------------------------------------------------------------
+	 * Import / Export
+	 * ----------------------------------------------------------------------*/
 	// Creates a clone of the current configuration.
 	this.clone = function() {
 		return {

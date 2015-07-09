@@ -17,6 +17,17 @@
 			<input type="number" min="1" class="form-control input-sm" id="cycles_per_ms" ng-change="conf.duration = conf.duration_ms * conf.cycles_per_ms" ng-model="conf.cycles_per_ms"></input>
 			</div>
 		</div>
+		<div class="form-group" ng-show="!conf.expert_mode">
+			<label class="control-label col-sm-2">Processors :</label>
+			<div class="col-sm-2">
+			<input type="number" min="1" max="100"
+				class="form-control input-sm"
+				ng-change="fixLayout()"
+				ng-model="conf.processor_count"
+				ng-model-options="{getterSetter: true}">
+			</input>
+			</div>
+		</div>
 	</form>
 	<form class="form-horizontal" role="form" style="margin: 1em">
 		<div class="form-group">
@@ -45,4 +56,5 @@
 			<label class="control-label col-sm-1">({{field.type}})</label>
 		</div>
 	</form>
+
 </div>
