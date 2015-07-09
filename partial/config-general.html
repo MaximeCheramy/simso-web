@@ -1,15 +1,17 @@
 <div class="panel-body" ng-controller="ConfigGeneralCtrl">
 	<form class="form-horizontal" role="form" style="margin: 1em">
 		<div class="form-group">
-			<label for="duration" class="control-label col-sm-2">Duration (cycles):</label>
+			<label for="duration" class="control-label col-sm-2">Duration :</label>
 			<div class="col-sm-2">
 			<input type="number" min="1" class="form-control input-sm" id="duration" ng-change="conf.duration_ms = conf.duration / conf.cycles_per_ms" ng-model="conf.duration"></input>
 			</div>
-
-			<label for="duration_ms" class="control-label col-sm-2">Duration (ms):</label>
+			<span class="label label-default label-custom col-sm-1">cycles</span>
+			
+			<label for="duration_ms" class="control-label col-sm-2">Duration :</label>
 			<div class="col-sm-2">
 			<input type="number" min="1" class="form-control input-sm" id="duration_ms" ng-change="conf.duration = conf.cycles_per_ms * conf.duration_ms" ng-model="conf.duration_ms"></input>
 			</div>
+			<span class="label label-default label-custom col-sm-1">ms</span>
 		</div>
 		<div class="form-group">
 			<label for="cycles_per_ms" class="control-label col-sm-2">Cycles / ms:</label>
@@ -34,7 +36,7 @@
 			<label for="duration" class="control-label col-sm-2">Execution Time Model:</label>
 			<div class="col-sm-4">
 				<select 
-					class="form-control"
+					class="form-control input-sm"
 					ng-model="conf.etm" 
 					ng-options="e.display_name for e in conf.etm_list"
 					ng-change="onEtmChanged()"
@@ -50,10 +52,10 @@
 					   filecontent="field.value"
 					   ng-true-value="true"
 					   ng-false-value="false"
-					   class="form-control col-sm-2" 
+					   class="form-control input-sm col-sm-2" 
 					   type="{{toJsInputType(field.type)}}"></input>
 			</div>
-			<label class="control-label col-sm-1">({{field.type}})</label>
+			<span class="label label-default label-custom col-sm-1">{{field.type}}</span>
 		</div>
 	</form>
 

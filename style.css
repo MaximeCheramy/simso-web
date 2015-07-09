@@ -42,3 +42,8 @@
 .editor {
     border-radius: 10px; border: 2px solid #A0A0FF 
 }
+
+.label-custom {
+    margin-top: 0.50em;
+    width: 5em;
+}

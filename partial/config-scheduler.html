@@ -17,7 +17,7 @@
 				<label class="control-label col-sm-2">Scheduler:</label>
 				<div class="col-sm-4">
 					<select 
-						class="form-control"
+						class="form-control input-sm"
 						ng-model="conf.scheduler_class" 
 						ng-options="sched.display_name for sched in conf.scheduler_list"
 						ng-change="onSchedulerChanged()"
@@ -30,8 +30,6 @@
 						Edit additional fields
 					</a>
 					<div ng-include="'partial/components/field-editor-modal.html'"></div>
-					
-					
 				</span>
 			</div>
 			<div class="form-group" ng-repeat="field in conf.schedAdditionalFields">
@@ -42,10 +40,10 @@
 						   ng-true-value="true"
 						   ng-false-value="false"
 						   filecontent="field.value"
-						   class="form-control col-sm-2" 
+						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType(field.type)}}"></input>
 				</div>
-				<label class="control-label col-sm-1">({{field.type}})</label>
+				<span class="label label-default label-custom col-sm-1">{{field.type}}</span>
 			</div>
 		</div>
 		
@@ -55,10 +53,10 @@
 				<div class="col-sm-4">
 					<input id="overhead" 
 						   ng-model="conf.overhead_schedule"
-						   class="form-control col-sm-2" 
+						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
-				<label class="control-label col-sm-1">(cycles)</label>
+				<span class="label label-default label-custom col-sm-1">cycles</span>
 			</div>
 			
 			<div class="form-group">
@@ -66,10 +64,10 @@
 				<div class="col-sm-4">
 					<input id="overhead_activate" 
 						   ng-model="conf.overhead_activate"
-						   class="form-control col-sm-2" 
+						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
-				<label class="control-label col-sm-1">(cycles)</label>
+				<span class="label label-default label-custom col-sm-1">cycles</span>
 			</div>
 			
 			<div class="form-group">
@@ -77,10 +75,10 @@
 				<div class="col-sm-4">
 					<input id="overhead_terminate" 
 						   ng-model="conf.overhead_terminate"
-						   class="form-control col-sm-2" 
+						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
-				<label class="control-label col-sm-1">(cycles)</label>
+				<span class="label label-default label-custom col-sm-1">cycles</span>
 			</div>
 		</div>
 		
@@ -90,7 +88,7 @@
 				<div class="col-sm-4">
 					<input id="customschedclassname" 
 						   ng-model="conf.custom_sched_name"
-						   class="form-control col-sm-2" 
+						   class="form-control input-sm col-sm-2" 
 						   type="string"></input>
 				</div>
 			</div>
@@ -98,7 +96,7 @@
 				<label class="control-label col-sm-2">Scheduler template:</label>
 				<div class="col-sm-4">
 					<select 
-						class="form-control"
+						class="form-control input-sm"
 						ng-model="scheduler_template" 
 						ng-options="sched.display_name for sched in conf.scheduler_list"
 						ng-change="onSchedulerTemplateChanged()"
