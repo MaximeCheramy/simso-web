@@ -18,15 +18,19 @@ def array_sum(arrList):
         arr += x
     return arr
 
+def default(array, index, defaultValue):
+    if index in array:
+        return array[index]
+    return defaultValue
 
 # Class used to render gantt charts.
 class GanttRenderer(object):
     ITEM_HEIGHT = 60 # Height of a gantt chart
     ITEM_SPACING = 20
     UNIT_WIDTH = 10 # Length of a time unit in pixels at scale 1
-    GRAPH_SIZE_OFFSETX = 40
+    GRAPH_SIZE_OFFSETX = 60
     GRAPH_SIZE_OFFSETY = 10
-    GRAPH_OX = 20
+    GRAPH_OX = 40
     GRAPH_OY = 15
     GRAD_HEIGHT = 4
     FILL_HEIGHT = ITEM_HEIGHT - 10
@@ -38,6 +42,7 @@ class GanttRenderer(object):
         self.zoom = parameters["zoom"]
         self.selected_item = parameters["gantt_item"]
         self.results = results
+        self.item_height = default(parameters, "item_height", self.ITEM_HEIGHT)
         self.start_date = parameters["startDate"] #0
         self.end_date = parameters["endDate"] #min(results.model.now(), results.model.duration) // results.model.cycles_per_ms
         # number of graduation steps for each annotation
@@ -80,7 +85,7 @@ class GanttRenderer(object):
     def get_size(self):
         """Gets the size of the context where we are going to draw the chart"""
         return [(self.end_date - self.start_date) * self.UNIT_WIDTH * self.zoom + self.GRAPH_SIZE_OFFSETX, # x
-                self.GRAPH_SIZE_OFFSETY + (self.ITEM_HEIGHT + self.ITEM_SPACING)] # y
+                self.GRAPH_SIZE_OFFSETY + (self.item_height + self.ITEM_SPACING)] # y
 
     def get_abs_x(self, x):
         """Gets the pixel X position of the graph's X position in time units"""
@@ -88,7 +93,7 @@ class GanttRenderer(object):
 
     def get_graph_origin(self, itemId):
         """Gets the graph's origin"""
-        return (self.GRAPH_OX, itemId * (self.ITEM_HEIGHT + self.ITEM_SPACING) + self.GRAPH_OY)
+        return (self.GRAPH_OX, itemId * (self.item_height + self.ITEM_SPACING) + self.GRAPH_OY)
 
     def get_graph_rect(self, itemId):
         """Gets the rect where the given item should be drawn"""
@@ -96,7 +101,7 @@ class GanttRenderer(object):
         return  [origin[0],
              origin[1],
              self.get_abs_x(self.end_date) - self.get_abs_x(self.start_date),
-             self.ITEM_HEIGHT]
+             self.item_height]
              
     def get_style(self, taskId):
         """Gets the style of a given taskId"""
@@ -147,7 +152,6 @@ class GanttRenderer(object):
         'Active tasks' is the total number of active tasks for all processors
         at a given time.
         """
-        self.plot_graph(itemId, "All")
 
 
         style = None
@@ -211,16 +215,23 @@ class GanttRenderer(object):
         plots.append((self.end_date, 0))
         
         # Starts drawing
+        lineY = origin[1] + (1 - float(len(self.results.tasks))/max_active_tasks) * self.item_height
+        lineYoff = float(len(self.results.tasks))/max_active_tasks * self.item_height
+        self.plot_graph(itemId, "All", [
+            (0, "0"), 
+            (self.item_height-3, max_active_tasks),
+            (lineYoff-3, len(self.results.tasks))
+        ])
+        
         self.ctx.strokeStyle = "#0040F0"
         self.ctx.fillStyle = "rgba(40, 125, 255, 0.5)"
         self.ctx.beginPath();
         
         for current_date, active_tasks in plots:
             posX = origin[0] + self.get_abs_x(current_date)
-            posY = origin[1] + (1 - float(active_tasks)/max_active_tasks) * self.ITEM_HEIGHT
+            posY = origin[1] + (1 - float(active_tasks)/max_active_tasks) * self.item_height
             self.ctx.lineTo(posX, posY)
         
-        posY = origin[1] + (1 - float(len(self.results.tasks))/max_active_tasks) * self.ITEM_HEIGHT
         
         self.ctx.closePath()
         self.ctx.fill()
@@ -228,8 +239,8 @@ class GanttRenderer(object):
         # Draws the red line indicating the number of tasks.
         self.ctx.strokeStyle = "#FF0000"
         self.ctx.beginPath()
-        self.ctx.moveTo(origin[0] + self.get_abs_x(self.start_date), posY)
-        self.ctx.lineTo(origin[0] + self.get_abs_x(self.end_date), posY)
+        self.ctx.moveTo(origin[0] + self.get_abs_x(self.start_date), lineY)
+        self.ctx.lineTo(origin[0] + self.get_abs_x(self.end_date), lineY)
         self.ctx.stroke();
     
     def plot_task(self, itemId, task):
@@ -315,7 +326,7 @@ class GanttRenderer(object):
         # Rect's dimentions
         origin = self.get_graph_rect(itemId)
         posX = origin[0] + self.get_abs_x(startDate)
-        posY = origin[1] + (self.ITEM_HEIGHT - self.FILL_HEIGHT)
+        posY = origin[1] + (self.item_height - self.FILL_HEIGHT)
         w = self.get_abs_x(endDate) - self.get_abs_x(startDate)
         h = self.FILL_HEIGHT
 
@@ -330,16 +341,18 @@ class GanttRenderer(object):
 
         # Rect's dimentions
         posX = origin[0] + self.get_abs_x(date)
-        posY = origin[1] + self.ITEM_HEIGHT
+        posY = origin[1] + self.item_height
         self.fillStyle = color
         self.ctx.beginPath()
         self.ctx.arc(posX, posY, width/2, 0, 90)
         self.ctx.fill()
 
 
-    def plot_graph(self, itemId, title="te"):
+    def plot_graph(self, itemId, title="te", vertical_grad=[]):
         """Draws the plotting area in which the item with the given id will be drawn,
-        with graduations"""
+        with graduations
+        vertical_grad : [(y, label), (y, label), ...]
+        """
         self.draw_graph_rect(itemId)
 
         # Draw small graduations
@@ -357,7 +370,7 @@ class GanttRenderer(object):
         for timeStep in range(self.start_date, self.end_date+1):
             posX = timeStep
             if timeStep % self.graduation_steps <= 0.0001 and ((timeStep / self.graduation_steps) % self.graduation_substeps) <= 0.0001:
-                self.draw_graph_graduation(itemId, posX, -self.ITEM_HEIGHT)
+                self.draw_graph_graduation(itemId, posX, -self.item_height)
                 self.draw_annotation(itemId, posX, str(timeStep))
         self.ctx.stroke()
         self.ctx.setLineDash([])
@@ -365,11 +378,17 @@ class GanttRenderer(object):
         # Draws text legend
         origin = self.get_graph_rect(itemId)
         self.ctx.save()
-        self.ctx.font = "12px Arial"
-        self.ctx.translate(self.GRAPH_OX - 12, origin[1] + self.ITEM_HEIGHT)
+        self.ctx.font = "bold 12px Arial"
+        self.ctx.translate(self.GRAPH_OX, origin[1] + self.item_height)
         self.ctx.rotate(-3.14/2)
         self.ctx.fillStyle = "#000000"
-        self.ctx.fillText(title, 10, 10)
+        self.ctx.fillText(title, 0, -20)
+        
+        self.ctx.font = "12px Arial"
+        
+        for y, label in vertical_grad:
+            self.ctx.fillText(str(label), y, -6)
+        
         self.ctx.restore()
 
     def plot_line(self, itemId, date, style, arrowUp=False, arrowDown=False):
@@ -379,7 +398,7 @@ class GanttRenderer(object):
 
         origin = self.get_graph_rect(itemId)
         posX = origin[0] + self.get_abs_x(date)
-        top = origin[1] + (self.ITEM_HEIGHT - self.FILL_HEIGHT)
+        top = origin[1] + (self.item_height - self.FILL_HEIGHT)
         self.apply_style(style)
         self.ctx.fillRect(posX, top, 1, self.FILL_HEIGHT)
 
@@ -394,7 +413,7 @@ class GanttRenderer(object):
             arrows.append([p1, p2, p3])
 
         if arrowDown:
-            bottom = origin[1] + self.ITEM_HEIGHT
+            bottom = origin[1] + self.item_height
             p1 = (posX - 5, bottom - 5)
             p2 = (posX, bottom)
             p3 = (posX + 5, bottom - 5)
@@ -428,7 +447,7 @@ class GanttRenderer(object):
 
         self.ctx.fillStyle = "#000000"
         self.ctx.fillText(text,
-             posX, origin[1] + self.ITEM_HEIGHT + 15)
+             posX, origin[1] + self.item_height + 15)
 
 
     def draw_graph_graduation(self, itemId, position, height):
@@ -436,7 +455,7 @@ class GanttRenderer(object):
         the given height"""
 
         origin = self.get_graph_rect(itemId)
-        bottom = origin[1] + self.ITEM_HEIGHT
+        bottom = origin[1] + self.item_height
         posX = self.get_abs_x(position) + origin[0]
 
         self.ctx.strokeStyle = "#000000"

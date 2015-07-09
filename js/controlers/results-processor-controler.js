@@ -55,6 +55,7 @@ simsoControllers.controller('ActiveTasksGanttControler', ['$scope', '$controller
 		var gantt_item =  "{'id' : 0, 'type' : 'active_tasks'}";
 		
 		return "{'zoom' : 1," +
+				"'item_height' : 120," +
 				"'startDate' : " + $scope.conf.window.startDate + "," + 
 				"'endDate' : " + $scope.conf.window.endDate + "," + 
 				"'gantt_item' : " + gantt_item +
