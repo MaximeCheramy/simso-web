@@ -1,6 +1,6 @@
 import js
 js.globals['python']['schedulers'] = [{'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.BF', 'name': 'simso.schedulers.BF'},
-{'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.CC_EDF', 'name': 'simso.schedulers.CC_EDF'},
+{'required_proc_fields': [{'default': '1.0', 'type': 'float', 'name': 'speed'}], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.CC_EDF', 'name': 'simso.schedulers.CC_EDF'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.DP_WRAP', 'name': 'simso.schedulers.DP_WRAP'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.EDCL', 'name': 'simso.schedulers.EDCL'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.EDF', 'name': 'simso.schedulers.EDF'},
@@ -32,7 +32,7 @@ js.globals['python']['schedulers'] = [{'required_proc_fields': [], 'required_fie
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.RM', 'name': 'simso.schedulers.RM'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.RM_mono', 'name': 'simso.schedulers.RM_mono'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.RUN', 'name': 'simso.schedulers.RUN'},
-{'required_proc_fields': [{'default': '1.0', 'type': 'float', 'name': 'priority'}], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.Static_EDF', 'name': 'simso.schedulers.Static_EDF'},
+{'required_proc_fields': [{'default': '1.0', 'type': 'float', 'name': 'speed'}], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.Static_EDF', 'name': 'simso.schedulers.Static_EDF'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.U_EDF', 'name': 'simso.schedulers.U_EDF'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.WC_RUN', 'name': 'simso.schedulers.WC_RUN'},
 {'required_proc_fields': [], 'required_fields': [], 'required_task_fields': [], 'display_name': 'simso.schedulers.WC_U_EDF', 'name': 'simso.schedulers.WC_U_EDF'}]
