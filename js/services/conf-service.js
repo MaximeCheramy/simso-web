@@ -1,13 +1,12 @@
 simsoApp.service("confService", 
 ["pypyService", "$timeout", function(pypyService, $timeout) {
-	this.expert_mode = false;
-	this.cycles_per_ms = 1000000;
-	this.duration_ms = 100;
-	this.duration = this.duration_ms * this.cycles_per_ms;
-	this.overhead_schedule = 0;
-	this.overhead_activate = 0;
-	this.overhead_terminate = 0;
-	this.memory_access_time = 0; // Cache Model only
+	this.expertMode = false;
+	this.cyclesPerMs = 1000000;
+	this.durationMs = 100;
+	this.duration = this.durationMs * this.cyclesPerMs;
+	this.overheadSchedule = 0;
+	this.overheadActivate = 0;
+	this.overheadTerminate = 0;
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
 		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
@@ -38,17 +37,17 @@ simsoApp.service("confService",
 	
 	// -- ETM conf
 	this.etm = null;
-	this.etm_list = [];
+	this.etmList = [];
 	this.etmAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
 	
 	
 	// -- Scheduler conf
 	this.schedAdditionalFields = []; // {'name':name,'type':pytype,'value':value}
-	this.scheduler_class = null; // if custom_shed == false
-	this.scheduler_list = [];
-	this.custom_sched = false;
-	this.custom_sched_code = "";
-	this.custom_sched_name = "Custom";
+	this.schedulerClass = null; // if custom_shed == false
+	this.schedulerList = [];
+	this.customSched = false;
+	this.customSchedCode = "";
+	this.customSchedName = "Custom";
 	
 	this.window = {startDate: 0, endDate: 0};
 	var othis = this;
@@ -83,7 +82,7 @@ simsoApp.service("confService",
 	};
 	
 	// Getter setter of the processor count used in BASIC mode.
-	this.processor_count = function(val) {
+	this.processorCount = function(val) {
 		if(val) {
 			// Setter
 			var diff = val - this.processors.length;
@@ -91,7 +90,7 @@ simsoApp.service("confService",
 				this.processors.splice(this.processors.length + diff, -diff);
 			else if(diff > 0)
 				for(var i = 0; i < diff; i++)
-					this.add_new_processor();
+					this.addNewProcessor();
 		} else {
 			// Getter
 			return this.processors.length;
@@ -99,7 +98,7 @@ simsoApp.service("confService",
 	};
 	
 	// Adds a new processor
-	this.add_new_processor = function() {
+	this.addNewProcessor = function() {
 		var id = 1;
 		for (var i = 0; i < this.processors.length; i++) {
 			if (this.processors[i].id == id) {
@@ -124,21 +123,20 @@ simsoApp.service("confService",
 	// Creates a clone of the current configuration.
 	this.clone = function() {
 		return {
-			cycles_per_ms: othis.cycles_per_ms,
-			duration_ms: othis.duration_ms,
+			cyclesPerMs: othis.cyclesPerMs,
+			durationMs: othis.durationMs,
 			duration: othis.duration,
-			overhead_schedule: othis.overhead_schedule,
-			overhead_activate: othis.overhead_activate,
-			overhead_terminate: othis.overhead_terminate,
-			ram_access_time: othis.ram_access_time,
-			scheduler_class: othis.scheduler_class.name,
+			overheadSchedule: othis.overheadSchedule,
+			overheadActivate: othis.overheadActivate,
+			overheadTerminate: othis.overheadTerminate,
+			schedulerClass: othis.schedulerClass.name,
 			taskAdditionalFields: othis.taskAdditionalFields.slice(),
 			procAdditionalFields: othis.procAdditionalFields.slice(),
 			schedAdditionalFields: othis.schedAdditionalFields.slice(),
 			etmAdditionalFields: othis.etmAdditionalFields.slice(),
-			custom_sched: othis.custom_sched,
-			custom_sched_code: othis.custom_sched_code,
-			custom_sched_name: othis.custom_sched_name,
+			customSched: othis.customSched,
+			customSchedCode: othis.customSchedCode,
+			customSchedName: othis.customSchedName,
 			etm: othis.etm.name,
 			tasks: othis.tasks,
 			processors: othis.processors,
@@ -168,13 +166,13 @@ simsoApp.service("confService",
 					break;
 				case "etm":
 					// ETM from name
-					othis[key] = othis.etm_list.filter(function(value, index) {
+					othis[key] = othis.etmList.filter(function(value, index) {
 						return value.name === conf[key];
 					})[0];
 					break;
-				case "scheduler_class":
+				case "schedulerClass":
 					// Class from name
-					othis[key] = othis.scheduler_list.filter(function(value, index) {
+					othis[key] = othis.schedulerList.filter(function(value, index) {
 						return value.name === conf[key];
 					})[0];
 					break;

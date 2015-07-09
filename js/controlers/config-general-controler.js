@@ -5,8 +5,8 @@ function(confService, pypyService, $scope) {
 	$scope.conf = confService;
 	
 	pypyService.registerObserverCallback($scope, function() {
-		confService.etm_list = python["etm"];
-		confService.etm = confService.etm_list[0];
+		confService.etmList = python["etm"];
+		confService.etm = confService.etmList[0];
 	});	
 	
 	// Called when the ETM changes

@@ -6,11 +6,11 @@
 	<p>
 		<div class="btn-toolbar" role="toolbar" style="text-align: right">
 			
-			<div class="btn-group" role="group" ng-show="!conf.expert_mode">
-				<button ng-click="conf.expert_mode = true" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
+			<div class="btn-group" role="group" ng-show="!conf.expertMode">
+				<button ng-click="conf.expertMode = true" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
 			</div>
-			<div class="btn-group" role="group" ng-show="conf.expert_mode">
-				<button ng-click="conf.expert_mode = false" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
+			<div class="btn-group" role="group" ng-show="conf.expertMode">
+				<button ng-click="conf.expertMode = false" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
 			</div>
 			
 			<div class="btn-group" role="group">
@@ -52,7 +52,7 @@
 	<conf-panel title="'General'" html="'config-general.html'"></conf-panel>
 	<conf-panel title="'Scheduler'" html="'config-scheduler.html'"></conf-panel>
 	<conf-panel title="'Tasks'" html="'config-tasks.html'"></conf-panel>
-	<conf-panel ng-show="conf.expert_mode" title="'Processors'" html="'config-processors.html'"></conf-panel>
+	<conf-panel ng-show="conf.expertMode" title="'Processors'" html="'config-processors.html'"></conf-panel>
 	<conf-panel ng-show="false" title="'Caches'" html="'config-caches.html'"></conf-panel>
 	
 </div>

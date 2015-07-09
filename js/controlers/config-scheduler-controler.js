@@ -4,8 +4,8 @@ function(confService, pypyService, $scope, $timeout) {
 	$scope.conf = confService;
 	
 	pypyService.registerObserverCallback($scope, function() {
-		confService.scheduler_list = python["schedulers"];
-		confService.scheduler_class = confService.scheduler_list[0];
+		confService.schedulerList = python["schedulers"];
+		confService.schedulerClass = confService.schedulerList[0];
 	});	
 	
 	$scope.toJsType = simsoApp.correctors.toJsType;
@@ -19,7 +19,7 @@ function(confService, pypyService, $scope, $timeout) {
 	$scope.onSchedulerTemplateChanged = function() {
 		readSchedulerFile($scope.scheduler_template.name, function(code)
 		{
-			$scope.conf.custom_sched_code = code;
+			$scope.conf.customSchedCode = code;
 		});
 	};
 	
@@ -28,7 +28,7 @@ function(confService, pypyService, $scope, $timeout) {
 		confService.cleanAdditionalFields(confService.schedAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.taskAdditionalFields, 'scheduler');
 		confService.cleanAdditionalFields(confService.procAdditionalFields, 'scheduler');
-		var sched = confService.scheduler_class;
+		var sched = confService.schedulerClass;
 		
 		// Updates scheduler fields
 		for(var i = 0; i < sched.required_fields.length; i++) {

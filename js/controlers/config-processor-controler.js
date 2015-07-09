@@ -56,7 +56,7 @@ function(confService, $scope) {
 	// ------------------------------------------------------------------------
 	// *** Add / Delete processor *** 
 	// ------------------------------------------------------------------------
-	$scope.addNewProcessor = $scope.conf.add_new_processor;
+	$scope.addNewProcessor = $scope.conf.addNewProcessor;
 	$scope.delProcessors = function() {
 		for (var i = 0; i < $scope.selectedProcessors.length; i++) {
 			var index = $scope.conf.processors.indexOf($scope.selectedProcessors[i]);

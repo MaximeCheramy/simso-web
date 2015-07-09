@@ -12,13 +12,13 @@ function(logsService, pypyService, $scope, confService) {
 	$scope.codeviewer.setTheme("ace/theme/chrome");
 	$scope.codeviewer.getSession().setMode("ace/mode/python");
 	$scope.codeviewer.setReadOnly(true);
-	if($scope.conf.custom_sched)
+	if($scope.conf.customSched)
 	{
-		$scope.codeviewer.setValue($scope.conf.custom_sched_code);
+		$scope.codeviewer.setValue($scope.conf.customSchedCode);
 	}
 	else
 	{
-		readSchedulerFile($scope.conf.scheduler_class.name, function(code) {
+		readSchedulerFile($scope.conf.schedulerClass.name, function(code) {
 			$scope.codeviewer.setValue(code);
 		});
 	}
@@ -37,7 +37,7 @@ function(logsService, pypyService, $scope, confService) {
 	};
 	
 	$scope.validateWindowEnd = function() {
-		$scope.conf.window.endDate = Math.max($scope.conf.window.startDate, Math.min($scope.tmpWindow.endDate, $scope.conf.duration_ms));
+		$scope.conf.window.endDate = Math.max($scope.conf.window.startDate, Math.min($scope.tmpWindow.endDate, $scope.conf.durationMs));
 		$scope.tmpWindow.endDate = $scope.conf.window.endDate;		
 		$scope.updateObservationWindow();
 	};

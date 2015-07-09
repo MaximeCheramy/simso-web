@@ -4,7 +4,7 @@
 			<label for="iscustom" class="control-label col-sm-2">Use custom scheduler</label>
 			<div class="col-sm-4">
 				<input id="iscustom" 
-					   ng-model="conf.custom_sched"
+					   ng-model="conf.customSched"
 					   ng-click="fixLayout()"
 					   ng-true-value="true"
 					   ng-false-value="false"
@@ -12,14 +12,14 @@
 					   type="checkbox"></input>
 			</div>
 		</div>
-		<div ng-show="!conf.custom_sched">
+		<div ng-show="!conf.customSched">
 			<div class="form-group">
 				<label class="control-label col-sm-2">Scheduler:</label>
 				<div class="col-sm-4">
 					<select 
 						class="form-control input-sm"
-						ng-model="conf.scheduler_class" 
-						ng-options="sched.display_name for sched in conf.scheduler_list"
+						ng-model="conf.schedulerClass" 
+						ng-options="sched.display_name for sched in conf.schedulerList"
 						ng-change="onSchedulerChanged()"
 						>
 					</select>
@@ -47,12 +47,12 @@
 			</div>
 		</div>
 		
-		<div ng-show="conf.expert_mode">
+		<div ng-show="conf.expertMode">
 			<div class="form-group">
 				<label for="overhead" class="control-label col-sm-2">Overhead schedule</label>
 				<div class="col-sm-4">
 					<input id="overhead" 
-						   ng-model="conf.overhead_schedule"
+						   ng-model="conf.overheadSchedule"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
@@ -60,10 +60,10 @@
 			</div>
 			
 			<div class="form-group">
-				<label for="overhead_activate" class="control-label col-sm-2">Overhead on activate</label>
+				<label for="overheadActivate" class="control-label col-sm-2">Overhead on activate</label>
 				<div class="col-sm-4">
-					<input id="overhead_activate" 
-						   ng-model="conf.overhead_activate"
+					<input id="overheadActivate" 
+						   ng-model="conf.overheadActivate"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
@@ -71,10 +71,10 @@
 			</div>
 			
 			<div class="form-group">
-				<label for="overhead_terminate" class="control-label col-sm-2">Overhead on terminate</label>
+				<label for="overheadTerminate" class="control-label col-sm-2">Overhead on terminate</label>
 				<div class="col-sm-4">
-					<input id="overhead_terminate" 
-						   ng-model="conf.overhead_terminate"
+					<input id="overheadTerminate" 
+						   ng-model="conf.overheadTerminate"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
@@ -82,12 +82,12 @@
 			</div>
 		</div>
 		
-		<div ng-show="conf.custom_sched">
+		<div ng-show="conf.customSched">
 			<div class="form-group">
 				<label for="customschedclassname" class="control-label col-sm-2">Main class name : </label>
 				<div class="col-sm-4">
 					<input id="customschedclassname" 
-						   ng-model="conf.custom_sched_name"
+						   ng-model="conf.customSchedName"
 						   class="form-control input-sm col-sm-2" 
 						   type="string"></input>
 				</div>
@@ -98,7 +98,7 @@
 					<select 
 						class="form-control input-sm"
 						ng-model="scheduler_template" 
-						ng-options="sched.display_name for sched in conf.scheduler_list"
+						ng-options="sched.display_name for sched in conf.schedulerList"
 						ng-change="onSchedulerTemplateChanged()"
 						>
 					</select>
@@ -114,7 +114,7 @@
 				 	theme:'chrome',
 					mode:'python'
 				 }"
-				 ng-model="conf.custom_sched_code"
+				 ng-model="conf.customSchedCode"
 				 id="editor" class="editor" style="width: auto; height: 400px">
 			from simso.core.Scheduler import Scheduler
 			class Custom(Scheduler):

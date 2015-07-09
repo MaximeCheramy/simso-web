@@ -135,7 +135,7 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		
 		// Global
 		script += "configuration.duration = " + $scope.conf.duration + ";\n";
-		script += "configuration.cycles_per_ms = " + $scope.conf.cycles_per_ms + ";\n";
+		script += "configuration.cycles_per_ms = " + $scope.conf.cyclesPerMs + ";\n";
 		
 		// Etm
 		script += "configuration.etm = \"" + $scope.conf.etm.name + "\";\n";
@@ -200,17 +200,17 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 
 
 		// Set scheduler
-		if($scope.conf.custom_sched)
+		if($scope.conf.customSched)
 		{
-			script += "configuration.scheduler_info.clas = "  + $scope.conf.custom_sched_name +  ";\n";
+			script += "configuration.scheduler_info.clas = "  + $scope.conf.customSchedName +  ";\n";
 		}
 		else
 		{
-			script += "configuration.scheduler_info.clas = '" + $scope.conf.scheduler_class.name + "';\n";
+			script += "configuration.scheduler_info.clas = '" + $scope.conf.schedulerClass.name + "';\n";
 		}
-		script += "configuration.scheduler_info.overhead = " + $scope.conf.overhead_schedule + ";\n";
-		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overhead_activate + ";\n";
-		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overhead_terminate + ";\n";
+		script += "configuration.scheduler_info.overhead = " + $scope.conf.overheadSchedule + ";\n";
+		script += "configuration.scheduler_info.overhead_activate = " + $scope.conf.overheadActivate + ";\n";
+		script += "configuration.scheduler_info.overhead_terminate = " + $scope.conf.overheadTerminate + ";\n";
 		
 		// Additional scheduler fields.
 		script += "configuration.scheduler_info.data = {};\n";
@@ -233,7 +233,7 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 				$scope.enableResults();
 				$scope.conf.allGanttItems = $scope.conf.getAllGanttItems();
 				$scope.conf.window.startDate = 0;
-				$scope.conf.window.endDate = $scope.conf.duration_ms;
+				$scope.conf.window.endDate = $scope.conf.durationMs;
 				
 				// Clear error logs
 				$scope.setSchedErrors(false);
@@ -246,17 +246,17 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		
 		};
 		
-		if($scope.conf.custom_sched)
+		if($scope.conf.customSched)
 		{
 			// Custom scheduler
-			pypyService.vm.exec($scope.conf.custom_sched_code).then(function() {
+			pypyService.vm.exec($scope.conf.customSchedCode).then(function() {
 				pypyService.vm.exec(script).then(execScriptCallback, logScriptErrors);
 			}, logScriptErrors);
 		}
 		else
 		{
 			// Non custom scheduler
-			pypyService.vm.loadModuleData($scope.conf.scheduler_class.name).then(function() {
+			pypyService.vm.loadModuleData($scope.conf.schedulerClass.name).then(function() {
 				pypyService.vm.exec(script).then(execScriptCallback, logScriptErrors);
 			}, logScriptErrors);
 		}
