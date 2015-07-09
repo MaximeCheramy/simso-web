@@ -36,17 +36,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			
 		},
 		{name: 'name', type: 'string', width: 100},
-		{
-			enableCellEdit: false,
-			name: 'abortonmiss',
-			field: 'abortonmiss',
-		    displayName: "Abort on miss",
-			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">',
-			width: 100
-		},
-		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)", width: 120},
 		{name: 'period', type: 'string', displayName:"Period (ms)", width: 120},
-		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)", width:250},
 		{name: 'deadline', type: 'number', width:100},
 		{name: 'wcet', type: 'number', displayName: 'WCET', width:100},
 		{
@@ -56,7 +46,17 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			enableCellEdit: false,
 			cellTemplate: 'partial/cells/conf-followedby-dropdown-cell.html',
 			width: 100
-		}
+		},
+		{name: 'activationDate', type: 'string', displayName:"Act. Date (ms)", width: 120},
+		{name: 'activationDates', type: 'string', displayName:"List of Act. dates (ms)", width:250},
+		{
+			enableCellEdit: false,
+			name: 'abortonmiss',
+			field: 'abortonmiss',
+		    displayName: "Abort on miss",
+			cellTemplate: '<input type="checkbox" ng-model="row.entity.abortonmiss" ng-click="toggleAbortOnMiss(row.entity)">',
+			width: 100
+		},
 	];
 	
 
