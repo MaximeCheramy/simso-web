@@ -5,7 +5,7 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 	// conf is our model containing the configuration.
 	$scope.tmp =  {};
 	$scope.tmp.importedJSON = "";
-	
+	$scope.expert_mode = false;
 	$scope.conf = confService;
 	$scope.pypyService = pypyService;
 	$scope.pypyready = pypyService.pypyready;

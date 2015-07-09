@@ -1,37 +1,44 @@
-
 <div id="confContainer" class="container">
 
-	<p style="text-align:right">
-		<span ng-if="!pypyready">
-			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
-		</span>
+
+
+
 		
-		<input filecontent="tmp.importedJSON" 
-			id="config-upfile" 
-			type="file" 
-			style="visibility: hidden;"></input>
+	<span ng-if="!pypyready">
+		<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
+	</span>
+	<p>
+		<div class="btn-toolbar" role="toolbar" style="text-align: right">
 			
-		<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
-			href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
-			<span class="glyphicon glyphicon-save"></span> Export (json)
-		</a>
-		
-		<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
-			<span class="glyphicon glyphicon-open"></span> Import (json)
-		</button>
-
-		<span>
-			<button ng-click="run()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-play"></span> Run!</button>
-		</span>
-		
-		<span>
-			<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
-		</span>
-		
-
-		<div ng-include="'partial/config-errors-modal.html'"></div>
+			<div class="btn-group" role="group" ng-show="!expert_mode">
+				<button ng-click="expert_mode = true" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
+			</div>
+			<div class="btn-group" role="group" ng-show="expert_mode">
+				<button ng-click="expert_mode = false" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
+			</div>
+			<div class="btn-group" role="group">
+				<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
+					href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
+					<span class="glyphicon glyphicon-save"></span> Export (json)
+				</a>
+				<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
+					<span class="glyphicon glyphicon-open"></span> Import (json)
+				</button>
+			</div>
+			<div class="btn-group pull-right" role="group">
+				<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
+				<button ng-click="run()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-play"></span> Run!</button>
+				
+			</div>
+		</div>
 	</p>
-			
+	<input filecontent="tmp.importedJSON" 
+		id="config-upfile" 
+		type="file" 
+		style="visibility: hidden; height: 0px;" ></input>
+		
+	<div ng-include="'partial/config-errors-modal.html'"></div>
+
 	<div ng-show="!schedHasErrors && schedRun" class="alert alert-success" role="alert">
 			Simulation successfull.
 	</div>
