@@ -19,7 +19,7 @@ simsoApp.service("confService",
 	];
 	
 	this.caches = [
-		{ 'id': 1, 'name': 'Cache 1', 'size': 0, 'acces_time': 0, 'miss_penalty': 0 }
+		// { 'id': 1, 'name': 'Cache 1', 'size': 0, 'acces_time': 0, 'miss_penalty': 0 }
 	];
 	
 	// Array of {'name':fieldName, 'type':fieldType, 'from' : 'scheduler' | 'etm' }
