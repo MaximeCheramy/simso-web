@@ -10,7 +10,6 @@ function(confService, $scope) {
 		{name: 'name', type: 'string'},
 		{name: 'csOverhead', displayName: 'CS overhead', type: 'number'},
 		{name: 'clOverhead', displayName: 'CL overhead', type: 'number'},
-		{name: 'speed', displayName: 'Speed', type: 'number'}
 	];
 	
 	$scope.gridProcessorsOptions = {
