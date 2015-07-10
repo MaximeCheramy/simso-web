@@ -1,5 +1,5 @@
 <div class="panel-body" ng-controller="ConfigTasksCtrl">
-	<div ng-show="!conf.expertMode">
+	<div ng-show="conf.expertMode">
 		<div ui-grid="gridTasksOptions" ui-grid-edit ui-grid-selection></div>
 		<form class="form-horizontal" role="form" style="margin: 1em">
 			<div class="btn-group" role="group" ng-controller="ConfigTasksAddFieldCtrl">
@@ -19,22 +19,51 @@
 			</div>
 		</form>
 	</div>
-	<div ng-show="!conf.expertMode" ng-controller="GraphicalTaskControler" style="overflow: auto">
-
+	<div ng-show="!conf.expertMode" style="overflow: auto">
+		<div class="container" style="margin: 1em;">
+			<button type="button" class="btn btn-primary btn-sm" ng-click="addNewTask()">
+				<span class="glyphicon glyphicon-plus"></span>
+				Add Task
+			</button>
+		</div>
 		<div ng-repeat="task in conf.tasks">
 			<div ng-show="task.type == 0">
-				<div>
-					Task {{task.name}} Period = {{task.period}} Deadline = {{task.deadline}} WCET = {{task.wcet}}
+				<div class="media">
+					<div class="media-left media-middle" style="padding-left: 2em">
+						<button type="button" class="btn btn-danger btn-sm" ng-click="deleteTask(task)">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
+					</div>
+					<div class="media-body task-container">
+						<div class="form-group">
+							<div class="col-sm-2"><label>Name</label>
+								<input class="form-control input-sm" type="text" ng-model="task.name"></input>
+							</div>
+							<div class="col-sm-2"><label>Period</label>
+								<input class="form-control input-sm" min="1" type="number" ng-model="task.period"></input>
+							</div>
+							<div class="col-sm-2"><label>Deadline</label>
+								<input class="form-control input-sm" min="1" type="number" ng-model="task.deadline"></input>
+							</div>
+							<div class="col-sm-2"><label>WCET</label>
+								<input class="form-control input-sm" min="1" type="number" ng-model="task.wcet"></input>
+							</div>
+							<div class="col-sm-2"><label>Activation Date</label>
+								<input class="form-control input-sm" min="0" type="number" ng-model="task.activationDate"></input>
+							</div>
+						</div>
+						<canvas ng-show="task.type == 0" id="taskCanvas_{{task.id}}" 
+							height="80px"
+							graph
+							period="task.period"
+							deadline="task.deadline"
+							activation-date="task.activationDate"
+							wcet="task.wcet",
+							duration="{{conf.durationMs}}">
+							
+						</canvas>
+					</div>
 				</div>
-				<canvas ng-show="task.type == 0" id="taskCanvas_{{task.id}}" 
-					height="80px"
-					graph
-					period="task.period"
-					deadline="task.deadline"
-					activation-date="task.activationDate"
-					wcet="task.wcet",
-					duration="{{conf.durationMs}}">
-				</canvas>
 			</div>
 		</div>
 		<div ng-repeat="task in conf.tasks">

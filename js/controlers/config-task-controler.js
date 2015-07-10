@@ -1,4 +1,3 @@
-// Manages the tasks list.
 simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', function(confService, $scope) {
 	$scope.conf = confService;
 	
@@ -21,6 +20,8 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		{ id: 1, name:"Aperiodic" },
 		{ id: 2, name:"Sporadic" } 
 	];
+	
+
 	
 	// Column definitions for all required fields.
 	$scope.baseColumnDefs = [
@@ -225,7 +226,9 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 			 'activationDates': "-",
 			 'period': 100, 'deadline': 0, 'wcet': 0, 'followedBy': -1});
 	};
-	
+	$scope.deleteTask = function(task) {
+		$scope.conf.tasks.splice($scope.conf.tasks.indexOf(task), 1);
+	};
 	$scope.delTasks = function() {
 		for (var i = 0; i < $scope.selectedTasks.length; i++) {
 			var index = $scope.conf.tasks.indexOf($scope.selectedTasks[i]);

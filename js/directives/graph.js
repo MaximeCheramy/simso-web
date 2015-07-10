@@ -23,10 +23,8 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       
       
       // Default values
-      if(!scope.min_x)
-        scope.min_x = 0;
-      if(!scope.max_x)
-        scope.max_x = 100;
+      if(!scope.duration)
+        scope.duration = 100;
       if(!scope.step_x)
         scope.step_x = 10;
       if(!scope.period)
@@ -57,7 +55,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       // Gets the drawing rect of the graph
       var getDrawRect = function () {
         return {
-          x: marginSize, y:marginSize,
+          x: marginSize+6, y:marginSize,
           w: canvas.width -marginSize*2,
           h: canvas.height - marginSize*2 - gradTextHeight
         };
@@ -101,7 +99,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       
       // Gets the scale factor : time * scale => pixels
       var getScale = function() {
-        return 1.0 * (canvas.width - marginSize * 2) / (scope.max_x - scope.min_x);
+        return 1.0 * (canvas.width - marginSize * 2) / (scope.duration);
       };
       
       // Returns the rect of the ith task.
@@ -118,7 +116,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       
       // Return all the task rectangles to draw
       var getTaskRects = function() {
-        var maxTasks = scope.max_x / scope.period;
+        var maxTasks = scope.duration / scope.period;
         var mainRect = getDrawRect();
         var rects = [];
         for(var i = 0; i < maxTasks; i++) {
@@ -232,7 +230,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         var sub_x = scope.step_x / 5;
         var counter = 0;
         ctx.beginPath();
-        for(var x = scope.min_x; x <= scope.max_x; x += sub_x) {
+        for(var x = 0; x <= scope.duration; x += sub_x) {
           var high = counter % 5 == 0;
           var posX = drawRect.x + x * scale;
           var startY = drawRect.y + drawRect.h;
@@ -246,7 +244,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         // Draws the text below the graduations
         ctx.font = "12px Arial";
         ctx.fillStyle = "#0040B0";
-        for(var x = scope.min_x; x <= scope.max_x; x += scope.step_x) {
+        for(var x = 0; x <= scope.duration; x += scope.step_x) {
           var text = "" + x;
           var length = ctx.measureText(text).width;
           var posX = x * scale - length/2;//x * scale - length / 2;
@@ -272,25 +270,29 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       var draggableElements = [
         {
           rect : getPeriodSliderRect, 
-          property: function(time) { if(time) scope.period = Math.max(1, time); else return scope.period; }
+          property: function(time) { if(time) scope.period = Math.max(1, time); else return scope.period; },
+          round: function() { scope.period = Math.round(scope.period*10) / 10; }
         },
         {
           rect : getTaskWCETRect, 
           property: function(time, delta) { 
             if(time) scope.wcet = Math.max(1, scope.wcet + delta); else return scope.wcet;
-          }
+          },
+          round: function() { scope.wcet = Math.round(scope.wcet*10) / 10; }
         },
         {
           rect : getTaskActivationDateRect, 
           property: function(time) { 
             if(time) scope.activationDate = Math.max(0, time); else return scope.activationDate; 
-          }
+          },
+          round: function() { scope.activationDate = Math.round(scope.activationDate*10) / 10; }
         },
         {
           rect : getDeadlineRect, 
           property: function(time, delta) { 
             if(time) scope.deadline += delta; else return scope.deadline; 
-          }
+          },
+          round: function() { scope.deadline = Math.round(scope.deadline*10) / 10; }
         }
       ];
       
@@ -316,7 +318,6 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           
           // Set the new value of the property
           myscope.dragging.property(myscope.dragging.property() + deltaTime, deltaTime);
-         
           myscope.draggingPos = pos;
           
           // Refreshes the proper elements.
@@ -350,7 +351,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         // mouse up event triggers.
         if(myscope.dragging)
           scope.$parent.$apply(function() {
-            myscope.dragging.property(myscope.dragging.property(), 0);
+            myscope.dragging.round();
           });
           
         myscope.dragging = null;
