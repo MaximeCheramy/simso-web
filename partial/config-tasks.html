@@ -20,7 +20,7 @@
 		</form>
 	</div>
 	<div ng-show="!conf.expertMode" style="overflow: auto">
-		<div class="container" style="margin: 1em;">
+		<div class="container" style="margin: 1em; margin-left: 4em;">
 			<button type="button" class="btn btn-primary btn-sm" ng-click="addNewTask()">
 				<span class="glyphicon glyphicon-plus"></span>
 				Add Task
@@ -28,31 +28,35 @@
 		</div>
 		<div ng-repeat="task in conf.tasks">
 			<div ng-show="task.type == 0">
-				<div class="media">
-					<div class="media-left media-middle" style="padding-left: 2em">
+
+				<div class="task-container">
+					<div class="form-group">
+						<div class="col-sm-2"><label>Name</label>
+							<input class="form-control input-sm" type="text" ng-model="task.name"></input>
+						</div>
+						<div class="col-sm-2"><label>Period</label>
+							<input class="form-control input-sm" min="1" type="number" ng-model="task.period"></input>
+						</div>
+						<div class="col-sm-2"><label>Deadline</label>
+							<input class="form-control input-sm" min="1" type="number" ng-model="task.deadline"></input>
+						</div>
+						<div class="col-sm-2"><label>WCET</label>
+							<input class="form-control input-sm" min="1" type="number" ng-model="task.wcet"></input>
+						</div>
+						<div class="col-sm-2"><label>Activation Date</label>
+							<input class="form-control input-sm" min="0" type="number" ng-model="task.activationDate"></input>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="media task-media">
+					<div class="media-left media-top" style="padding-left: 4em; padding-top: 10px;">
 						<button type="button" class="btn btn-danger btn-sm" ng-click="deleteTask(task)">
 							<span class="glyphicon glyphicon-trash"></span>
 						</button>
 					</div>
-					<div class="media-body task-container">
-						<div class="form-group">
-							<div class="col-sm-2"><label>Name</label>
-								<input class="form-control input-sm" type="text" ng-model="task.name"></input>
-							</div>
-							<div class="col-sm-2"><label>Period</label>
-								<input class="form-control input-sm" min="1" type="number" ng-model="task.period"></input>
-							</div>
-							<div class="col-sm-2"><label>Deadline</label>
-								<input class="form-control input-sm" min="1" type="number" ng-model="task.deadline"></input>
-							</div>
-							<div class="col-sm-2"><label>WCET</label>
-								<input class="form-control input-sm" min="1" type="number" ng-model="task.wcet"></input>
-							</div>
-							<div class="col-sm-2"><label>Activation Date</label>
-								<input class="form-control input-sm" min="0" type="number" ng-model="task.activationDate"></input>
-							</div>
-						</div>
-						<canvas ng-show="task.type == 0" id="taskCanvas_{{task.id}}" 
+					<div class="media-body">
+						<canvas id="taskCanvas_{{task.id}}" 
 							height="80px"
 							graph
 							period="task.period"

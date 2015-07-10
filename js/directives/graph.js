@@ -30,6 +30,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       if(!scope.period)
         scope.period = 40;
       
+      
       // Converts an event client position to a position relative to
       // the canvas' origin.
       var toRelative = function(e) {
@@ -174,6 +175,10 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       // Refreshes the background
       // Should be called when the period changes
       var refreshBackground = function() {
+        // Avoids having null periods.
+        scope.period = Math.max(1, scope.period);
+        
+        
         var drawRect = getDrawRect();
         var period_w = getScale() * scope.period;
         // Draws the white area

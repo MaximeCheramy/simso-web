@@ -224,7 +224,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 		$scope.conf.tasks.push(
 			{'id': id, 'type': 0, 'name': 'Task ' + id, 'activationDate': 0,
 			 'activationDates': "-",
-			 'period': 100, 'deadline': 0, 'wcet': 0, 'followedBy': -1});
+			 'period': 20, 'deadline': 10, 'wcet': 5, 'followedBy': -1});
 	};
 	$scope.deleteTask = function(task) {
 		$scope.conf.tasks.splice($scope.conf.tasks.indexOf(task), 1);
