@@ -20,18 +20,32 @@
 		</form>
 	</div>
 	<div ng-show="!conf.expertMode" ng-controller="GraphicalTaskControler" style="overflow: auto">
+
 		<div ng-repeat="task in conf.tasks">
-			<canvas id="taskCanvas_{{task.id}}" 
-				height="80px"
-				graph
-				period="task.period"
-				deadline="task.deadline"
-				activation-date="task.activationDate"
-				wcet="task.wcet",
-				duration="{{conf.durationMs}}">
-				
-				
-			</canvas>
+			<div ng-show="task.type == 0">
+				<div>
+					Task {{task.name}} Period = {{task.period}} Deadline = {{task.deadline}} WCET = {{task.wcet}}
+				</div>
+				<canvas ng-show="task.type == 0" id="taskCanvas_{{task.id}}" 
+					height="80px"
+					graph
+					period="task.period"
+					deadline="task.deadline"
+					activation-date="task.activationDate"
+					wcet="task.wcet",
+					duration="{{conf.durationMs}}">
+				</canvas>
+			</div>
+		</div>
+		<div ng-repeat="task in conf.tasks">
+			<div ng-show="task.type != 0" class="alert alert-warning">
+				Task <b>{{task.name}} ({{task.id}})</b> is not periodic.
+				Basic mode editing only supported for <b>periodic tasks.</b>
+				<button class="btn btn-warning" 
+					ng-click="task.type = 0; task.period = 10; task.activationDate = 0;">
+					Make this task periodic
+				</button>
+			</div>
 		</div>
 	</div>
 </div>

@@ -268,6 +268,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         }
       };
       
+      // List of all the elements that can be dragged.
       var draggableElements = [
         {
           rect : getPeriodSliderRect, 
@@ -356,8 +357,11 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       });
       
       scope.$watch("refresh", refresh);
-      scope.$watch("max_x", function() { myscope.refresh.outter = true; });
-      scope.$watch("period", function() { myscope.refresh.background = true; });
+      scope.$watch("max_x", function() { myscope.refresh.outter = true; refresh(); });
+      scope.$watch("period", function() { myscope.refresh.background = true; refresh(); });
+      scope.$watch("deadline", function() { myscope.refresh.background = true; refresh();});
+      scope.$watch("activationDate", function() { myscope.refresh.background = true; refresh();});
+      scope.$watch("wcet", function() { myscope.refresh.background = true; refresh(); });
       scope.$watch("duration", function() {
         canvas.width = scope.duration * 10; // 10px / ms
         myscope.refresh.outter = true;
