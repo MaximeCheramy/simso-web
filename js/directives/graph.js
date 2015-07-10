@@ -2,10 +2,8 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
   return {
     restrict: "A",
     scope : {
-      "total-duration" : "@",
       "step_x": "@",
-      "min_x": "@",
-      "max_x": "@",
+      "duration": "@",
       "period": "=",
       "activationDate" : "=",
       "wcet" : "="
@@ -21,6 +19,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       myscope.refresh = {};
       myscope.refresh.background = true;
       myscope.refresh.outter = true;
+      
       
       // Default values
       if(!scope.min_x)
@@ -269,6 +268,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           
           // Set the new value of the property
           myscope.dragging.property(myscope.dragging.property() + deltaTime, deltaTime);
+         
           myscope.draggingPos = pos;
           
           // Refreshes the proper elements.
@@ -298,13 +298,25 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       
       // On mouse up : ends dragging events.
       canvas.addEventListener("mouseup", function(e) {
+        // Notifies the change to the parent scope once the
+        // mouse up event triggers.
+        if(myscope.dragging)
+          scope.$parent.$apply(function() {
+            myscope.dragging.property(myscope.dragging.property(), 0);
+          });
+          
         myscope.dragging = null;
       });
       
       scope.$watch("refresh", refresh);
-      scope.$watch("min_x", function() { myscope.refresh.outter = true; });
       scope.$watch("max_x", function() { myscope.refresh.outter = true; });
       scope.$watch("period", function() { myscope.refresh.background = true; });
+      scope.$watch("duration", function() {
+        canvas.width = scope.duration * 10; // 10px / ms
+        myscope.refresh.outter = true;
+        myscope.refresh.background = true;
+        refresh();
+      });
     } // link
   };
 }]);

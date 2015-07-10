@@ -19,14 +19,15 @@
 			</div>
 		</form>
 	</div>
-	<div ng-show="!conf.expertMode" ng-controller="GraphicalTaskControler">
+	<div ng-show="!conf.expertMode" ng-controller="GraphicalTaskControler" style="overflow: auto">
 		<div ng-repeat="task in conf.tasks">
-			<canvas id="taskCanvas_{{task.id}}" graph task="task" 
+			<canvas id="taskCanvas_{{task.id}}" 
+				height="80px"
+				graph
 				period="task.period"
 				activation-date="task.activationDate",
 				wcet="task.wcet",
-				min_x="0" max_x="{{conf.durationMs}}" 
-				style="width: auto">
+				duration="{{conf.durationMs}}">
 				
 				
 			</canvas>
