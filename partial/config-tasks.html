@@ -1,5 +1,5 @@
 <div class="panel-body" ng-controller="ConfigTasksCtrl">
-	<div ng-show="conf.expertMode">
+	<div ng-show="!conf.expertMode">
 		<div ui-grid="gridTasksOptions" ui-grid-edit ui-grid-selection></div>
 		<form class="form-horizontal" role="form" style="margin: 1em">
 			<div class="btn-group" role="group" ng-controller="ConfigTasksAddFieldCtrl">
@@ -21,8 +21,12 @@
 	</div>
 	<div ng-show="!conf.expertMode" ng-controller="GraphicalTaskControler">
 		<div ng-repeat="task in conf.tasks">
-			<canvas id="taskCanvas_{{task.id}}" graph task="task" period="{{task.period}}"
-				min_x="0" max_x="{{conf.durationMs}}" style="width: auto">
+			<canvas id="taskCanvas_{{task.id}}" graph task="task" 
+				period="task.period"
+				activation-date="task.activationDate",
+				wcet="task.wcet",
+				min_x="0" max_x="{{conf.durationMs}}" 
+				style="width: auto">
 				
 				
 			</canvas>

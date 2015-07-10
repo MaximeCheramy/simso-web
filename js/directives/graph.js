@@ -6,7 +6,9 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       "step_x": "@",
       "min_x": "@",
       "max_x": "@",
-      "period": "@",
+      "period": "=",
+      "activationDate" : "=",
+      "wcet" : "="
     },
     // Draws the graph
     link: function(scope, element){
@@ -14,7 +16,12 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       var ctx = canvas.getContext('2d');
       var marginSize = 10;
       var gradTextHeight = 20;
+      var taskHeightOffset = 10;
       var myscope = {};
+      myscope.refresh = {};
+      myscope.refresh.background = true;
+      myscope.refresh.outter = true;
+      
       // Default values
       if(!scope.min_x)
         scope.min_x = 0;
@@ -24,10 +31,23 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         scope.step_x = 10;
       if(!scope.period)
         scope.period = 40;
-
-      function isIn(x, y, rect) {
-          var left = rect.x, right = rect.x+rect.w;
-          var top = rect.y, bottom = rect.y+rect.h;
+      
+      // Converts an event client position to a position relative to
+      // the canvas' origin.
+      var toRelative = function(e) {
+        var bbox = canvas.getBoundingClientRect();
+        
+        return { x: e.clientX - bbox.left * (canvas.width  / bbox.width),
+          y: e.clientY - bbox.top  * (canvas.height / bbox.height)
+        };
+      };
+      
+      // Determines if a given point is in a given rectangle.
+      var isIn = function(x, y, rect) {
+          var left = rect.x;
+          var right = rect.x+rect.w;
+          var top = rect.y;
+          var bottom = rect.y+rect.h;
           return (right >= x
               && left <= x
               && bottom >= y
@@ -56,30 +76,115 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         };
       };
       
+      // Gets the WCET rect
+      var wcetRectWidth = 6;
+      var getTaskWCETRect = function() {
+        var taskRect = getTaskRect(0);
+        return {
+          x: taskRect.x + taskRect.w - wcetRectWidth,
+          y: taskRect.y,
+          w: wcetRectWidth,
+          h: taskRect.h,
+        };
+      };
+      
+      // Gets the Activation Date rect
+      var getTaskActivationDateRect = function() {
+        var taskRect = getTaskRect(0);
+        return {
+          x: taskRect.x,
+          y: taskRect.y,
+          w: taskRect.w - wcetRectWidth,
+          h: taskRect.h,
+        };
+      };
+      
       // Gets the scale factor : time * scale => pixels
       var getScale = function() {
         return 1.0 * (canvas.width - marginSize * 2) / (scope.max_x - scope.min_x);
       };
       
+      // Returns the rect of the ith task.
+      var getTaskRect = function(i) {
+        var activationDate = scope.activationDate + i * scope.period;
+        var rect = getDrawRect();
+        return {
+          x: rect.x + activationDate * getScale(),
+          y: rect.y + taskHeightOffset,
+          w: scope.wcet * getScale(),
+          h: rect.h - taskHeightOffset
+        };
+      };
+      
+      // Return all the task rectangles to draw
+      var getTaskRects = function() {
+        var maxTasks = scope.max_x / scope.period;
+        var mainRect = getDrawRect();
+        var rects = [];
+        for(var i = 0; i < maxTasks; i++) {
+          var rect = getTaskRect(i);
+          // If we reached the end : break
+          if(rect.x >= mainRect.x + mainRect.w)
+            break;
+          
+          rect.w = Math.max(0, Math.min(rect.w, mainRect.x + mainRect.w - rect.x));
+          rects.push(rect);
+        }
+        
+        return rects;
+      };
       // Refreshes the background
       // Should be called when the period changes
       var refreshBackground = function() {
         var drawRect = getDrawRect();
         var period_w = getScale() * scope.period;
+        // Draws the white area
         ctx.fillStyle = "#FAFAFA";
-        ctx.fillRect(drawRect.x, drawRect.y, period_w, drawRect.h);
-        ctx.fillStyle = "#E0E0E0";
+        ctx.fillRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h);
+        // Draws the gray area
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
         ctx.fillRect(drawRect.x + period_w, drawRect.y, drawRect.w - period_w, drawRect.h);
+        
+        // Draws the slider (if not on hover)
+        if(myscope.refresh.hover != draggableElements[0])
+        {
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          ctx.fillRect(drawRect.x + period_w - 2, drawRect.y, 3, drawRect.h);
+        }
+        
+        // Draws the outter rectangle.
         ctx.strokeStyle = "#0040B0";
         ctx.strokeRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h);
+        
+        // Draws the tasks rectangles.
+        var taskRects = getTaskRects();
+        ctx.strokeStyle = "#0040B0";
+        ctx.fillStyle = "rgba(0, 125, 255, 0.5)";
+        for(var i = 0; i < taskRects.length; i++) {
+          var taskRect = taskRects[i];
+          ctx.fillRect(taskRect.x, taskRect.y, taskRect.w, taskRect.h);
+          ctx.strokeRect(taskRect.x, taskRect.y, taskRect.w, taskRect.h);
+        }
+        
+        // Draws the hover rectangle
+        if(myscope.refresh.hover) {
+          ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+          ctx.strokeStyle = "rgba(125, 125, 200, 0.40)";
+          var r = myscope.refresh.hover.rect();
+          ctx.fillRect(r.x, r.y, r.w, r.h);
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+        }
+        
+        // Draws the task rectangle
+        
       };
       
       // Refreshes the outter part of the graph.
       var refreshOutterPart = function() {
-        // Clears all the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         var drawRect = getDrawRect();
-      
+        // Clears the part where the text is drawn
+        ctx.clearRect(0, drawRect.y+drawRect.h, canvas.width, canvas.height-drawRect.y);
+        
         // Scale factor :  time * scale => pixels
         var scale = getScale();
         
@@ -97,7 +202,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           counter++;
         }
         ctx.stroke();
-        
+                
         // Draws the text below the graduations
         ctx.font = "12px Arial";
         ctx.fillStyle = "#0040B0";
@@ -107,16 +212,99 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           var posX = x * scale - length/2;//x * scale - length / 2;
           ctx.fillText(text, drawRect.x + posX, drawRect.y + drawRect.h + 20);
         }
+        
+        
       }; // refresh
       
+      // Refreshes the elements that need to be redrawn.
+      var refresh = function() {
+        if(myscope.refresh.background) {
+          refreshBackground();
+          myscope.refresh.background = false;
+        }
+        if(myscope.refresh.outter) {
+          refreshOutterPart();
+          myscope.refresh.outter = false;
+        }
+      };
       
-      canvas.addEventListener("mousedown", function() {
-        
-        
+      var draggableElements = [
+        {
+          rect : getPeriodSliderRect, 
+          property: function(time) { if(time) scope.period = Math.max(1, time); else return scope.period; }
+        },
+        {
+          rect : getTaskWCETRect, 
+          property: function(time, delta) { 
+            if(time) scope.wcet = Math.max(1, scope.wcet + delta); else return scope.wcet;
+          }
+        },
+        {
+          rect : getTaskActivationDateRect, 
+          property: function(time) { 
+            if(time) scope.activationDate = Math.max(0, time); else return scope.activationDate; 
+          }
+        }
+      ];
+      
+      // On mouse down : start dragging events if needed
+      canvas.addEventListener("mousedown", function(e) {
+        var pos = toRelative(e);
+        for(var i = 0; i < draggableElements.length; i++) {
+          var elem = draggableElements[i];
+          if(isIn(pos.x, pos.y, elem.rect())) {
+            myscope.dragging = elem;
+            myscope.draggingPos = {x: pos.x, y: pos.y};
+          }
+        }
       });
-      scope.$watch("min_x", function() { refreshOutterPart(); refreshBackground();});
-      scope.$watch("max_x", function() { refreshOutterPart(); refreshBackground();});
-      scope.$watch("period", function() { refreshBackground();});
+      
+      // On mouse move : dragg elemnts
+      canvas.addEventListener("mousemove", function(e) {
+        var pos = toRelative(e);
+        if(myscope.dragging) {
+          // Here we are dragging an object.
+          var deltaX = pos.x - myscope.draggingPos.x;
+          var deltaTime = deltaX / getScale();
+          
+          // Set the new value of the property
+          myscope.dragging.property(myscope.dragging.property() + deltaTime, deltaTime);
+          myscope.draggingPos = pos;
+          
+          // Refreshes the proper elements.
+          myscope.refresh.background = true;
+          myscope.refresh.hover = myscope.dragging;
+          refresh();
+          
+        }  else {
+          // Now we are checking if the mouse is over an object.
+          var oldHover = myscope.refresh.hover;
+          myscope.refresh.hover = null;
+          for(var i = 0; i < draggableElements.length; i++) {
+            var elem = draggableElements[i];
+            if(isIn(pos.x, pos.y, elem.rect())) {
+              myscope.refresh.hover = elem;
+            }
+          }
+          
+          // If the hover changed, refresh.
+          if(myscope.refresh.hover != oldHover)
+          {
+            myscope.refresh.background = true;
+            refresh();
+          }
+        }
+      });
+      
+      // On mouse up : ends dragging events.
+      canvas.addEventListener("mouseup", function(e) {
+        myscope.dragging = null;
+      });
+      
+      scope.$watch("refresh", refresh);
+      scope.$watch("min_x", function() { myscope.refresh.outter = true; });
+      scope.$watch("max_x", function() { myscope.refresh.outter = true; });
+      scope.$watch("period", function() { myscope.refresh.background = true; });
     } // link
   };
 }]);
