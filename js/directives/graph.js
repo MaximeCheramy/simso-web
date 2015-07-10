@@ -6,6 +6,7 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
       "duration": "@",
       "period": "=",
       "activationDate" : "=",
+      "deadline" : "=",
       "wcet" : "="
     },
     // Draws the graph
@@ -132,6 +133,46 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
         
         return rects;
       };
+      
+      // Gets the deadline arrow rect.
+      var getDeadlineRect = function() {
+        var drawRect = getDrawRect();
+        return {
+          x: drawRect.x + (scope.activationDate + scope.deadline) * getScale() - 2,
+          y: drawRect.y,
+          w: 6,
+          h: drawRect.h
+        };
+      };
+      
+      // Draws an arrow at the given date
+      // if 'up' is true, draws an up-arrow.
+      var drawArrow = function(date, color, up) {
+        var drawRect = getDrawRect();
+        var height = drawRect.h - taskHeightOffset;
+        var arrowX = drawRect.x + date * getScale();
+        var arrowStart = drawRect.y + drawRect.h - (up ? 0 : height);
+        var arrowEnd = drawRect.y + drawRect.h - (up ? height : 0);
+        var arrowDir = up ? 5 : -5;
+        var points = [
+          {x: arrowX - 2, y: arrowEnd+arrowDir},
+          {x: arrowX, y:arrowEnd},
+          {x: arrowX + 2, y: arrowEnd+arrowDir}
+        ];
+        
+        if(!color)
+          color = "#000000";
+        
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowStart);
+        ctx.lineTo(arrowX, arrowEnd);
+        ctx.moveTo(points[0].x, points[0].y);
+        ctx.lineTo(points[1].x, points[1].y);
+        ctx.lineTo(points[2].x, points[2].y);
+        ctx.stroke();
+      };
+      
       // Refreshes the background
       // Should be called when the period changes
       var refreshBackground = function() {
@@ -165,6 +206,9 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           ctx.strokeRect(taskRect.x, taskRect.y, taskRect.w, taskRect.h);
         }
         
+        // Draws the deadline arrow
+        drawArrow(scope.activationDate + scope.deadline);
+        
         // Draws the hover rectangle
         if(myscope.refresh.hover) {
           ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
@@ -173,9 +217,6 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           ctx.fillRect(r.x, r.y, r.w, r.h);
           ctx.strokeRect(r.x, r.y, r.w, r.h);
         }
-        
-        // Draws the task rectangle
-        
       };
       
       // Refreshes the outter part of the graph.
@@ -242,6 +283,12 @@ simsoApp.directive("graph", ['$timeout', function($timeout){
           rect : getTaskActivationDateRect, 
           property: function(time) { 
             if(time) scope.activationDate = Math.max(0, time); else return scope.activationDate; 
+          }
+        },
+        {
+          rect : getDeadlineRect, 
+          property: function(time, delta) { 
+            if(time) scope.deadline += delta; else return scope.deadline; 
           }
         }
       ];
