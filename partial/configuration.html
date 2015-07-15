@@ -7,10 +7,10 @@
 		<div class="btn-toolbar" role="toolbar" style="text-align: right">
 			
 			<div class="btn-group" role="group" ng-show="!conf.expertMode">
-				<button ng-click="conf.expertMode = true" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
+				<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
 			</div>
 			<div class="btn-group" role="group" ng-show="conf.expertMode">
-				<button ng-click="conf.expertMode = false" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
+				<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
 			</div>
 			
 			<div class="btn-group" role="group">

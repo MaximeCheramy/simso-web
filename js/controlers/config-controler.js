@@ -16,6 +16,14 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 			$scope.schedRun = true;
 		});
 	};
+	
+	// Function used to make ui grids resize properly.
+	$scope.fixLayout = function() {
+		$timeout(function(){
+			$(window).resize();
+		}, 1);
+	};
+	
 	if (!$scope.pypyready) {
 		$scope.pypyService.registerObserverCallback($scope, function() {
 			$scope.$apply(function() {
