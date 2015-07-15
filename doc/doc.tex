@@ -32,7 +32,7 @@
 \newpage
 \section{Preamble}
 This document is a non-exhaustive developer documentation, whose goal is to help future maintainers of the simso-web application to get started with the code. 
-This document is written with the assumption that the developper is using an UNIX environment.
+This document is written with the assumption that the developper is using an UNIX environment, has basic understanding of Javascript and Angular UI.
 
 \section{Getting Started}
 \paragraph{Introduction}
@@ -132,22 +132,81 @@ pypyService.vm.exec(code).then(function() {
 Where logScriptErrors is the function defined in config-controlers.js. This function will be called on error with an object as parameter containing a 'name', 'message' and 'trace'.
 
 \paragraph{Managing imports}
-As the pypy.js will run in the user's browser with its own python environment, it is important to bundle all the needed modules.
+As pypy.js will run in the user's browser with its own python environment, it is important to bundle all the needed modules.
 A listing of all the bundled modules can be found in lib/modules/index.json.
-TODO : documenter moduler bundler.py (le comprendre avant :p)
 
 \paragraph{Passing variables to and from python}
-pass
+We use the javascript global variable 'python' (defined in js/app.js) to pass variables from and to python. 
+Passing variables from javascript to python is easy : 
+\lstset{language=python}
+\begin{lstlisting}
+python["variable_name"] = myObject;
+\end{lstlisting}
+However, passing variables from python to javascript might be (a little bit) tricky in some cases.
+\lstset{language=python}
+\begin{lstlisting}
+import js
+...
+js.globals["python"]["variable_name"] = myObject;
+\end{lstlisting}
+The tricky part comes from the fact that myObject needs to be something pypy.js can convert to a javascript object. The easiest way to pass complex object is then to pass then as a hashmap (like you would do in javascript).
 
 \subsection{Simso integration in the configuration}
-pass
 
 \paragraph{Scheduler auto-detection mechanism}
-Explain scheduler discovery.py / simso-schedulers.py
+Simso-web has a feature used to auto-detect all simso schedulers, the parameters they need for the themselves, the tasks and / or the processors. In Simso's code, every Scheduler wears the 'scheduler' decorator (declared in simso/schedulers/\_\_init\_\_.py).
+Here is an example :
+\lstset{language=python}
+\begin{lstlisting}
+@scheduler("simso.schedulers.CC_EDF",
+           required_proc_fields = [
+               { 'name': 'speed', 'type': 'float', 'default': '1.0' }
+           ]
+)
+\end{lstlisting}
 
+As executing all those decorators requires to import all the schedulers manually in pypy.js (which is not what we want), simso-web doesn't use them directly. Instead, it reads all the Schedulers descriptions in py/simso-schedulers.py. This file is generated automatically when executing the shell script tools/schedulers\_discovery.sh.
 
-\paragraph{ETM auto-detection}
-Explain simso-etm.py
+\textbf{When a scheduler is added/removed, the schedulers\_discovery.sh script must be executed again !!}
+
+\paragraph{ETM detection}
+All the Execution Time Models (ETM) must be declared in py/simso-etm.py. Here is an example of a ETM declaration :
+\lstset{language=python}
+\begin{lstlisting}
+{
+		'name' : 'acet',
+		'display_name' : 'ACET',
+		'required_fields' : [],
+		'required_proc_fields' : [],
+		'required_task_fields' : [
+			{
+				'name' : 'acet',
+				'display_name' : 'acet (ms)',
+				'type' : 'float',
+				'default' : '0'
+			},
+			{
+				'name' : 'et_stddev',
+				'display_name' : 'ET std dev (ms)',
+				'type' : 'float',
+				'default' : '0'
+			}
+		]
+},
+\end{lstlisting}
+
+\subsection{Controlers hierarchy}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.50]{figure3.eps}
+\caption{Configuration controlers scope hierarchy}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.50]{figure4.eps}
+\caption{Results controlers scope hierarchy}
+\end{figure}
 
 
 \end{document}
