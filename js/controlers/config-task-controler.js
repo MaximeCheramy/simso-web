@@ -151,7 +151,7 @@ simsoControllers.controller('ConfigTasksCtrl', ['confService', '$scope', functio
 				var disabledColumns = disableList[rowEntity.type];
 				// Cancels editing of disabled columns
 				if(disabledColumns.indexOf(colDef.name) != -1) {
-					rowEntity[colDef.name] = oldValue;
+					rowEntity[colDef.name] = "-";
 				}
 				else {
 					// Ensures the new value is correct.
