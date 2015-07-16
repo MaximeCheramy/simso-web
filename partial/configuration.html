@@ -3,7 +3,7 @@
 
 	
 	<div style="margin-top: -1.75em; margin-bottom: 1.75em">
-		<div class="well" ng-if="!pypyready">
+		<div class="well" ng-show="!pypyready">
 			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
 		</div>
 		<div ng-show="!schedHasErrors && schedRun" class="alert alert-success" role="alert">
@@ -22,9 +22,10 @@
 				An error has occured during the simulation. Please click the 'Show errors' button for more details.
 		</div>
 	</div>
-	<div ng-if="pypyready" class="well">
+	<div ng-show="pypyready" class="well">
 		<center>
-			<button ng-click="run()" class="btn btn-default btn-circle btn-xl" ng-disabled="!pypyready">
+			<button ng-click="run()" class="btn btn-default btn-circle btn-xl" ng-disabled="!pypyready"
+				    data-toggle="tooltip" data-placement="right" title="Runs the simulation. This might take a few minutes.">
 				<span class="glyphicon glyphicon-play"></span>
 			</button>
 		</center>
@@ -38,10 +39,13 @@
 			
 			<div class="btn-group" role="group">
 				<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
+					data-toggle="tooltip" data-placement="top" title="Saves the current configuration to a JSON file."
 					href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
 					<span class="glyphicon glyphicon-save"></span> Export (json)
 				</a>
-				<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
+				<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" 
+					data-toggle="tooltip" data-placement="top" title="Loads a configuration file from your computer."
+					ng-disabled="!pypyready">
 					<span class="glyphicon glyphicon-open"></span> Import (json)
 				</button>
 			</div>
@@ -63,7 +67,6 @@
 	<conf-panel title="'Tasks'" html="'config-tasks.html'"></conf-panel>
 	<conf-panel ng-show="conf.expertMode" title="'Processors'" html="'config-processors.html'"></conf-panel>
 	<conf-panel ng-show="false" title="'Caches'" html="'config-caches.html'"></conf-panel>
-	
 </div>
 
 

@@ -270,6 +270,11 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		}
 
 	}
+	
+	// Initialises tooltips
+	$timeout(function() { 
+		$('[data-toggle="tooltip"]').tooltip();
+	}, 0);
 }]);
 
 
