@@ -5,12 +5,16 @@ function(confService, pypyService, $scope, $timeout) {
 	
 	pypyService.registerObserverCallback($scope, function() {
 		confService.schedulerList = python["schedulers"];
-		confService.schedulerClass = confService.schedulerList[0];
 		
-		// Sets to EDF if it exists.
-		confService.schedulerClass = $scope.conf.schedulerList.filter(function(value, index) {
+		// Default scheduler class
+		var defaultClass = $scope.conf.schedulerList.filter(function(value, index) {
 			return value.name === "simso.schedulers.EDF";
-		})[0];
+		});
+		
+		if(defaultClass.length == 0)
+			confService.schedulerClass = confService.schedulerList[0];
+		else
+			confService.schedulerClass = defaultClass[0];
 	});	
 	
 	$scope.toJsType = simsoApp.correctors.toJsType;
