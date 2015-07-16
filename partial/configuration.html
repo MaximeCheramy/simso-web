@@ -1,35 +1,55 @@
 <div id="confContainer" class="container">
 
-	<span ng-if="!pypyready">
-		<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
-	</span>
-	<p>
-		<div class="well">
-			<center>
-				<button ng-click="run()" class="btn btn-default btn-circle btn-xl" ng-disabled="!pypyready">
-					<span class="glyphicon glyphicon-play"></span>
-				</button>
-			</center>
-			<div class="btn-toolbar" role="toolbar" style="text-align: right; margin: -1em">
-				<div class="btn-group" role="group" ng-show="!conf.expertMode">
-					<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
-				</div>
-				<div class="btn-group" role="group" ng-show="conf.expertMode">
-					<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
-				</div>
-				
-				<div class="btn-group" role="group">
-					<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
-						href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
-						<span class="glyphicon glyphicon-save"></span> Export (json)
-					</a>
-					<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
-						<span class="glyphicon glyphicon-open"></span> Import (json)
+
+	
+	<div style="margin-top: -1.75em; margin-bottom: 1.75em">
+		<div class="well" ng-if="!pypyready">
+			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
+		</div>
+		<div ng-show="!schedHasErrors && schedRun" class="alert alert-success" role="alert">
+				Simulation successfull.
+				<a href="#results"><span class="glyphicon glyphicon-share-alt"></span> Go to results</a>
+		</div>
+		
+		<div ng-show="schedHasErrors" class="alert alert-danger" role="alert">
+				<span style="margin-right: 1em">
+					<button onclick="$('#modalSchedErrorLog').modal('show'); "
+				    class="btn btn-default btn-danger">
+							<span class="glyphicon glyphicon-error"></span>
+							Show errors
 					</button>
-				</div>
+				</span>
+				An error has occured during the simulation. Please click the 'Show errors' button for more details.
+		</div>
+	</div>
+	<div ng-if="pypyready" class="well">
+		<center>
+			<button ng-click="run()" class="btn btn-default btn-circle btn-xl" ng-disabled="!pypyready">
+				<span class="glyphicon glyphicon-play"></span>
+			</button>
+		</center>
+		<div class="btn-toolbar" role="toolbar" style="text-align: right; margin: -1em">
+			<div class="btn-group" role="group" ng-show="!conf.expertMode">
+				<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
+			</div>
+			<div class="btn-group" role="group" ng-show="conf.expertMode">
+				<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
+			</div>
+			
+			<div class="btn-group" role="group">
+				<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
+					href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
+					<span class="glyphicon glyphicon-save"></span> Export (json)
+				</a>
+				<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
+					<span class="glyphicon glyphicon-open"></span> Import (json)
+				</button>
 			</div>
 		</div>
-	</p>
+
+
+	</div>
+	
 	<input filecontent="tmp.importedJSON" 
 		id="config-upfile" 
 		type="file" 
@@ -37,21 +57,7 @@
 		
 	<div ng-include="'partial/config-errors-modal.html'"></div>
 
-	<div ng-show="!schedHasErrors && schedRun" class="alert alert-success" role="alert">
-			Simulation successfull.
-			<a href="#results"><span class="glyphicon glyphicon-share-alt"></span> Go to results</a>
-	</div>
-	
-	<div ng-show="schedHasErrors" class="alert alert-danger" role="alert">
-			<span style="margin-right: 1em">
-				<button onclick="$('#modalSchedErrorLog').modal('show'); "
-			    class="btn btn-default btn-danger">
-						<span class="glyphicon glyphicon-error"></span>
-						Show errors
-				</button>
-			</span>
-			An error has occured during the simulation. Please click the 'Show errors' button for more details.
-	</div>
+
 	<conf-panel title="'General'" html="'config-general.html'"></conf-panel>
 	<conf-panel title="'Scheduler'" html="'config-scheduler.html'"></conf-panel>
 	<conf-panel title="'Tasks'" html="'config-tasks.html'"></conf-panel>
