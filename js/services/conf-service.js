@@ -9,13 +9,13 @@ simsoApp.service("confService",
 	this.overheadTerminate = 0;
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
-		{'id': 2, 'type': 1, 'name': 'T2', 'activationDate': "-", 'activationDates':"-", 'period': "-", 'deadline': 8, 'wcet': 3, 'followedBy': -1},
-		{'id': 3, 'type': 2, 'name': 'T3', 'activationDate': "-", 'period': "-", 'activationDates':"", 'deadline': 8, 'wcet': 1, 'followedBy': -1},
+		{'id': 2, 'type': 0, 'name': 'T2', 'activationDate': 5, 'activationDates':"-", 'period': 15, 'deadline': 15, 'wcet': 7, 'followedBy': -1},
+		{'id': 3, 'type': 0, 'name': 'T3', 'activationDate': 0, 'activationDates':"-", 'period': 20, 'deadline': 15, 'wcet': 8, 'followedBy': -1},
 	];
 	
 	this.processors = [
-		{'id' : 0, 'name': 'Proc', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}, 
-		{'id' : 1, 'name' : 'Proc2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}
+		{'id' : 0, 'name': 'P1', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}, 
+		{'id' : 1, 'name' : 'P2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}
 	];
 	
 	this.caches = [
