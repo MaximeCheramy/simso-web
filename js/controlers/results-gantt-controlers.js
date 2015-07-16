@@ -1,7 +1,9 @@
 
 // Manages the list of gantt charts and the grid to display/hide them.
 // The gantt controler is a child of the results controler.
-simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'confService', function($scope, $controller, confService)
+simsoControllers.controller('GanttListControler', 
+['$scope', '$controller', 'confService', '$timeout',
+function($scope, $controller, confService, $timeout)
 {
 	$controller('resultsCtrl', {$scope:$scope});
 	$scope.ganttZoom = 100;
@@ -9,6 +11,7 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 	// Options of the grid used to select processors and list to display.
 	$scope.selectedItems = [];
 
+	
 	$scope.updateZoom = function() {
 		// These values MUST be identical to the one specified in gantt-renderer.py!
 		var GRAPH_SIZE_OFFSETX = 40;
@@ -71,6 +74,12 @@ simsoControllers.controller('GanttListControler', ['$scope', '$controller', 'con
 				selectRow(row);
 			}
 		});
+		
+		// Select all rows when loaded.
+		for(var i = 0; i < $scope.conf.allGanttItems.length; i++) {
+			$scope.selectedItems.push($scope.conf.allGanttItems[i]);
+		}
+		$timeout(gridApi.selection.selectAllRows, 0);
 	};
 
 	// Gantt export
