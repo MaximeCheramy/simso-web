@@ -14,8 +14,8 @@ simsoApp.service("confService",
 	];
 	
 	this.processors = [
-		{'id' : 0, 'name': 'P1', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}, 
-		{'id' : 1, 'name' : 'P2', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}
+		{'id' : 0, 'name': 'P0', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}, 
+		{'id' : 1, 'name' : 'P1', 'csOverhead': 0, 'clOverhead': 0, 'speed' : 1, 'caches' : []}
 	];
 	
 	this.caches = [
@@ -85,32 +85,32 @@ simsoApp.service("confService",
 	this.processorCount = function(val) {
 		if(val) {
 			// Setter
-			var diff = val - this.processors.length;
+			var diff = val - othis.processors.length;
 			if(diff < 0)
-				this.processors.splice(this.processors.length + diff, -diff);
+				othis.processors.splice(othis.processors.length + diff, -diff);
 			else if(diff > 0)
 				for(var i = 0; i < diff; i++)
-					this.addNewProcessor();
+					othis.addNewProcessor();
 		} else {
 			// Getter
-			return this.processors.length;
+			return othis.processors.length;
 		}
 	};
 	
 	// Adds a new processor
 	this.addNewProcessor = function() {
 		var id = 1;
-		for (var i = 0; i < this.processors.length; i++) {
-			if (this.processors[i].id == id) {
+		for (var i = 0; i < othis.processors.length; i++) {
+			if (othis.processors[i].id == id) {
 				id++;
 				i = 0;
 			}
 		}
 		
-		this.processors.push(
+		othis.processors.push(
 		{
-			'id': id,
-			 'name': 'ProcName',
+			 'id': id,
+			 'name': 'P' + id,
 			 'csOverhead': 0,
 			 'clOverhead': 0,
 			 'speed': 1, 
