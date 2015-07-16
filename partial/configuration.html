@@ -4,27 +4,29 @@
 		<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
 	</span>
 	<p>
-		<div class="btn-toolbar" role="toolbar" style="text-align: right">
-			
-			<div class="btn-group" role="group" ng-show="!conf.expertMode">
-				<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
-			</div>
-			<div class="btn-group" role="group" ng-show="conf.expertMode">
-				<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
-			</div>
-			
-			<div class="btn-group" role="group">
-				<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
-					href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
-					<span class="glyphicon glyphicon-save"></span> Export (json)
-				</a>
-				<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
-					<span class="glyphicon glyphicon-open"></span> Import (json)
+		<div class="well">
+			<center>
+				<button ng-click="run()" class="btn btn-default btn-circle btn-xl" ng-disabled="!pypyready">
+					<span class="glyphicon glyphicon-play"></span>
 				</button>
-			</div>
-			<div class="btn-group pull-right" role="group">
-				<button ng-click="refresh_py()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-refresh"></span> Refresh simso-func [debug]</button>
-				<button ng-click="run()" class="btn btn-default" ng-disabled="!pypyready"><span class="glyphicon glyphicon-play"></span> Run!</button>
+			</center>
+			<div class="btn-toolbar" role="toolbar" style="text-align: right; margin: -1em">
+				<div class="btn-group" role="group" ng-show="!conf.expertMode">
+					<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
+				</div>
+				<div class="btn-group" role="group" ng-show="conf.expertMode">
+					<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
+				</div>
+				
+				<div class="btn-group" role="group">
+					<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
+						href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">
+						<span class="glyphicon glyphicon-save"></span> Export (json)
+					</a>
+					<button ng-click="onJSONImport()" id="config-upfile-btn" class="btn btn-default" ng-disabled="!pypyready">
+						<span class="glyphicon glyphicon-open"></span> Import (json)
+					</button>
+				</div>
 			</div>
 		</div>
 	</p>
