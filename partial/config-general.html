@@ -1,11 +1,13 @@
 <div class="panel-body" ng-controller="ConfigGeneralCtrl">
 	<form class="form-horizontal" role="form" style="margin: 1em">
 		<div class="form-group">
-			<label for="duration" class="control-label col-sm-2">Duration :</label>
-			<div class="col-sm-2">
-			<input type="number" min="1" class="form-control input-sm" id="duration" ng-change="conf.durationMs = conf.duration / conf.cyclesPerMs" ng-model="conf.duration"></input>
+			<div ng-show="conf.expertMode">
+				<label for="duration" class="control-label col-sm-2">Duration :</label>
+				<div class="col-sm-2">
+				<input type="number" min="1" class="form-control input-sm" id="duration" ng-change="conf.durationMs = conf.duration / conf.cyclesPerMs" ng-model="conf.duration"></input>
+				</div>
+				<span class="label label-default label-custom col-sm-1">cycles</span>
 			</div>
-			<span class="label label-default label-custom col-sm-1">cycles</span>
 			
 			<label for="durationMs" class="control-label col-sm-2">Duration :</label>
 			<div class="col-sm-2">
@@ -13,7 +15,7 @@
 			</div>
 			<span class="label label-default label-custom col-sm-1">ms</span>
 		</div>
-		<div class="form-group">
+		<div class="form-group" ng-show="conf.expertMode">
 			<label for="cyclesPerMs" class="control-label col-sm-2">Cycles / ms:</label>
 			<div class="col-sm-2">
 			<input type="number" min="1" class="form-control input-sm" id="cyclesPerMs" ng-change="conf.duration = conf.durationMs * conf.cyclesPerMs" ng-model="conf.cyclesPerMs"></input>
