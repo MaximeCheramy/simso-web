@@ -77,19 +77,27 @@ function(confService, logsService, pypyService, $scope, $timeout) {
 		
 		var logScriptErrors = function(err) {
 			// err : object given by pypy.js
-			pypyService.logSchedulerError({
-	            'type' : 'errorCode',
-	            'value' : err.name + " : " + err.message
-	        });
-			var stacklines = err.trace.split("\n");
-			for(var i = 0; i < stacklines.length; i++)
+			
+			if(typeof err.name != "undefined" && typeof err.message != "undefined")
 			{
 				pypyService.logSchedulerError({
-					'type' : 'stack',
-					'value' : stacklines[i]
-				});
+		            'type' : 'errorCode',
+		            'value' : err.name + " : " + err.message
+		        });
 			}
-		
+
+			
+			if(typeof err.trace != "undefined") {
+				var stacklines = err.trace.split("\n");
+				for(var i = 0; i < stacklines.length; i++)
+				{
+					pypyService.logSchedulerError({
+						'type' : 'stack',
+						'value' : stacklines[i]
+					});
+				}
+			}
+
 			$scope.disableResults();
 			$scope.setSchedErrors(true);
 			$scope.setSimRunning(false);
