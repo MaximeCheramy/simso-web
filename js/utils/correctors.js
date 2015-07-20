@@ -83,6 +83,19 @@ correctors.applyTypeCorrector = function(value, pytype) {
 correctors.toJsInputType = function(pytype) {
 	return correctors.typemap[pytype][2];
 };
+
+correctors.makeProperty = function(obj, field, corrector) {
+	return function(value) {
+		if(arguments.length == 0) {
+			return obj[field];
+		}
+		else {
+			
+			obj[field] = corrector(obj[field], value);
+		}
+	};
+};
+
 // Registers a corrector for the given field of a given gridApi.
 correctors.register = function($scope, gridApi, field, corrector) {
 	if(typeof gridApi._registeredCorrectors == "undefined")

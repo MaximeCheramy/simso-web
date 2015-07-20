@@ -52,7 +52,9 @@
 				<label for="overhead" class="control-label col-sm-2">Overhead schedule</label>
 				<div class="col-sm-4">
 					<input id="overhead" 
-						   ng-model="conf.overheadSchedule"
+						   ng-model="conf.overheadScheduleProperty"
+						   ng-model-options="{getterSetter : true}"
+						   min="0"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
@@ -63,7 +65,9 @@
 				<label for="overheadActivate" class="control-label col-sm-2">Overhead on activate</label>
 				<div class="col-sm-4">
 					<input id="overheadActivate" 
-						   ng-model="conf.overheadActivate"
+						   ng-model="conf.overheadActivateProperty"
+						   ng-model-options="{getterSetter : true}"
+						   min="0"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>
@@ -74,7 +78,9 @@
 				<label for="overheadTerminate" class="control-label col-sm-2">Overhead on terminate</label>
 				<div class="col-sm-4">
 					<input id="overheadTerminate" 
-						   ng-model="conf.overheadTerminate"
+						   ng-model="conf.overheadTerminateProperty"
+						   ng-model-options="{getterSetter : true}"
+						   min="0"
 						   class="form-control input-sm col-sm-2" 
 						   type="{{toJsInputType('int')}}"></input>
 				</div>

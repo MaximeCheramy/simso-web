@@ -7,6 +7,11 @@ simsoApp.service("confService",
 	this.overheadSchedule = 0;
 	this.overheadActivate = 0;
 	this.overheadTerminate = 0;
+	
+	this.overheadScheduleProperty = correctors.makeProperty(this, 'overheadSchedule', correctors.isPositiveInt);
+	this.overheadActivateProperty = correctors.makeProperty(this, 'overheadActivate', correctors.isPositiveInt);
+	this.overheadTerminateProperty = correctors.makeProperty(this, 'overheadTerminate', correctors.isPositiveInt);
+	
 	this.tasks = [
 		{'id': 1, 'type': 0, 'name': 'T1', 'activationDate': 0, 'activationDates':"-", 'period': 10, 'deadline': 10, 'wcet': 5, 'followedBy': -1},
 		{'id': 2, 'type': 0, 'name': 'T2', 'activationDate': 5, 'activationDates':"-", 'period': 15, 'deadline': 15, 'wcet': 7, 'followedBy': -1},
@@ -22,6 +27,7 @@ simsoApp.service("confService",
 		// { 'id': 1, 'name': 'Cache 1', 'size': 0, 'acces_time': 0, 'miss_penalty': 0 }
 	];
 	
+
 	// Array of {'name':fieldName, 'type':fieldType, 'from' : 'scheduler' | 'etm' }
 	// The value is in this.tasks.fieldName
 	this.taskAdditionalFields = [];
