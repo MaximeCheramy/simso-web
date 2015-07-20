@@ -2,7 +2,7 @@
 
 
 	
-	<div style="margin-top: -1.75em; margin-bottom: 1.75em">
+	<div style="margin-top: -1.75em; margin-bottom: 1.75em;">
 		<div class="well" ng-show="!pypyready">
 			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> SimSo is currently loading, please wait...
 		</div>
@@ -38,14 +38,21 @@
 			</button>
 		</center>
 		<div class="btn-toolbar" role="toolbar" style="text-align: right; margin: -1em">
-			<div class="btn-group" role="group" ng-show="!conf.expertMode">
+			<div class="btn-group pull-right" role="group" ng-show="!conf.expertMode">
 				<button ng-click="conf.expertMode = true; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Expert mode</button>
 			</div>
-			<div class="btn-group" role="group" ng-show="conf.expertMode">
+			<div class="btn-group pull-right" role="group" ng-show="conf.expertMode">
 				<button ng-click="conf.expertMode = false; fixLayout();" type="button" class="btn btn-default btn-warning">Switch to Basic mode</button>
 			</div>
 			
 			<div class="btn-group" role="group">
+				<div ng-include="'partial/xml-download-modal.html'"></div>
+				<a class = "btn btn-default" ng-disabled="!pypyready"
+					ng-click="onXMLExport()"
+					data-toggle="tooltip" data-placement="top" title="Saves the current configuration to a XML file (for use in original Simso).">
+					<span class="glyphicon glyphicon-save"></span> Export (XML)
+				</a>
+				
 				<a id="config-download" class="btn btn-default" ng-disabled="!pypyready" download="configuration.json"
 					data-toggle="tooltip" data-placement="top" title="Saves the current configuration to a JSON file."
 					href="data:application/json;charset=utf-8,nodata" ng-click="onJSONExport()">

@@ -152,8 +152,10 @@ simsoApp.service("confService",
 	
 	// Returns a string containing the current configuration in the JSON format.
 	this.toJSON = function() {
-		return JSON.stringify(this.clone());
+		return encodeURI(JSON.stringify(this.clone()));
 	};
+	
+
 	
 	// Loads the configuration from a JSON string.
 	this.fromJSON = function(jsonStr) {
@@ -216,4 +218,177 @@ simsoApp.service("confService",
 		}, 0);
 	
 	};
+	
+	// This function generates XML conf file from python code.
+	// It takes a callback to be executed when the conf file is generated.
+	this.toXML = function(callback, errcalback) {
+		var confScript = othis.makeScript() + "\n";
+		confScript += "try:\n"; 
+		confScript += "    js.globals['python']['xml'] = generate(configuration);\n";
+		confScript += "except Exception, e:\n";
+		confScript += "    exc_type, exc_value, exc_traceback = sys.exc_info()\n";
+        confScript += "    error = traceback.format_exception_only(exc_type, exc_value)[0]\n";
+		confScript += "    tb = traceback.extract_tb(exc_traceback)\n";
+		confScript += "    raise Exception(str(error) + '\\n' + str(tb))";
+		pypyService.vm.exec(confScript).then(function() {
+			callback(python['xml']);
+		}, function(err) { 
+			alert("Error occured during export. " + err.toSource());
+		});
+	};
+	// Generates a python configuration script.
+	this.makeScript = function() {
+		// Files and strings are directly passed to python to avoid escape sequence
+		// issues.
+		python["resx_strings"] = [];
+		var stringId = 0;
+		
+		var script = "configuration = Configuration();\n";
+		
+		var pyNumber = function(n, defaultValue) {
+			defaultValue = typeof defaultValue == "undefined" ? 0 : defaultValue;
+			return isNaN(n) ? defaultValue : n;
+		};
+				
+		var escape = function(n) {
+			return n == "-" ? "" : n;
+		};
+		
+		var getType = function(task) {
+			if(task.type == 0)
+				return "\"Periodic\"";
+			else if(task.type == 1)
+				return "\"APeriodic\"";
+			else if(task.type == 2)
+				return "\"Sporadic\"";
+		};
+		
+		var follower = function(task) {
+			return task.followedBy == -1 ? "None" : task.followedBy;
+		};
+		
+		var formatCustomData = function(obj, arr) {
+			var data = [];
+			for(var i = 0; i < arr.length; i++) {
+				var attr = arr[i];
+				
+				// Skip undefined values
+				if(typeof(obj[attr.name]) == "undefined")
+					continue;
+					
+				data.push("\"" + attr.name + "\" : " + toPy(obj[attr.name], attr.type));
+			}
+			return "{" + data.join(',') + '}';
+		};
+		
+		var formatTaskData = function(task) {
+			return formatCustomData(task, othis.taskAdditionalFields);	
+		};
+		
+		var formatProcData = function(proc) {
+			return formatCustomData(proc, othis.procAdditionalFields);
+		};
+		
+		var toPy = function(value, pytype) {
+			if(pytype == "float" || pytype == "int")
+				return value;
+			else if(pytype == "bool")
+				return value == "true" ? "True" : "False";
+			else
+			{
+				python["resx_strings"].push(value);
+				return 'js.globals["python"]["resx_strings"]['+ stringId++ + ']';
+			}
+		};
+		
+		// Global
+		script += "configuration.duration = " + othis.duration + ";\n";
+		script += "configuration.cycles_per_ms = " + othis.cyclesPerMs + ";\n";
+		
+		// Etm
+		script += "configuration.etm = \"" + othis.etm.name + "\";\n";
+		
+		// Additional conf fields
+		for(var i = 0; i < othis.etmAdditionalFields.length; i++) {
+			var field = othis.etmAdditionalFields[i];
+			script += "configuration." + field.name + " = " + toPy(field.value, field.type) + ";\n";
+		}
+		
+		// Add tasks
+		for (var i = 0; i < othis.tasks.length; i++) {
+			var task = othis.tasks[i];
+			script += "configuration.add_task(name=\"" + task.name
+				+ "\", identifier=" + task.id
+				+ ", abort_on_miss=" + (task.abortonmiss ? "True" : "False")
+				+ ", activation_date=" + pyNumber(task.activationDate)
+				+ ", list_activation_dates=[" + escape(task.activationDates) + "]"
+				+ ", period=" + pyNumber(task.period)
+				+ ", deadline=" + task.deadline
+				+ ", task_type=" + getType(task)
+				+ ", followed_by=" + follower(task)
+				+ ", data=" + formatTaskData(task)
+				+ ", wcet=" + task.wcet + ");\n";
+		}
+		
+		script += "caches = {};\n";
+		// Add caches
+		for (var i = 0; i < othis.caches.length; i++) {
+			var cache = othis.caches[i];
+			
+			script += "caches['" + cache.id + "'] = Cache(";
+			script += cache.id + ", ";
+			script += '"' + cache.name + "\", ";
+			script += pyNumber(cache.size) + ", ";
+			script += "0, ";
+			script += pyNumber(cache.access_time);
+			script += ");\n";
+			
+			
+			script += "configuration.caches_list.append(caches['" + cache.id + "']);\n";
+		}
+		
+		// Add processors
+		for (var i = 0; i < othis.processors.length; i++) {
+			var proc = othis.processors[i];
+			script += "proc = ProcInfo(";
+			script += proc.id + ", ";
+			script += '"' + proc.name + "\", ";
+			script += "cs_overhead=" + pyNumber(proc.csOverhead) + ", ";
+			script += "cl_overhead=" + pyNumber(proc.clOverhead) + ", ";
+			script += "speed = " + pyNumber(proc.speed, 1.0) + ", ";
+			script += "data = " + formatProcData(proc);
+			script += ");\n";
+			
+			for(var j = 0; j < proc.caches.length; j++) {
+				script += "proc.add_cache(caches['" + proc.caches[j] + "']);\n";
+			}
+			
+			script += "configuration.proc_info_list.append(proc);\n";
+		}
+
+
+		// Set scheduler
+		if(othis.customSched)
+		{
+			script += "configuration.scheduler_info.clas = "  + othis.customSchedName +  ";\n";
+		}
+		else
+		{
+			script += "configuration.scheduler_info.clas = '" + othis.schedulerClass.name + "';\n";
+		}
+		script += "configuration.scheduler_info.overhead = " + othis.overheadSchedule + ";\n";
+		script += "configuration.scheduler_info.overhead_activate = " + othis.overheadActivate + ";\n";
+		script += "configuration.scheduler_info.overhead_terminate = " + othis.overheadTerminate + ";\n";
+		
+		// Additional scheduler fields.
+		script += "configuration.scheduler_info.data = {};\n";
+		for(var i = 0; i < othis.schedAdditionalFields.length; i++) {
+			var field = othis.schedAdditionalFields[i];
+			script += "configuration.scheduler_info.data[\"" + field.name + "\"] = " + toPy(field.value, field.type) + ";\n";
+		}
+		
+		return script;
+	}; // make script
+	
+
 }]);
