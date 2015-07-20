@@ -14,7 +14,7 @@ function($scope, $controller, confService, $timeout)
 	
 	$scope.updateZoom = function() {
 		// These values MUST be identical to the one specified in gantt-renderer.py!
-		var GRAPH_SIZE_OFFSETX = 40;
+		var GRAPH_SIZE_OFFSETX = 60;
 		var UNIT_WIDTH = 10;
 		var newWidth = (($scope.conf.window.endDate - $scope.conf.window.startDate) * UNIT_WIDTH * $scope.ganttZoom / 100.0 + 2 * GRAPH_SIZE_OFFSETX) + "px";
 
@@ -24,7 +24,7 @@ function($scope, $controller, confService, $timeout)
 			if(el)
 				el[0].style.width = newWidth;
 		}
-	}
+	};
 
 	$scope.zoomPlus = function() {
 		$scope.ganttZoom = Math.min($scope.ganttZoom + 10, 300);
