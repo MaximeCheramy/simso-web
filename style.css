@@ -89,3 +89,12 @@
   border-radius: 35px;
   border: 4px double #808080;
 }
+
+.blue {
+	color: dodgerblue;
+}
+
+.footer {
+	text-align: center;
+	color: #505050;
+}
