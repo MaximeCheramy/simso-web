@@ -1,7 +1,7 @@
  <!DOCTYPE html>
 <html>
 <head>
-
+ <meta charset="UTF-8"> 
 
 <link rel="stylesheet" href="lib/tmp/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
@@ -94,7 +94,12 @@
 	<div ng-include="'partial/about.html'"></div>
 
 	<div ng-view></div>
-
+    
+    <div class="container">
+		<p class="footer">
+			Copyright © 2015 CNRS-LAAS
+		</p>
+	</div>
 	<script src="lib/Promise.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/FunctionPromise.js" type="text/javascript"></script>
 	<script src="lib/pypy.js" type="text/javascript" charset="utf-8"></script>
