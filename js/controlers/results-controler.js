@@ -1,5 +1,9 @@
 simsoControllers.controller('resultsCtrl', ['logsService', 'pypyService', '$scope', 'confService', 
 function(logsService, pypyService, $scope, confService) {
+	// Redirection to /configuration if the results are not defined.
+	if(typeof python["results-general"] == "undefined")
+		window.location.href = window.location.href.replace("results", "configuration");
+		
 	
 	$scope.logService = logsService;
 	$scope.vm = pypyService.vm;
