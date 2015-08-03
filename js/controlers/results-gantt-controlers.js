@@ -76,9 +76,6 @@ function($scope, $controller, confService, $timeout)
 		});
 		
 		// Select all rows when loaded.
-		for(var i = 0; i < $scope.conf.allGanttItems.length; i++) {
-			$scope.selectedItems.push($scope.conf.allGanttItems[i]);
-		}
 		$timeout(gridApi.selection.selectAllRows, 0);
 	};
 
@@ -152,6 +149,7 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 	
 	$scope.isDisabled = function()
 	{
+		console.log($scope.selectedItems);
 		return $scope.selectedItems.indexOf($scope.item) < 0;
 	};
 }]);
