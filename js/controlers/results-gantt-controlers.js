@@ -5,12 +5,21 @@ simsoControllers.controller('GanttListControler',
 ['$scope', '$controller', 'confService', '$timeout',
 function($scope, $controller, confService, $timeout)
 {
+	var MIN_ZOOM = 1;
+	var MAX_ZOOM = 1000;
 	$controller('resultsCtrl', {$scope:$scope});
 	$scope.ganttZoom = 100;
 	
 	// Options of the grid used to select processors and list to display.
 	$scope.selectedItems = [];
 
+	$scope.ganttZoomProperty = correctors.makeProperty($scope, 'ganttZoom',
+		function(oldValue, newValue) {
+			if(isNaN(newValue))
+				return oldValue;
+			return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, parseInt(newValue)));
+		}
+	);
 	
 	$scope.updateZoom = function() {
 		// These values MUST be identical to the one specified in gantt-renderer.py!
@@ -27,11 +36,11 @@ function($scope, $controller, confService, $timeout)
 	};
 
 	$scope.zoomPlus = function() {
-		$scope.ganttZoom = Math.min($scope.ganttZoom + 10, 300);
+		$scope.ganttZoom = Math.min($scope.ganttZoom + 10, MAX_ZOOM);
 	};
 	
 	$scope.zoomMinus = function() {
-		$scope.ganttZoom = Math.max($scope.ganttZoom - 10, 50);
+		$scope.ganttZoom = Math.max($scope.ganttZoom - 10, MIN_ZOOM);
 	};
 	
 	$scope.gridGanttOptions = {
@@ -149,7 +158,6 @@ simsoControllers.controller('GanttControler', ['$scope', '$controller', function
 	
 	$scope.isDisabled = function()
 	{
-		console.log($scope.selectedItems);
 		return $scope.selectedItems.indexOf($scope.item) < 0;
 	};
 }]);
